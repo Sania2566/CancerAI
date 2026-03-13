@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Health Profile</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e6f9fb, #f0f9ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* PROFILE CARD */
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 800px;
+            max-width: 95%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+        /* HEADER */
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #31b7c9, #69d6e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            color: white;
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .profile-header h3 {
+            font-weight: 600;
+            color: #2e5e57;
+        }
+
+        /* TABLE */
+
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: #31b7c9;
+            color: white;
+            font-weight: 500;
+        }
+
+        .table td {
+            background: #f9feff;
+        }
+
+        /* ICONS */
+
+        th i {
+            margin-right: 8px;
+        }
+
+        /* BUTTON */
+
+        .analyze-btn {
+            display: block;
+            margin: auto;
+            margin-top: 25px;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ANIMATION */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-card">
+
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
+
+            <div class="profile-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <h3>{{profile[0]}}</h3>
+            <p class="text-muted">{{profile[1]}}</p>
+
+        </div>
+
+        <h3>Your Health Profile</h3>
+        <p class="text-muted">Personal health information used for AI analysis</p>
+
+        <!-- PROFILE TABLE -->
+        <table class="table table-bordered text-center">
+
+            <tr>
+                <th><i class="fa-solid fa-user"></i> Age</th>
+                <td>{{profile[2]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-smoking"></i> Smoking</th>
+                <td>{{profile[3]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-weight-scale"></i> Weight Loss</th>
+                <td>{{profile[4]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-lungs"></i> Cough</th>
+                <td>{{profile[5]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-battery-half"></i> Fatigue</th>
+                <td>{{profile[6]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-circle"></i> Lump</th>
+                <td>{{profile[7]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-droplet"></i> Bleeding</th>
+                <td>{{profile[8]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-utensils"></i> Swallowing</th>
+                <td>{{profile[9]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-dumbbell"></i> Exercise</th>
+                <td>{{profile[10]}}</td>
+            </tr>
+
+            <tr>
+                <th><i class="fa-solid fa-apple-whole"></i> Diet</th>
+                <td>{{profile[11]}}</td>
+            </tr>
+            <tr>
+                <th><i class="fa-solid fa-heart-pulse"></i> Cancer Diagnosed</th>
+                <td>{{profile[12]}}</td>
+            </tr>
+            {% if profile[12] == "Yes" %}
+
+<tr>
+<th><i class="fa-solid fa-dna"></i> Cancer Type</th>
+<td>{{profile[13]}}</td>
+</tr>
+
+<tr>
+<th><i class="fa-solid fa-layer-group"></i> Cancer Stage</th>
+<td>{{profile[14]}}</td>
+</tr>
+
+{% endif %}
+
+        </table>
+
+        <!-- BUTTON -->
+        <a href="/analysis" class="btn btn-success analyze-btn">
+            <i class="fa-solid fa-stethoscope"></i> Start Health Analysis
+        </a>
+
+    </div>
+
+</body>
+
+</html>

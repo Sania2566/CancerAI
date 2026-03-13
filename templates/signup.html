@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MediCare AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+background:#f6fbff;
+overflow-x:hidden;
+}
+
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 90px;
+background:white;
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.logo{
+font-size:20px;
+font-weight:600;
+color:#31b7c9;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+}
+
+nav ul li{
+margin:0 18px;
+}
+
+nav ul li a{
+text-decoration:none;
+color:#555;
+font-weight:500;
+}
+
+.login-btn{
+padding:9px 22px;
+background:#e8f9fc;
+color:#31b7c9;
+border-radius:25px;
+cursor:pointer;
+}
+
+/* HERO SECTION */
+
+.hero{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:90px;
+}
+
+.hero-text{
+max-width:480px;
+}
+
+.hero-text h1{
+font-size:48px;
+margin-bottom:15px;
+}
+
+.hero-text p{
+color:#666;
+margin-bottom:25px;
+}
+
+.cta{
+background:#31b7c9;
+color:white;
+padding:12px 26px;
+border-radius:25px;
+border:none;
+cursor:pointer;
+}
+
+/* RIGHT CIRCLE */
+
+.hero-image{
+position:relative;
+}
+
+.circle{
+width:430px;
+height:430px;
+background:#a8eaf3;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.circle img{
+width:320px;
+}
+
+/* FLOATING ICONS */
+
+.icon{
+position:absolute;
+background:white;
+padding:12px;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+.icon1{
+top:70px;
+right:30px;
+}
+
+.icon2{
+bottom:60px;
+left:-30px;
+}
+
+.icon img{
+width:28px;
+}
+
+/* FEATURES SECTION */
+
+.features{
+padding:80px;
+text-align:center;
+}
+
+.features h2{
+margin-bottom:40px;
+color:#31b7c9;
+}
+
+.feature-grid{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.feature{
+width:220px;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
+
+.feature p{
+font-size:14px;
+color:#666;
+margin-top:10px;
+}
+
+/* OVERLAY */
+
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(6px);
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+visibility:hidden;
+transition:0.4s;
+}
+
+.overlay.active{
+opacity:1;
+visibility:visible;
+}
+
+/* LOGIN CARD */
+
+.card{
+width:850px;
+height:470px;
+display:flex;
+border-radius:25px;
+overflow:hidden;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(25px);
+box-shadow:0 30px 60px rgba(0,0,0,0.25);
+position:relative;
+}
+
+/* LEFT PANEL */
+
+.left{
+width:50%;
+background:linear-gradient(135deg,#69d6e5,#31b7c9);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+padding:40px;
+text-align:center;
+}
+
+.left img{
+width:160px;
+margin-bottom:20px;
+}
+
+/* RIGHT PANEL */
+
+.right{
+width:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+}
+
+.form{
+width:70%;
+position:absolute;
+transition:0.6s;
+}
+
+.signup{
+transform:translateX(120%);
+}
+
+.card.active .login{
+transform:translateX(-140%);
+opacity:0;
+}
+
+.card.active .signup{
+transform:translateX(0);
+opacity:1;
+}
+
+h2{
+margin-bottom:25px;
+color:white;
+}
+
+/* INPUT */
+
+input{
+width:100%;
+padding:12px;
+margin:12px 0;
+border:none;
+border-bottom:1px solid rgba(255,255,255,0.5);
+background:transparent;
+color:white;
+outline:none;
+}
+
+input::placeholder{
+color:#ddd;
+}
+
+/* BUTTON */
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:25px;
+margin-top:20px;
+background:#31b7c9;
+color:white;
+cursor:pointer;
+}
+
+/* SWITCH */
+
+.switch{
+margin-top:15px;
+text-align:center;
+font-size:14px;
+color:#eee;
+}
+
+.switch span{
+color:#7df1ff;
+cursor:pointer;
+}
+
+/* CLOSE */
+
+.close{
+position:absolute;
+top:20px;
+right:25px;
+font-size:22px;
+color:white;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">MediCare</div>
+
+<ul>
+<li><a href="/">Home</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#about">About Us</a></li>
+<li><a href="#contact">Contact Us</a></li>
+</ul>
+
+<div class="login-btn" onclick="openLogin()">Login</div>
+
+</nav>
+
+
+<section class="hero">
+
+<div class="hero-text">
+
+<h1>Healthcare Solutions</h1>
+
+<p>
+AI powered healthcare system helping you analyze symptoms,
+find hospitals and understand medical reports.
+</p>
+
+<button class="cta" onclick="openLogin()">Get Started</button>
+
+</div>
+
+
+<div class="hero-image">
+
+<div class="circle">
+<img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png">
+</div>
+
+<div class="icon icon1">
+<img src="https://cdn-icons-png.flaticon.com/512/2966/2966486.png">
+</div>
+
+<div class="icon icon2">
+<img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png">
+</div>
+
+</div>
+
+</section>
+
+
+<section class="features" id="features">
+
+<h2>Our AI Features</h2>
+
+<div class="feature-grid">
+
+<div class="feature">
+<h4>Symptom Analyzer</h4>
+<p>Check your symptoms and understand possible health risks.</p>
+</div>
+
+<div class="feature">
+<h4>Report Analyzer</h4>
+<p>Upload medical reports and extract important findings instantly.</p>
+</div>
+
+<div class="feature">
+<h4>Find Hospitals</h4>
+<p>Locate nearby hospitals based on your current location.</p>
+</div>
+
+<div class="feature">
+<h4>AI Health Chatbot</h4>
+<p>Ask common health questions and receive quick guidance.</p>
+</div>
+
+</div>
+
+</section>
+<section id="about" style="padding:80px;text-align:center;background:white">
+
+<h2 style="color:#31b7c9;margin-bottom:20px">About MediCare AI</h2>
+
+<p style="max-width:700px;margin:auto;color:#555;font-size:15px">
+
+MediCare AI is an intelligent healthcare assistant designed to help people
+understand symptoms, analyze medical reports, and locate nearby hospitals.
+Our goal is to make healthcare information more accessible using
+Artificial Intelligence tools.
+
+</p>
+
+</section>
+<section id="contact" style="padding:80px;text-align:center">
+
+<h2 style="color:#31b7c9;margin-bottom:20px">Contact Us</h2>
+
+<p style="color:#555;margin-bottom:20px">
+Have questions? Reach out to us.
+</p>
+
+<form style="max-width:400px;margin:auto">
+
+<input type="text" placeholder="Your Name" style="width:100%;padding:10px;margin:10px 0">
+
+<input type="email" placeholder="Email" style="width:100%;padding:10px;margin:10px 0">
+
+<textarea placeholder="Message"
+style="width:100%;padding:10px;margin:10px 0;height:100px"></textarea>
+
+<button style="background:#31b7c9;color:white;padding:10px 20px;border:none;border-radius:20px">
+Send Message
+</button>
+
+</form>
+
+</section>
+
+
+<div class="overlay" id="overlay">
+
+<div class="card" id="card">
+
+<div class="left">
+
+<img src="https://cdn-icons-png.flaticon.com/512/2966/2966486.png">
+
+<p>
+We at MediCare focus on helping your health with AI tools.
+</p>
+
+</div>
+
+
+<div class="right">
+
+<span class="close" onclick="closeLogin()">✕</span>
+
+<form class="form login" method="POST" action="/login">
+
+<h2>Login</h2>
+
+<input type="email" name="email" placeholder="Email" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<button>Login</button>
+
+<div class="switch">
+Don't have account?
+<span onclick="showSignup()">Sign Up</span>
+</div>
+
+</form>
+
+
+<form class="form signup" method="POST" action="/signup">
+
+<h2>Create Account</h2>
+
+<input type="text" name="name" placeholder="Full Name" required>
+<input type="email" name="email" placeholder="Email" required>
+<input type="password" name="password" placeholder="Password" required>
+
+<button>Create Account</button>
+
+<div class="switch">
+Already have account?
+<span onclick="showLogin()">Login</span>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const overlay=document.getElementById("overlay")
+const card=document.getElementById("card")
+
+function openLogin(){
+overlay.classList.add("active")
+}
+
+function closeLogin(){
+overlay.classList.remove("active")
+}
+
+function showSignup(){
+card.classList.add("active")
+}
+
+function showLogin(){
+card.classList.remove("active")
+}
+
+if (typeof show_signup !== 'undefined' && show_signup) {
+openLogin()
+showSignup()
+}
+
+if (typeof show_login !== 'undefined' && show_login) {
+openLogin()
+showLogin()
+}
+
+
+</script>
+
+</body>
+</html>

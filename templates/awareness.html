@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cancer Awareness Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+/* BODY */
+
+body{
+background:linear-gradient(135deg,#e8f7ef,#dff5ea);
+font-family:'Segoe UI';
+overflow-x:hidden;
+}
+
+/* FLOATING BALLS */
+
+.ball{
+position:fixed;
+border-radius:50%;
+background:rgba(255,255,255,0.5);
+animation:float 15s infinite linear;
+}
+
+.ball1{width:220px;height:220px;top:10%;left:5%;}
+.ball2{width:220px;height:220px;top:60%;left:90%;}
+.ball3{width:300px;height:300px;top:80%;left:20%;}
+.ball4{width:300px;height:300px;top:30%;left:70%;}
+.ball5{width:400px;height:400px;top:50%;left:40%;}
+
+@keyframes float{
+
+0%{transform:translate(0,0);}
+25%{transform:translate(60px,-40px);}
+50%{transform:translate(-40px,60px);}
+75%{transform:translate(30px,40px);}
+100%{transform:translate(0,0);}
+
+}
+
+/* HEADER */
+
+.header{
+text-align:center;
+font-weight:bold;
+color:#1b5e20;
+margin-top:30px;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+position:fixed;
+left:20px;
+top:20px;
+background:#2e7d32;
+color:white;
+padding:10px 18px;
+border-radius:30px;
+text-decoration:none;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.back-btn:hover{
+background:#1b5e20;
+}
+
+/* GLASS CARD */
+
+.glass-card{
+background:rgba(255,255,255,0.6);
+backdrop-filter:blur(10px);
+border-radius:20px;
+padding:25px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+height:100%;
+}
+
+/* SECTION TITLE */
+
+.section-title{
+text-align:center;
+margin-top:60px;
+margin-bottom:30px;
+color:#2e7d32;
+font-weight:bold;
+}
+
+/* FLIP CARDS */
+
+.flip-card{
+height:260px;
+perspective:1000px;
+}
+
+.flip-inner{
+position:relative;
+width:100%;
+height:100%;
+transition:transform 0.6s;
+transform-style:preserve-3d;
+}
+
+.flip-card:hover .flip-inner{
+transform:rotateY(180deg);
+}
+
+.flip-front,.flip-back{
+position:absolute;
+width:100%;
+height:100%;
+backface-visibility:hidden;
+border-radius:20px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+
+.flip-front{
+background:rgba(255,255,255,0.7);
+}
+
+.flip-back{
+background:white;
+transform:rotateY(180deg);
+font-size:14px;
+}
+
+/* ICON */
+
+.icon{
+font-size:40px;
+margin-bottom:10px;
+}
+
+/* TIMELINE */
+
+.timeline{
+display:flex;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.step{
+text-align:center;
+}
+
+.circle{
+width:60px;
+height:60px;
+border-radius:50%;
+background:#c8f1dc;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.line{
+width:80px;
+height:4px;
+background:#4caf50;
+margin:0 10px;
+}
+
+.step p{
+margin-top:8px;
+font-weight:bold;
+color:#2e7d32;
+}
+
+/* THERAPY CARDS */
+
+.therapy-card{
+border-radius:20px;
+background:white;
+padding:20px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.therapy-card:hover{
+transform:translateY(-8px);
+}
+
+/* TABS */
+
+.nav-tabs .nav-link{
+color:#2e7d32;
+font-weight:600;
+}
+
+.nav-tabs .nav-link.active{
+background:#c8f1dc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- floating balls -->
+
+<div class="ball ball1"></div>
+<div class="ball ball2"></div>
+<div class="ball ball3"></div>
+<div class="ball ball4"></div>
+<div class="ball ball5"></div>
+
+<a href="/analysis" class="back-btn">⬅ Back</a>
+
+<div class="container">
+
+<h2 class="header">🌿 Cancer Awareness Dashboard</h2>
+
+<!-- HEALTHY SECTION -->
+
+<h3 class="section-title">🌱 Healthy Lifestyle</h3>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+
+<div class="icon">🥦</div>
+<h5>Eat Healthy</h5>
+<span class="badge bg-success">Prevention</span>
+
+</div>
+
+<div class="flip-back">
+
+✔ Fruits & vegetables  
+✔ Whole grains  
+✔ Reduce sugar  
+✔ Improve immunity  
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+
+<div class="icon">🏃</div>
+<h5>Exercise</h5>
+<span class="badge bg-success">Daily Habit</span>
+
+</div>
+
+<div class="flip-back">
+
+✔ 30 mins daily  
+✔ Walking / yoga  
+✔ Healthy weight  
+✔ Boost immunity  
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+
+<div class="icon">🚭</div>
+<h5>Avoid Tobacco</h5>
+<span class="badge bg-danger">Risk Factor</span>
+
+</div>
+
+<div class="flip-back">
+
+❌ Lung cancer risk  
+❌ Organ damage  
+❌ Passive smoking danger  
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+<h3 class="section-title">🧑‍⚕️ Cancer Patient Do's & Don'ts</h3>
+
+<div class="row g-4">
+
+<!-- Follow Treatment -->
+
+<div class="col-md-4">
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+<div class="icon">💊</div>
+<h5>Follow Treatment</h5>
+<span class="badge bg-success">Important</span>
+</div>
+
+<div class="flip-back">
+✔ Take medicines on time  
+✔ Attend therapy sessions  
+✔ Follow doctor instructions  
+✔ Report side effects early  
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- Balanced Diet -->
+
+<div class="col-md-4">
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+<div class="icon">🥗</div>
+<h5>Balanced Diet</h5>
+<span class="badge bg-success">Nutrition</span>
+</div>
+
+<div class="flip-back">
+✔ Eat protein rich foods  
+✔ Drink plenty of water 💧  
+✔ Eat fruits & vegetables  
+✔ Small frequent meals  
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- Rest -->
+
+<div class="col-md-4">
+<div class="flip-card">
+<div class="flip-inner">
+
+<div class="flip-front">
+<div class="icon">😴</div>
+<h5>Rest & Recovery</h5>
+<span class="badge bg-info">Healing</span>
+</div>
+
+<div class="flip-back">
+✔ Proper sleep  
+✔ Reduce stress 🧘  
+✔ Light exercise  
+✔ Emotional support  
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- THERAPY SECTION -->
+
+<h3 class="section-title">💉 Cancer Therapies</h3>
+
+<ul class="nav nav-tabs justify-content-center">
+
+<li class="nav-item">
+<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#chemo">Chemotherapy</button>
+</li>
+
+<li class="nav-item">
+<button class="nav-link" data-bs-toggle="tab" data-bs-target="#radiation">Radiation</button>
+</li>
+
+<li class="nav-item">
+<button class="nav-link" data-bs-toggle="tab" data-bs-target="#immuno">Immunotherapy</button>
+</li>
+
+</ul>
+
+<div class="tab-content mt-4">
+
+<div class="tab-pane fade show active" id="chemo">
+
+<div class="therapy-card">
+
+<h5>🧪 Chemotherapy</h5>
+
+<b>Effects</b>
+
+<ul>
+<li>Kills cancer cells</li>
+<li>Shrinks tumors</li>
+<li>Stops spread</li>
+</ul>
+
+<b>Side Effects</b>
+
+<ul>
+<li>Hair loss</li>
+<li>Nausea</li>
+<li>Fatigue</li>
+</ul>
+
+</div>
+
+</div>
+
+
+<div class="tab-pane fade" id="radiation">
+
+<div class="therapy-card">
+
+<h5>☢ Radiation Therapy</h5>
+
+<b>Effects</b>
+
+<ul>
+<li>Destroys tumor cells</li>
+<li>Targets specific area</li>
+</ul>
+
+<b>Side Effects</b>
+
+<ul>
+<li>Skin irritation</li>
+<li>Fatigue</li>
+</ul>
+
+</div>
+
+</div>
+
+
+<div class="tab-pane fade" id="immuno">
+
+<div class="therapy-card">
+
+<h5>🧬 Immunotherapy</h5>
+
+<b>Effects</b>
+
+<ul>
+<li>Boost immune system</li>
+<li>Fight cancer naturally</li>
+</ul>
+
+<b>Side Effects</b>
+
+<ul>
+<li>Fever</li>
+<li>Inflammation</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TIMELINE -->
+
+<h3 class="section-title">🛤 Cancer Journey</h3>
+
+<div class="timeline">
+
+<div class="step">
+<div class="circle">🔍</div>
+<p>Screening</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+<div class="circle">🧪</div>
+<p>Diagnosis</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+<div class="circle">💊</div>
+<p>Treatment</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+<div class="circle">🩺</div>
+<p>Recovery</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+<div class="circle">💚</div>
+<p>Survivorship</p>
+</div>
+
+</div>
+
+<br><br>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Cancer Analytics Dashboard</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+background:#e2f3f3;
+font-family:'Poppins',sans-serif;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:230px;
+height:100vh;
+background:#2e4a47;
+color:white;
+position:fixed;
+left:0;
+top:0;
+padding:30px 15px;
+border-radius:0 20px 20px 0;
+}
+
+.sidebar a{
+display:block;
+color:white;
+padding:12px 15px;
+margin-bottom:10px;
+text-decoration:none;
+border-radius:10px;
+transition:0.3s;
+}
+.sidebar i{
+margin-right:10px;
+}
+
+.sidebar a:hover{
+background:#3f6a66;
+}
+
+/* MAIN AREA */
+
+.main{
+margin-left:250px;
+padding:30px;
+}
+
+/* STAT CARDS */
+
+.stat-card{
+color:white;
+padding:20px;
+border-radius:18px;
+position:relative;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.stat-card:hover{
+transform:translateY(-5px);
+}
+
+/* CARD COLORS */
+
+.card1{
+background:linear-gradient(135deg,#ffb347,#ffcc33);
+}
+
+.card2{
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+}
+
+.card3{
+background:linear-gradient(135deg,#43e97b,#38f9d7);
+}
+
+/* CARD TEXT */
+
+.stat-title{
+font-size:14px;
+opacity:0.9;
+}
+
+.stat-value{
+font-size:28px;
+font-weight:bold;
+margin-top:5px;
+}
+
+/* ICON */
+
+.stat-icon{
+position:absolute;
+right:20px;
+top:20px;
+font-size:60px;
+opacity:1.5;
+}
+
+/* DECORATIVE CIRCLE */
+
+.stat-card::after{
+content:"";
+position:absolute;
+width:120px;
+height:120px;
+background:rgba(255,255,255,0.2);
+border-radius:50%;
+bottom:-40px;
+right:-30px;
+}
+
+/* CHART BOX */
+
+.chart-box{
+background:rgb(162, 224, 222);
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+canvas{
+max-height:300px;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h4>Cancer AI</h4>
+
+<a href="/analysis">
+<i class="fa-solid fa-chart-line"></i> Analysis
+</a>
+
+<a href="/chatbot">
+<i class="fa-solid fa-robot"></i> Chatbot
+</a>
+
+<a href="/hospitals">
+<i class="fa-solid fa-hospital"></i> Hospitals
+</a>
+
+<a href="/awareness">
+<i class="fa-solid fa-ribbon"></i> Awareness
+</a>
+
+<a href="/report-analyzer">
+<i class="fa-solid fa-file-medical"></i> Report Analyzer
+</a>
+<a href="/profile">
+<i class="fa-solid fa-user"></i> Profile
+</a>
+
+</div>
+
+
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+<h2 class="mb-4"  style="color: #083d38; font-weight: bold;">Cancer Data Analytics📊</h2>
+
+<!-- STATISTICS CARDS -->
+
+<div class="row mb-4">
+
+<div class="col-md-4">
+
+<div class="stat-card card1">
+
+<div class="stat-title" style="color: #083d38; font-weight: bold;">Total Cancer Types</div>
+<div class="stat-value">{{ cancer_labels|length }}</div>
+
+<div class="stat-icon">🧬</div>
+
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="stat-card card2">
+
+<div class="stat-title" style="color: #083d38; font-weight: bold;">Smoking Categories</div>
+<div class="stat-value">{{ smoking_labels|length }}</div>
+
+<div class="stat-icon">🚬</div>
+
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="stat-card card3">
+
+<div class="stat-title" style="color: #083d38; font-weight: bold;">Treatment Methods</div>
+<div class="stat-value">{{ treatment_labels|length }}</div>
+
+<div class="stat-icon">💊</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CHART GRID -->
+
+<div class="grid">
+
+<!-- Cancer Pie -->
+
+<div class="chart-box">
+
+<h5 style="color: #083d38; font-weight: bold;">Cancer Type Distribution</h5>
+
+<canvas id="cancerChart"></canvas>
+
+</div>
+
+
+<!-- Smoking Chart -->
+
+<div class="chart-box">
+
+<h5 style="color: #083d38; font-weight: bold;">Smoking vs Cancer</h5>
+
+<canvas id="smokingChart"></canvas>
+
+</div>
+
+
+<!-- Treatment -->
+
+<div class="chart-box">
+
+<h5 style="color: #083d38; font-weight: bold;">Treatment Distribution</h5>
+
+<canvas id="treatmentChart"></canvas>
+
+</div>
+
+
+<!-- Year Chart -->
+
+<div class="chart-box">
+
+<h5 style="color: #083d38; font-weight: bold;">Year-wise Cases</h5>
+
+<canvas id="yearChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const cancerLabels = {{ cancer_labels | tojson }};
+const cancerValues = {{ cancer_values | tojson }};
+
+const smokingLabels = {{ smoking_labels | tojson }};
+const smokingValues = {{ smoking_values | tojson }};
+
+const treatmentLabels = {{ treatment_labels | tojson }};
+const treatmentValues = {{ treatment_values | tojson }};
+
+const yearLabels = {{ year_labels | tojson }};
+const yearValues = {{ year_values | tojson }};
+
+
+// Cancer Pie
+
+new Chart(document.getElementById("cancerChart"),{
+
+type:"pie",
+
+data:{
+labels:cancerLabels,
+datasets:[{
+data:cancerValues
+}]
+}
+
+});
+
+
+// Smoking Bar
+
+new Chart(document.getElementById("smokingChart"),{
+
+type:"bar",
+
+data:{
+labels:smokingLabels,
+datasets:[{
+data:smokingValues,
+backgroundColor:"#2e7d6f"
+}]
+}
+
+});
+
+
+// Treatment Doughnut
+
+new Chart(document.getElementById("treatmentChart"),{
+
+type:"doughnut",
+
+data:{
+labels:treatmentLabels,
+datasets:[{
+data:treatmentValues
+}]
+}
+
+});
+
+
+// Year Line
+
+new Chart(document.getElementById("yearChart"),{
+
+type:"line",
+
+data:{
+labels:yearLabels,
+datasets:[{
+data:yearValues,
+borderColor:"#2e7d6f",
+fill:false
+}]
+}
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Medical Report Analyzer</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* BODY BACKGROUND */
+
+body{
+background-image:url("{{ url_for('static', filename='image.png') }}");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+
+font-family:Poppins, Arial;
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+padding:20px;
+}
+
+/* DARK OVERLAY */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+z-index:-1;
+}
+
+/* MAIN CARD */
+
+.card{
+width:700px;
+max-width:95%;
+background:rgba(255,255,255,0.92);
+backdrop-filter:blur(10px);
+border-radius:20px;
+padding:35px;
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+animation:fadeIn 0.7s ease;
+}
+
+/* TITLE */
+
+.title{
+text-align:center;
+color:#1f5e55;
+margin-bottom:15px;
+font-weight:600;
+}
+
+.title i{
+margin-right:8px;
+color:#2e7d6f;
+}
+
+/* UPLOAD AREA */
+
+.upload-box{
+border:2px dashed #8ed6cb;
+border-radius:15px;
+padding:35px;
+text-align:center;
+cursor:pointer;
+transition:0.3s;
+background:#f7fffd;
+}
+
+.upload-box:hover{
+background:#ecfffb;
+}
+
+.upload-box i{
+font-size:45px;
+color:#2e7d6f;
+margin-bottom:10px;
+}
+
+.file-name{
+margin-top:10px;
+font-size:14px;
+color:#555;
+}
+
+/* BUTTON */
+
+.analyze-btn{
+margin-top:15px;
+width:100%;
+border-radius:25px;
+font-weight:500;
+}
+
+/* LOADER */
+
+.loader{
+border:6px solid #f3f3f3;
+border-top:6px solid #2e7d6f;
+border-radius:50%;
+width:60px;
+height:60px;
+animation:spin 1s linear infinite;
+margin:auto;
+margin-top:20px;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+/* RESULT CARD */
+
+.result{
+margin-top:25px;
+background:#f7fffd;
+padding:25px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+animation:fadeIn 0.6s ease;
+}
+
+.result h5{
+color:#1f5e55;
+}
+
+/* TEXT OUTPUT */
+
+pre{
+white-space:pre-wrap;
+font-size:13px;
+background:#ffffff;
+padding:10px;
+border-radius:8px;
+max-height:200px;
+overflow:auto;
+}
+
+/* CARD ANIMATION */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(25px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h3 class="title">
+<i class="fa-solid fa-file-medical"></i>
+Medical Report Analyzer
+</h3>
+
+<p class="text-center text-muted">
+Upload your cancer test report and let AI extract important findings.
+</p>
+
+<!-- UPLOAD AREA -->
+
+<div class="upload-box" onclick="document.getElementById('reportFile').click()">
+
+<i class="fa-solid fa-cloud-arrow-up"></i>
+
+<p><b>Click to upload</b> your report</p>
+
+<input type="file" id="reportFile" name="report" accept="image/*" hidden>
+
+<div id="fileName" class="file-name"></div>
+
+</div>
+
+<button class="btn btn-success analyze-btn" onclick="uploadReport()">
+
+<i class="fa-solid fa-brain"></i> Analyze Report
+
+</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+let fileInput=document.getElementById("reportFile")
+
+fileInput.addEventListener("change",function(){
+
+let file=fileInput.files[0]
+
+if(file){
+
+document.getElementById("fileName").innerHTML=
+"<i class='fa-solid fa-file'></i> "+file.name
+
+}
+
+})
+
+function uploadReport(){
+
+let file=fileInput.files[0]
+
+if(!file){
+alert("Please upload a report first")
+return
+}
+
+let formData=new FormData()
+
+formData.append("report",file)
+
+document.getElementById("output").innerHTML=
+
+`<div class="loader"></div>
+<p class="text-center mt-2">AI is analyzing your report...</p>`
+
+fetch("/analyze-report",{
+
+method:"POST",
+body:formData
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+document.getElementById("output").innerHTML=
+
+`<div class="result">
+
+<h5><i class="fa-solid fa-notes-medical"></i> Summary</h5>
+
+<p>${data.summary}</p>
+
+<hr>
+
+<h6><i class="fa-solid fa-file-lines"></i> Extracted Text</h6>
+
+<pre>${data.text}</pre>
+
+</div>`
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
+
