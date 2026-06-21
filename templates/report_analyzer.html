@@ -1,283 +1,593 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Report Analyzer — Cancer AI Assistant</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<title>Medical Report Analyzer</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --purple: #7c3aed;
+      --grad-main: linear-gradient(135deg, #2563eb 0%, #0d9488 50%, #7c3aed 100%);
+      --grad-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+      --shadow-glow-blue: 0 0 40px rgba(37,99,235,0.3);
+    }
 
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--grad-hero);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-<style>
+    body::before {
+      content: '';
+      position: fixed;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.28) 0%, transparent 70%);
+      top: -150px; left: -150px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatOrb 10s ease-in-out infinite reverse;
+      z-index: 0;
+    }
 
-/* BODY BACKGROUND */
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(30px) scale(1.05); }
+    }
 
-body{
-background-image:url("{{ url_for('static', filename='image.png') }}");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-background-attachment:fixed;
+    /* NAVBAR */
+    .navbar-custom {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-font-family:Poppins, Arial;
-min-height:100vh;
+    .brand-icon {
+      width: 38px; height: 38px;
+      background: var(--grad-main);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 16px;
+      box-shadow: var(--shadow-glow-blue);
+      flex-shrink: 0;
+    }
 
-display:flex;
-justify-content:center;
-align-items:center;
+    .brand-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-padding:20px;
-}
+    /* LAYOUT */
+    .page-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      padding: 48px 20px 60px;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      grid-template-rows: auto 1fr;
+      gap: 24px;
+    }
 
-/* DARK OVERLAY */
+    .page-header {
+      grid-column: 1 / -1;
+    }
 
-body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.25);
-z-index:-1;
-}
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37,99,235,0.18);
+      border: 1px solid rgba(37,99,235,0.35);
+      color: #93c5fd;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
 
-/* MAIN CARD */
+    .step-badge .dot {
+      width: 7px; height: 7px;
+      background: #22d3ee;
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
 
-.card{
-width:700px;
-max-width:95%;
-background:rgba(255,255,255,0.92);
-backdrop-filter:blur(10px);
-border-radius:20px;
-padding:35px;
-box-shadow:0 20px 45px rgba(0,0,0,0.25);
-animation:fadeIn 0.7s ease;
-}
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
 
-/* TITLE */
+    .page-title {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
 
-.title{
-text-align:center;
-color:#1f5e55;
-margin-bottom:15px;
-font-weight:600;
-}
+    .page-title .gradient-word {
+      background: linear-gradient(90deg, #60a5fa, #34d399, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-.title i{
-margin-right:8px;
-color:#2e7d6f;
-}
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
 
-/* UPLOAD AREA */
+    /* MAIN UPLOAD CARD */
+    .upload-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.13);
+      backdrop-filter: blur(24px);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+      animation: fadeUp 0.6s ease both;
+    }
 
-.upload-box{
-border:2px dashed #8ed6cb;
-border-radius:15px;
-padding:35px;
-text-align:center;
-cursor:pointer;
-transition:0.3s;
-background:#f7fffd;
-}
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.upload-box:hover{
-background:#ecfffb;
-}
+    /* UPLOAD BOX */
+    .upload-box {
+      border: 2px dashed rgba(255,255,255,0.22);
+      border-radius: 18px;
+      padding: 40px 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.04);
+    }
 
-.upload-box i{
-font-size:45px;
-color:#2e7d6f;
-margin-bottom:10px;
-}
+    .upload-box:hover {
+      background: rgba(37,99,235,0.08);
+      border-color: rgba(37,99,235,0.4);
+    }
 
-.file-name{
-margin-top:10px;
-font-size:14px;
-color:#555;
-}
+    .upload-box .upload-icon {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: var(--grad-main);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 26px;
+      color: white;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+    }
 
-/* BUTTON */
+    .upload-box p { color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0; }
+    .upload-box p b { color: white; }
+    .upload-box .upload-hint { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 6px; }
 
-.analyze-btn{
-margin-top:15px;
-width:100%;
-border-radius:25px;
-font-weight:500;
-}
+    .file-name {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: #5eead4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
-/* LOADER */
+    .analyze-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      background: var(--grad-main);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+    }
 
-.loader{
-border:6px solid #f3f3f3;
-border-top:6px solid #2e7d6f;
-border-radius:50%;
-width:60px;
-height:60px;
-animation:spin 1s linear infinite;
-margin:auto;
-margin-top:20px;
-}
+    .analyze-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(37,99,235,0.5); }
+    .analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
+    /* LOADER */
+    .loader-wrap { text-align: center; padding: 20px 0 4px; }
+    .loader {
+      border: 5px solid rgba(255,255,255,0.1);
+      border-top: 5px solid var(--teal-light);
+      border-radius: 50%;
+      width: 52px; height: 52px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+    .loader-wrap p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
 
-/* RESULT CARD */
+    /* RESULT */
+    .result {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 22px;
+      border-radius: 18px;
+      animation: fadeUp 0.5s ease both;
+    }
 
-.result{
-margin-top:25px;
-background:#f7fffd;
-padding:25px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-animation:fadeIn 0.6s ease;
-}
+    .result h5 {
+      font-size: 0.95rem; font-weight: 700; color: white;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .result h5 i { color: var(--teal-light); }
+    .result p { font-size: 0.88rem; color: rgba(255,255,255,0.85); line-height: 1.7; margin: 0; }
+    .result hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 16px 0; }
+    .result h6 { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.85); display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .result h6 i { color: var(--teal-light); }
+    .result pre {
+      white-space: pre-wrap; font-size: 0.76rem;
+      background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.75);
+      padding: 12px; border-radius: 10px;
+      max-height: 180px; overflow: auto;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
 
-.result h5{
-color:#1f5e55;
-}
+    /* KEYWORD CHIPS */
+    .keyword-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip {
+      font-size: 0.72rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 50px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .chip.danger { background: rgba(239,68,68,0.15); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+    .chip.positive { background: rgba(13,148,136,0.2); color: #5eead4; border-color: rgba(13,148,136,0.3); }
 
-/* TEXT OUTPUT */
+    /* COMPARISON BOX */
+    .comparison-box {
+      margin-top: 16px;
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 14px;
+      padding: 16px 18px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.8;
+    }
+    .comparison-box .comp-title {
+      font-size: 0.8rem; font-weight: 700;
+      color: #93c5fd;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
 
-pre{
-white-space:pre-wrap;
-font-size:13px;
-background:#ffffff;
-padding:10px;
-border-radius:8px;
-max-height:200px;
-overflow:auto;
-}
+    /* HISTORY SIDEBAR */
+    .history-panel {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.13);
+      backdrop-filter: blur(24px);
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+      animation: fadeUp 0.7s ease 0.1s both;
+      max-height: 720px;
+      overflow-y: auto;
+    }
 
-/* CARD ANIMATION */
+    .history-panel::-webkit-scrollbar { width: 4px; }
+    .history-panel::-webkit-scrollbar-track { background: transparent; }
+    .history-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
-@keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(25px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
+    .history-panel h4 {
+      font-size: 0.92rem; font-weight: 700; color: white;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 6px;
+    }
+    .history-panel h4 i { color: var(--teal-light); }
+    .history-subtitle { font-size: 0.76rem; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
 
-</style>
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 20px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+    }
 
+    .timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+      padding-left: 16px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -14px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--teal-light);
+      border: 2px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+    .timeline-item.current::before { background: #60a5fa; box-shadow: 0 0 10px rgba(96,165,250,0.6); }
+
+    .timeline-item .t-date {
+      font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-bottom: 4px;
+    }
+    .timeline-item .t-file {
+      font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.85);
+      margin-bottom: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 220px;
+    }
+    .timeline-item .t-summary {
+      font-size: 0.74rem; color: rgba(255,255,255,0.55); line-height: 1.5;
+    }
+    .timeline-item .t-badge {
+      display: inline-block;
+      font-size: 0.66rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 50px;
+      margin-top: 4px;
+    }
+    .t-badge.danger { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    .t-badge.positive { background: rgba(13,148,136,0.2); color: #5eead4; }
+    .t-badge.warning { background: rgba(234,179,8,0.15); color: #fde047; }
+    .t-badge.neutral { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+
+    .no-history {
+      text-align: center;
+      padding: 30px 0;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.82rem;
+    }
+    .no-history i { font-size: 2rem; display: block; margin-bottom: 10px; opacity: 0.4; }
+
+    @media (max-width: 800px) {
+      .page-wrapper { grid-template-columns: 1fr; }
+      .history-panel { max-height: 360px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="card">
+  <nav class="navbar-custom">
+    <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+    <span class="brand-text">Cancer AI Assistant</span>
+  </nav>
 
-<h3 class="title">
-<i class="fa-solid fa-file-medical"></i>
-Medical Report Analyzer
-</h3>
+  <div class="page-wrapper">
 
-<p class="text-center text-muted">
-Upload your cancer test report and let AI extract important findings.
-</p>
+    <!-- HEADER -->
+    <div class="page-header">
+      <div class="step-badge"><span class="dot"></span>AI Report Analysis</div>
+      <h1 class="page-title">Medical <span class="gradient-word">Report Analyzer</span></h1>
+      <p class="page-subtitle">Upload your cancer test report — AI will extract key findings and compare it to your previous reports to track your progress.</p>
+    </div>
 
-<!-- UPLOAD AREA -->
+    <!-- MAIN UPLOAD CARD -->
+    <div class="upload-card">
 
-<div class="upload-box" onclick="document.getElementById('reportFile').click()">
+      <div class="upload-box" onclick="document.getElementById('reportFile').click()">
+        <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+        <p><b>Click to upload</b> your report</p>
+        <p class="upload-hint">Supports image files (JPG, PNG)</p>
+        <input type="file" id="reportFile" name="report" accept="image/*" hidden>
+        <div id="fileName" class="file-name"></div>
+      </div>
 
-<i class="fa-solid fa-cloud-arrow-up"></i>
+      <button class="analyze-btn" id="analyzeBtn" onclick="uploadReport()">
+        <i class="fa-solid fa-brain"></i> Analyze Report
+      </button>
 
-<p><b>Click to upload</b> your report</p>
+      <div id="output"></div>
+    </div>
 
-<input type="file" id="reportFile" name="report" accept="image/*" hidden>
+    <!-- HISTORY SIDEBAR -->
+    <div class="history-panel" id="historyPanel">
+      <h4><i class="fa-solid fa-clock-rotate-left"></i> Report History</h4>
+      <p class="history-subtitle">Your past reports — newest first</p>
+      <div id="historyList">
+        <div class="no-history">
+          <i class="fa-solid fa-file-medical"></i>
+          No reports yet. Upload your first report to begin tracking.
+        </div>
+      </div>
+    </div>
 
-<div id="fileName" class="file-name"></div>
+  </div>
 
-</div>
+  <script>
+    const fileInput = document.getElementById("reportFile")
+    const analyzeBtn = document.getElementById("analyzeBtn")
 
-<button class="btn btn-success analyze-btn" onclick="uploadReport()">
+    fileInput.addEventListener("change", function () {
+      if (fileInput.files[0]) {
+        document.getElementById("fileName").innerHTML =
+          "<i class='fa-solid fa-file'></i> " + fileInput.files[0].name
+      }
+    })
 
-<i class="fa-solid fa-brain"></i> Analyze Report
+    // Load history on page load
+    window.addEventListener("DOMContentLoaded", loadHistory)
 
-</button>
+    function loadHistory() {
+      fetch("/report-history")
+        .then(r => r.json())
+        .then(items => renderHistory(items))
+        .catch(() => {})
+    }
 
-<div id="output"></div>
+    function renderHistory(items, currentId = null) {
+      const container = document.getElementById("historyList")
 
-</div>
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="no-history">
+            <i class="fa-solid fa-file-medical"></i>
+            No reports yet. Upload your first report to begin tracking.
+          </div>`
+        return
+      }
 
-<script>
+      const badgeMap = {
+        "danger":   ["danger",   "Concerning"],
+        "positive": ["positive", "Benign / Clear"],
+        "warning":  ["warning",  "Review Needed"],
+        "neutral":  ["neutral",  "Inconclusive"],
+      }
 
-let fileInput=document.getElementById("reportFile")
+      container.innerHTML = `<div class="timeline">` + items.map((item, idx) => {
+        const isCurrent = currentId && item.id === currentId
+        const [cls, label] = badgeMap[item.severity || "neutral"] || ["neutral", "Inconclusive"]
+        const kws = item.keywords ? item.keywords.split(",").slice(0, 3).map(k => k.trim()).filter(Boolean).join(", ") : ""
 
-fileInput.addEventListener("change",function(){
+        return `
+          <div class="timeline-item ${isCurrent ? 'current' : ''}">
+            <div class="t-date">${item.date}${isCurrent ? ' &nbsp;● Just uploaded' : ''}</div>
+            <div class="t-file" title="${item.filename}">${item.filename}</div>
+            ${kws ? `<div class="t-summary">${kws}</div>` : ''}
+            <span class="t-badge ${cls}">${label}</span>
+          </div>`
+      }).join("") + `</div>`
+    }
 
-let file=fileInput.files[0]
+    function getBadgeCls(summary) {
+      if (summary.includes("malignant") || summary.includes("cancer") || summary.includes("⚠️")) return "danger"
+      if (summary.includes("benign") || summary.includes("✅")) return "positive"
+      if (summary.includes("tumor")) return "warning"
+      return "neutral"
+    }
 
-if(file){
+    function uploadReport() {
+      const file = fileInput.files[0]
+      if (!file) { alert("Please upload a report first"); return }
 
-document.getElementById("fileName").innerHTML=
-"<i class='fa-solid fa-file'></i> "+file.name
+      analyzeBtn.disabled = true
 
-}
+      const formData = new FormData()
+      formData.append("report", file)
 
-})
+      document.getElementById("output").innerHTML = `
+        <div class="loader-wrap">
+          <div class="loader"></div>
+          <p>AI is analyzing your report…</p>
+        </div>`
 
-function uploadReport(){
+      fetch("/analyze-report", { method: "POST", body: formData })
+        .then(r => r.json())
+        .then(data => {
 
-let file=fileInput.files[0]
+          // Keywords chips
+          const keywordHtml = (data.keywords && data.keywords.length)
+            ? `<div class="keyword-chips">` +
+              data.keywords.map(k => {
+                const isRed = ["Malignant","Carcinoma","Cancer","Tumor","Metastasis"].includes(k)
+                const isGreen = ["Benign","Normal findings","Negative result"].includes(k)
+                return `<span class="chip ${isRed ? 'danger' : isGreen ? 'positive' : ''}">${k}</span>`
+              }).join("") + `</div>`
+            : ""
 
-if(!file){
-alert("Please upload a report first")
-return
-}
+          // Comparison section
+          const compHtml = data.comparison
+            ? `<hr>
+               <div class="comparison-box">
+                 <div class="comp-title"><i class="fa-solid fa-chart-line"></i> Progress Comparison</div>
+                 ${data.comparison}
+               </div>`
+            : (data.history && data.history.length > 1
+                ? ""
+                : `<hr><div class="comparison-box">
+                     <div class="comp-title"><i class="fa-solid fa-circle-info"></i> First Report</div>
+                     This is your first report. Future uploads will be compared against this baseline to track your progress.
+                   </div>`)
 
-let formData=new FormData()
+          document.getElementById("output").innerHTML = `
+            <div class="result">
+              <h5><i class="fa-solid fa-notes-medical"></i> Summary</h5>
+              <p>${data.summary}</p>
+              ${keywordHtml}
+              ${compHtml}
+              <hr>
+              <h6><i class="fa-solid fa-file-lines"></i> Extracted Text</h6>
+              <pre>${data.text || "No text could be extracted from this image."}</pre>
+            </div>`
 
-formData.append("report",file)
+          // Update sidebar history
+          if (data.history) {
+            renderHistory(data.history, data.history[0]?.id)
+          }
 
-document.getElementById("output").innerHTML=
-
-`<div class="loader"></div>
-<p class="text-center mt-2">AI is analyzing your report...</p>`
-
-fetch("/analyze-report",{
-
-method:"POST",
-body:formData
-
-})
-.then(res=>res.json())
-.then(data=>{
-
-document.getElementById("output").innerHTML=
-
-`<div class="result">
-
-<h5><i class="fa-solid fa-notes-medical"></i> Summary</h5>
-
-<p>${data.summary}</p>
-
-<hr>
-
-<h6><i class="fa-solid fa-file-lines"></i> Extracted Text</h6>
-
-<pre>${data.text}</pre>
-
-</div>`
-
-})
-
-}
-
-</script>
+          analyzeBtn.disabled = false
+        })
+        .catch(() => {
+          document.getElementById("output").innerHTML = `<div class="result"><p>Something went wrong. Please try again.</p></div>`
+          analyzeBtn.disabled = false
+        })
+    }
+  </script>
 
 </body>
 </html>
-

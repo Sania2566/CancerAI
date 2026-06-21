@@ -1,364 +1,595 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<title>AI Symptom Analyzer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Symptom Analyzer — CancerAI</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
 <style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --purple: #7c3aed;
+    --grad-main: linear-gradient(135deg, #2563eb 0%, #0d9488 50%, #7c3aed 100%);
+    --grad-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.15);
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --radius: 20px;
+    --shadow-card: 0 20px 60px rgba(15,23,42,0.15);
+  }
 
-body{
-background-image:url("{{ url_for('static', filename='image.png') }}");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-background-attachment:fixed;
-font-family:'Poppins',sans-serif;
-margin:0;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
-/* overlay */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--grad-hero);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
 
-body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.25);
-z-index:0;
-}
+  /* Ambient orbs */
+  body::before {
+    content: '';
+    position: fixed;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+    top: -150px; left: -150px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatOrb 8s ease-in-out infinite;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%);
+    bottom: -100px; right: -100px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatOrb 10s ease-in-out infinite reverse;
+  }
+  @keyframes floatOrb {
+    0%,100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(30px) scale(1.05); }
+  }
 
-.container, .sidebar{
-position:relative;
-z-index:1;
-}
+  /* ── NAVBAR ─────────────────────────────────────── */
+  .navbar-custom {
+    background: rgba(15,23,42,0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 0;
+    position: sticky; top: 0; z-index: 1000;
+  }
+  .navbar-brand-custom {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+  }
+  .brand-icon {
+    width: 38px; height: 38px;
+    background: var(--grad-main);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 17px;
+    box-shadow: 0 0 20px rgba(37,99,235,0.4);
+  }
+  .brand-text {
+    font-size: 1.1rem; font-weight: 700;
+    background: var(--grad-main);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .brand-sub {
+    font-size: 0.58rem; font-weight: 500; color: rgba(255,255,255,0.5);
+    display: block; letter-spacing: 0.08em; -webkit-text-fill-color: rgba(255,255,255,0.5);
+  }
+  .nav-link-custom {
+    color: rgba(255,255,255,0.75) !important;
+    font-weight: 500; font-size: 0.88rem;
+    padding: 8px 14px !important; border-radius: 8px; text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .nav-link-custom:hover { color: #fff !important; }
+  .nav-link-custom.active-link { color: #fff !important; }
+  .btn-nav-primary {
+    background: var(--grad-main); color: #fff !important;
+    border: none; border-radius: 10px; font-weight: 600; font-size: 0.85rem;
+    padding: 8px 20px; transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(37,99,235,0.35);
+    text-decoration: none;
+  }
+  .btn-nav-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37,99,235,0.45); }
 
-/* SIDEBAR */
+  /* ── PAGE WRAPPER ───────────────────────────────── */
+  .page-wrapper {
+    min-height: calc(100vh - 66px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 50px 20px;
+    position: relative; z-index: 1;
+  }
 
-.sidebar{
-width:220px;
-height:100vh;
-background:linear-gradient(180deg,#1f3f3b,#2e5e57);
-color:white;
-position:fixed;
-left:0;
-top:0;
-padding-top:30px;
-}
+  /* ── PAGE TITLE ─────────────────────────────────── */
+  .page-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(37,99,235,0.18);
+    border: 1px solid rgba(37,99,235,0.35);
+    color: #93c5fd; font-size: 0.78rem; font-weight: 600;
+    padding: 6px 16px; border-radius: 50px; margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .page-eyebrow .dot {
+    width: 7px; height: 7px; background: #22d3ee; border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.sidebar a{
-display:block;
-padding:14px 22px;
-color:white;
-text-decoration:none;
-margin:6px 12px;
-border-radius:10px;
-transition:0.3s;
-}
+  .page-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800; color: #fff; text-align: center; margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .page-title .grad { 
+    background: linear-gradient(90deg, #60a5fa, #34d399, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-subtitle {
+    color: rgba(255,255,255,0.6); font-size: 0.95rem; text-align: center; margin-bottom: 36px;
+  }
 
-.sidebar a:hover{
-background:#3b7c73;
-}
+  /* ── PROGRESS BAR ───────────────────────────────── */
+  .progress-wrap {
+    width: 100%; max-width: 640px; margin-bottom: 28px;
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 8px;
+  }
+  .progress-track {
+    height: 6px; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--grad-main); border-radius: 20px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
 
-/* CENTER CONTAINER */
+  /* ── QUESTION CARD ──────────────────────────────── */
+  .question-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.13);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 24px;
+    padding: 44px 40px;
+    width: 100%; max-width: 640px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    animation: fadeSlide 0.55s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity:0; transform:translateY(22px); }
+    to   { opacity:1; transform:translateY(0);     }
+  }
 
-.container{
-margin-left:150px;
-min-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-padding:20px;
-}
+  .q-step {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+    color: #14b8a6; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 1.2rem; font-weight: 600; color: #fff;
+    line-height: 1.5; margin-bottom: 30px;
+  }
+  .options-grid {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  }
+  .option-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.85);
+    padding: 12px 24px; border-radius: 50px;
+    font-family: 'Poppins', sans-serif; font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .option-btn:hover {
+    background: rgba(37,99,235,0.3);
+    border-color: #2563eb;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.3);
+  }
 
-/* TITLE */
+  /* ── LOADER ─────────────────────────────────────── */
+  .ai-loader-wrap { text-align: center; padding: 10px 0; }
+  .ai-loader-wrap p { color: rgba(255,255,255,0.6); font-size: 0.88rem; margin-top: 18px; }
+  .spinner-ring {
+    width: 56px; height: 56px; margin: 0 auto;
+    border: 5px solid rgba(255,255,255,0.1);
+    border-top-color: #2563eb; border-right-color: #0d9488;
+    border-radius: 50%; animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-h2{
-color:#1f3f3b;
-margin-bottom:25px;
-}
+  /* ── RESULT CARD ────────────────────────────────── */
+  .result-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.13);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 24px;
+    padding: 44px 40px;
+    width: 100%; max-width: 580px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    animation: fadeSlide 0.55s ease;
+    margin-top: 20px;
+    max-width: 640px;
+    width: 100%;
+  }
+  .result-card h4 {
+    font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 24px;
+  }
+  .result-row {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; text-align: left;
+  }
+  .result-row .label {
+    font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .result-row .value {
+    font-size: 0.95rem; font-weight: 600; color: #fff;
+  }
+  .risk-track {
+    height: 8px; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; margin: 6px 0 18px;
+  }
+  .risk-fill {
+    height: 100%; border-radius: 20px;
+    transition: width 1s ease;
+  }
+  .risk-fill.low    { background: linear-gradient(90deg, #22c55e, #16a34a); }
+  .risk-fill.medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .risk-fill.high   { background: linear-gradient(90deg, #ef4444, #dc2626); }
 
-/* QUESTION CARD */
+  .advice-box {
+    background: rgba(13,148,136,0.12);
+    border: 1px solid rgba(13,148,136,0.25);
+    border-radius: 14px; padding: 16px 20px;
+    text-align: left; margin-bottom: 24px;
+  }
+  .advice-box p { font-size: 0.88rem; color: rgba(255,255,255,0.75); margin: 0; line-height: 1.6; }
 
-.question-card{
-background:rgba(255,255,255,0.9);
-padding:40px;
-border-radius:20px;
-width:600px;
-max-width:90%;
-text-align:center;
+  .btn-restart {
+    background: var(--grad-main); color: #fff;
+    border: none; border-radius: 12px; padding: 14px 36px;
+    font-family: 'Poppins', sans-serif; font-size: 0.92rem; font-weight: 600;
+    cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 8px 25px rgba(37,99,235,0.35);
+  }
+  .btn-restart:hover { transform: translateY(-3px); box-shadow: 0 14px 35px rgba(37,99,235,0.45); }
 
-box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  /* ── CATEGORY BREAKDOWN ─────────────────────────── */
+  .breakdown-section {
+    text-align: left; margin-bottom: 24px;
+  }
+  .breakdown-title {
+    font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.45); margin-bottom: 14px;
+  }
+  .category-row {
+    margin-bottom: 14px;
+  }
+  .category-row-top {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+  }
+  .category-name {
+    font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.85);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .category-name i { width: 16px; color: #60a5fa; font-size: 0.8rem; }
+  .category-pct { font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.6); }
+  .category-track {
+    height: 6px; background: rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden;
+  }
+  .category-fill {
+    height: 100%; border-radius: 20px; transition: width 1s ease;
+  }
+  .category-fill.low    { background: linear-gradient(90deg, #22c55e, #16a34a); }
+  .category-fill.medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .category-fill.high   { background: linear-gradient(90deg, #ef4444, #dc2626); }
 
-animation:fadeSlide 0.6s ease;
-}
+  /* ── FLAGGED FACTORS ────────────────────────────── */
+  .flags-section { text-align: left; margin-bottom: 24px; }
+  .flag-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5; font-size: 0.76rem; font-weight: 600;
+    padding: 6px 12px; border-radius: 50px; margin: 0 6px 8px 0;
+  }
+  .flag-chip.warn {
+    background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: #fcd34d;
+  }
+  .flag-chip i { font-size: 0.72rem; }
 
-/* BUTTONS */
+  .urgent-banner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.18), rgba(220,38,38,0.1));
+    border: 1px solid rgba(239,68,68,0.35);
+    border-radius: 14px; padding: 14px 18px; margin-bottom: 20px;
+    text-align: left; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .urgent-banner i { color: #f87171; font-size: 1.1rem; margin-top: 2px; }
+  .urgent-banner p { font-size: 0.84rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.6; }
 
-.option-btn{
-margin:10px;
-padding:12px 25px;
-border-radius:30px;
-font-weight:500;
-transition:0.3s;
-}
+  .disclaimer-note {
+    font-size: 0.72rem; color: rgba(255,255,255,0.4); text-align: left;
+    margin-bottom: 20px; line-height: 1.6; font-style: italic;
+  }
 
-.option-btn:hover{
-transform:translateY(-4px);
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-
-/* PROGRESS */
-
-.progress{
-height:10px;
-width:600px;
-max-width:90%;
-border-radius:20px;
-margin-bottom:25px;
-}
-
-/* RESULT */
-
-.result-card{
-background:white;
-padding:30px;
-border-radius:20px;
-margin-top:20px;
-width:600px;
-max-width:90%;
-text-align:center;
-
-box-shadow:0 20px 50px rgba(0,0,0,0.2);
-}
-
-/* AI LOADER */
-
-.loader{
-border:6px solid #f3f3f3;
-border-top:6px solid #2e5e57;
-border-radius:50%;
-width:60px;
-height:60px;
-animation:spin 1s linear infinite;
-margin:auto;
-margin-top:20px;
-}
-
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
-
-/* animation */
-
-@keyframes fadeSlide{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-.sidebar i{
-margin-right:10px;
-}
-
+  /* ── SCROLLBAR ──────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: var(--grad-main); border-radius: 6px; }
 </style>
-
 </head>
-
 <body>
 
-<div class="sidebar">
+<!-- NAVBAR -->
+<nav class="navbar-custom">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <a href="/home" class="navbar-brand-custom">
+        <div class="brand-icon"><i class="fas fa-dna"></i></div>
+        <div>
+          <span class="brand-text">CancerAI</span>
+          <span class="brand-sub">ASSISTANT</span>
+        </div>
+      </a>
+      <div class="d-flex align-items-center gap-1">
+        <a href="/dashboard" class="nav-link-custom"><i class="fa-solid fa-chart-line me-1"></i>Dashboard</a>
+        <a href="/chatbot" class="nav-link-custom"><i class="fa-solid fa-robot me-1"></i>Chatbot</a>
+        <a href="/hospitals" class="nav-link-custom"><i class="fa-solid fa-hospital me-1"></i>Hospitals</a>
+        <a href="/awareness" class="nav-link-custom"><i class="fa-solid fa-ribbon me-1"></i>Awareness</a>
+        <a href="/report-analyzer" class="nav-link-custom"><i class="fa-solid fa-file-medical me-1"></i>Reports</a>
+        <a href="/profile" class="btn-nav-primary ms-2"><i class="fa-solid fa-user me-1"></i>Profile</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
-<h5 class="text-center mb-4">Cancer AI</h5>
+<!-- PAGE CONTENT -->
+<div class="page-wrapper">
 
-<a href="/dashboard">
-<i class="fa-solid fa-chart-line"></i> Dashboard
-</a>
+  <div class="page-eyebrow"><span class="dot"></span> AI-Powered Risk Assessment</div>
+  <h1 class="page-title">Symptom <span class="grad">Analyzer</span></h1>
+  <p class="page-subtitle">Answer a few quick questions — our AI evaluates your risk profile instantly.</p>
 
-<a href="/chatbot">
-<i class="fa-solid fa-robot"></i> Chatbot
-</a>
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="progressLabel">Question 1 of 5</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+  </div>
 
-<a href="/hospitals">
-<i class="fa-solid fa-hospital"></i> Hospitals
-</a>
+  <!-- QUESTION CARD -->
+  <div class="question-card" id="questionCard">
+    <div class="q-step" id="qStep">Step 1</div>
+    <div class="q-text" id="question"></div>
+    <div class="options-grid" id="options"></div>
+  </div>
 
-<a href="/awareness">
-<i class="fa-solid fa-ribbon"></i> Awareness
-</a>
-
-<a href="/report-analyzer">
-<i class="fa-solid fa-file-medical"></i> Report Analyzer
-</a>
-
-<a href="/profile">
-<i class="fa-solid fa-user"></i> Profile
-</a>
+  <!-- RESULTS (hidden initially) -->
+  <div id="results"></div>
 
 </div>
-
-
-<div class="container">
-
-<h2>AI Symptom Analyzer</h2>
-
-<div class="progress">
-<div class="progress-bar bg-success" id="progressBar"></div>
-</div>
-
-<div class="question-card">
-
-<div id="question"></div>
-<div id="options"></div>
-
-</div>
-
-<div id="results"></div>
-
-</div>
-
 
 <script>
+// Each question maps to a category used for the breakdown shown in results.
+// Categories mirror common clinical "red flag" groupings rather than one flat score.
+const questions = [
+  // ── Demographics & history ──
+  { q: "What is your age group?", options: ["Below 30","30–45","45–60","Above 60"], key: "age", category: "demographics" },
+  { q: "Do you have a family history of cancer (parent or sibling)?", options: ["No","One relative","Multiple relatives"], key: "family_history", category: "demographics" },
+  { q: "Do you smoke, or have you smoked regularly in the past?", options: ["Never","Former smoker","Occasional","Regular / heavy"], key: "smoking", category: "lifestyle" },
+  { q: "How often do you consume alcohol?", options: ["Rarely / never","Occasionally","Frequently (most days)"], key: "alcohol", category: "lifestyle" },
 
-let questions=[
+  // ── Systemic / constitutional symptoms ──
+  { q: "Have you experienced unexplained weight loss recently?", options: ["No","Slight (1–3 kg)","Significant (5kg+ without trying)"], key: "weight_loss", category: "systemic" },
+  { q: "Do you feel persistent fatigue, even after resting?", options: ["No","Sometimes","Often, most days"], key: "fatigue", category: "systemic" },
+  { q: "Have you had unexplained fevers or night sweats?", options: ["No","Occasionally","Recurrent / nightly"], key: "fever_sweats", category: "systemic" },
 
-{q:"What is your age group?",options:["Below 30","30-45","45-60","Above 60"],key:"age"},
+  // ── Respiratory ──
+  { q: "Do you have a persistent cough?", options: ["No","Less than 3 weeks","More than 3 weeks"], key: "cough", category: "respiratory" },
+  { q: "Have you noticed blood when coughing, or unexplained breathlessness?", options: ["No","Mild breathlessness only","Blood in cough / severe breathlessness"], key: "cough_blood", category: "respiratory" },
 
-{q:"Do you smoke?",options:["No","Occasionally","Regularly"],key:"smoking"},
+  // ── Lumps / skin / structural ──
+  { q: "Have you noticed any new lump or swelling anywhere on your body?", options: ["No","Small, unchanged lump","Growing or hard lump"], key: "lump", category: "structural" },
+  { q: "Have any moles or skin spots changed in size, shape, or color?", options: ["No","Slight change","Noticeable change or new irregular spot"], key: "skin_change", category: "structural" },
 
-{q:"Have you experienced unexplained weight loss?",options:["No","Slight","Significant"],key:"weight_loss"},
+  // ── GI / urogenital ──
+  { q: "Have you had any unusual or unexplained bleeding (stool, urine, or other)?", options: ["No","Once, minor","Repeated or noticeable bleeding"], key: "bleeding", category: "gi_urogenital" },
+  { q: "Have you noticed changes in bowel or bladder habits lasting more than a few weeks?", options: ["No","Mild change","Persistent change"], key: "bowel_bladder", category: "gi_urogenital" },
+  { q: "Do you have difficulty or pain when swallowing?", options: ["No","Occasionally","Frequently / worsening"], key: "swallowing", category: "gi_urogenital" }
+];
 
-{q:"Do you have persistent cough?",options:["No","Few days","More than 3 weeks"],key:"cough"},
+const CATEGORY_META = {
+  demographics:   { label: "Demographics & History", icon: "fa-user-clock" },
+  lifestyle:      { label: "Lifestyle Risk Factors",  icon: "fa-smoking" },
+  systemic:       { label: "Systemic Symptoms",       icon: "fa-temperature-high" },
+  respiratory:    { label: "Respiratory Signs",       icon: "fa-lungs" },
+  structural:     { label: "Lumps & Skin Changes",    icon: "fa-circle-exclamation" },
+  gi_urogenital:  { label: "GI / Urogenital Signs",   icon: "fa-droplet" }
+};
 
-{q:"Do you feel chronic fatigue?",options:["No","Sometimes","Often"],key:"fatigue"}
+let answers = {};
+let current = 0;
 
-]
+function showQuestion() {
+  const q = questions[current];
 
-let answers={}
-let current=0
+  document.getElementById("qStep").textContent  = `Step ${current + 1}`;
+  document.getElementById("question").textContent = q.q;
 
-function showQuestion(){
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById("progressBar").style.width  = pct + "%";
+  document.getElementById("progressPct").textContent  = pct + "%";
+  document.getElementById("progressLabel").textContent = `Question ${current + 1} of ${questions.length}`;
 
-let q=questions[current]
+  let html = "";
+  q.options.forEach(opt => {
+    html += `<button class="option-btn" onclick="selectAnswer('${q.key}','${opt}')">${opt}</button>`;
+  });
+  document.getElementById("options").innerHTML = html;
 
-document.getElementById("question").innerHTML="<h5>"+q.q+"</h5>"
-
-let html=""
-
-q.options.forEach(opt=>{
-
-html+=`<button class="btn btn-outline-success option-btn"
-onclick="selectAnswer('${q.key}','${opt}')">${opt}</button>`
-
-})
-
-document.getElementById("options").innerHTML=html
-
-updateProgress()
-
+  // Re-trigger animation
+  const card = document.getElementById("questionCard");
+  card.style.animation = "none";
+  requestAnimationFrame(() => { card.style.animation = "fadeSlide 0.45s ease"; });
 }
 
-function selectAnswer(key,val){
-
-answers[key]=val
-current++
-
-if(current<questions.length){
-
-document.querySelector(".question-card").style.animation="fadeSlide 0.4s"
-
-showQuestion()
-
-}else{
-
-submitAnswers()
-
+function selectAnswer(key, val) {
+  answers[key] = val;
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    submitAnswers();
+  }
 }
 
+function submitAnswers() {
+  document.getElementById("progressBar").style.width = "100%";
+  document.getElementById("progressPct").textContent = "100%";
+  document.getElementById("progressLabel").textContent = `Question ${questions.length} of ${questions.length}`;
+
+  document.getElementById("questionCard").innerHTML = `
+    <div class="ai-loader-wrap">
+      <div class="spinner-ring"></div>
+      <p>AI is analysing your symptoms…</p>
+    </div>`;
+
+  setTimeout(() => {
+    fetch("/analyze_symptoms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(answers)
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("questionCard").style.display = "none";
+
+      let riskClass = "low";
+      if (data.risk > 40) riskClass = "medium";
+      if (data.risk > 70) riskClass = "high";
+
+      // ── Category breakdown bars ──
+      let breakdownHtml = "";
+      if (data.categories) {
+        Object.keys(data.categories).forEach(catKey => {
+          const cat = data.categories[catKey];
+          const meta = CATEGORY_META[catKey] || { label: catKey, icon: "fa-circle" };
+          let cls = "low";
+          if (cat.pct > 40) cls = "medium";
+          if (cat.pct > 70) cls = "high";
+          breakdownHtml += `
+            <div class="category-row">
+              <div class="category-row-top">
+                <span class="category-name"><i class="fa-solid ${meta.icon}"></i> ${meta.label}</span>
+                <span class="category-pct">${cat.pct}%</span>
+              </div>
+              <div class="category-track">
+                <div class="category-fill ${cls}" style="width:${cat.pct}%"></div>
+              </div>
+            </div>`;
+        });
+      }
+
+      // ── Flagged factors (chips) ──
+      let flagsHtml = "";
+      if (data.flags && data.flags.length) {
+        data.flags.forEach(f => {
+          const cls = f.level === "high" ? "" : "warn";
+          flagsHtml += `<span class="flag-chip ${cls}"><i class="fa-solid fa-triangle-exclamation"></i> ${f.text}</span>`;
+        });
+      }
+
+      // ── Urgent banner if escalation criteria met ──
+      let urgentHtml = "";
+      if (data.urgent) {
+        urgentHtml = `
+          <div class="urgent-banner">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <p>${data.urgent}</p>
+          </div>`;
+      }
+
+      document.getElementById("results").innerHTML = `
+        <div class="result-card">
+          <h4>🧬 Symptom Analysis Result</h4>
+
+          ${urgentHtml}
+
+          <div class="result-row">
+            <span class="label">Possible Concern Area</span>
+            <span class="value">${data.condition}</span>
+          </div>
+          <div class="result-row">
+            <span class="label">Severity</span>
+            <span class="value">${data.severity}</span>
+          </div>
+          <div class="result-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
+            <div style="display:flex;justify-content:space-between;width:100%;">
+              <span class="label">Overall Risk Score</span>
+              <span class="value">${data.risk}%</span>
+            </div>
+            <div class="risk-track" style="width:100%;">
+              <div class="risk-fill ${riskClass}" style="width:${data.risk}%"></div>
+            </div>
+          </div>
+
+          <div class="breakdown-section">
+            <div class="breakdown-title">Risk Breakdown by Category</div>
+            ${breakdownHtml}
+          </div>
+
+          ${flagsHtml ? `<div class="flags-section">${flagsHtml}</div>` : ""}
+
+          <div class="advice-box">
+            <p>${data.advice}</p>
+          </div>
+
+          <p class="disclaimer-note">
+            This tool offers a preliminary, educational risk indication based on patterns you've reported —
+            it is not a diagnosis. Only a qualified clinician with proper examination and tests can diagnose
+            any condition.
+          </p>
+
+          <button class="btn-restart" onclick="location.reload()">
+            <i class="fas fa-redo me-2"></i>Start Again
+          </button>
+        </div>`;
+    });
+  }, 1600);
 }
 
-function updateProgress(){
-
-let percent=(current/questions.length)*100
-
-document.getElementById("progressBar").style.width=percent+"%"
-
-}
-
-function submitAnswers(){
-
-document.querySelector(".question-card").innerHTML=
-
-`<h5>AI is analyzing your symptoms...</h5>
-<div class="loader"></div>`
-
-setTimeout(()=>{
-
-fetch("/analyze_symptoms",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(answers)
-
-})
-.then(res=>res.json())
-.then(data=>{
-
-document.querySelector(".question-card").style.display="none"
-
-/* risk color logic */
-
-let color="bg-success"
-
-if(data.risk>40) color="bg-warning"
-if(data.risk>70) color="bg-danger"
-
-document.getElementById("results").innerHTML=
-
-`<div class="result-card">
-
-<h4>Symptom Analysis Result</h4>
-
-<p><b>Possible Condition:</b> ${data.condition}</p>
-
-<p><b>Risk Level:</b> ${data.risk}%</p>
-
-<div class="progress mb-3">
-<div class="progress-bar ${color}" style="width:${data.risk}%"></div>
-</div>
-
-<p><b>Severity:</b> ${data.severity}</p>
-
-<p>${data.advice}</p>
-
-<button class="btn btn-success mt-3" onclick="location.reload()">
-Start Again
-</button>
-
-</div>`
-
-})
-
-},1500)
-
-}
-
-showQuestion()
-
+showQuestion();
 </script>
-
 </body>
 </html>

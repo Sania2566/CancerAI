@@ -1,0 +1,3200 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cancer AI Assistant — Early Detection Powered by AI</title>
+
+  <!-- SEO &amp; Social Meta -->
+  <meta name="description" content="AI-powered cancer risk prediction, medical report analysis, hospital finding, and healthcare assistance. Early detection saves lives."/>
+  <meta property="og:title" content="Cancer AI Assistant — Early Detection Powered by AI"/>
+  <meta property="og:description" content="AI-powered cancer risk prediction, medical report analysis, hospital finding, and healthcare assistance."/>
+  <meta property="og:url" content="https://www.Cancer.ai"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Cancer.ai"/>
+  <meta property="og:image" content="https://cdn-ai.Cancer.ai/onspace/project/screenshot/online/pre-site/9b0rn0.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Cancer AI Assistant — Early Detection Powered by AI"/>
+  <meta name="twitter:description" content="AI-powered cancer risk prediction, medical report analysis, hospital finding, and healthcare assistance."/>
+  <meta name="twitter:image" content="https://cdn-ai.Cancer.ai/onspace/project/screenshot/online/pre-site/9b0rn0.jpg"/>
+  <meta name="twitter:url" content="https://www.Cancer.ai"/>
+
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&amp;display=swap" rel="stylesheet"/>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    /* =========================================================
+       ROOT VARIABLES & BASE
+    ========================================================= */
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --purple: #7c3aed;
+      --purple-light: #a855f7;
+      --grad-main: linear-gradient(135deg, #2563eb 0%, #0d9488 50%, #7c3aed 100%);
+      --grad-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+      --grad-card: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(13,148,136,0.10) 100%);
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.18);
+      --glass-bg-light: rgba(255,255,255,0.72);
+      --glass-border-light: rgba(255,255,255,0.9);
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --surface: #f8fafc;
+      --radius: 20px;
+      --radius-sm: 12px;
+      --shadow-glow-blue: 0 0 40px rgba(37,99,235,0.3);
+      --shadow-glow-teal: 0 0 40px rgba(13,148,136,0.3);
+      --shadow-card: 0 20px 60px rgba(15,23,42,0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #ffffff;
+      color: var(--text-dark);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       PAGE ROUTER
+    ========================================================= */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* =========================================================
+       SCROLLBAR
+    ========================================================= */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: var(--grad-main); border-radius: 6px; }
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+    .navbar-custom {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(37,99,235,0.08);
+      box-shadow: 0 4px 30px rgba(15,23,42,0.07);
+      padding: 14px 0;
+      transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-custom.scrolled {
+      padding: 10px 0;
+      box-shadow: 0 8px 40px rgba(15,23,42,0.13);
+    }
+
+    .navbar-brand-custom {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--grad-main);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-glow-blue);
+    }
+
+    .brand-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: block;
+      letter-spacing: 0.08em;
+      -webkit-text-fill-color: var(--text-muted);
+    }
+
+    .nav-link-custom {
+      color: var(--text-dark) !important;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 8px 14px !important;
+      border-radius: 8px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .nav-link-custom::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: calc(100% - 28px);
+      height: 2px;
+      background: var(--grad-main);
+      border-radius: 2px;
+      transition: transform 0.25s ease;
+    }
+
+    .nav-link-custom:hover::after { transform: translateX(-50%) scaleX(1); }
+    .nav-link-custom:hover { color: var(--primary) !important; }
+
+    .btn-nav-login {
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      color: var(--primary) !important;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 8px 20px !important;
+      transition: all 0.25s ease;
+    }
+
+    .btn-nav-login:hover {
+      background: var(--primary);
+      color: white !important;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+    }
+
+    .btn-nav-signup {
+      background: var(--grad-main);
+      color: white !important;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 8px 20px !important;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+    }
+
+    .btn-nav-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37,99,235,0.4);
+    }
+
+    .navbar-toggler-custom {
+      border: 1.5px solid var(--primary);
+      border-radius: 8px;
+      padding: 6px 10px;
+      background: transparent;
+    }
+
+    .navbar-toggler-custom .bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--primary);
+      margin: 4px 0;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+    .hero-section {
+      background: var(--grad-hero);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 80px 0 60px;
+    }
+
+    /* Glow orbs */
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.35) 0%, transparent 70%);
+      top: -100px;
+      left: -150px;
+      border-radius: 50%;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
+      bottom: -100px;
+      right: -100px;
+      border-radius: 50%;
+      animation: floatOrb 10s ease-in-out infinite reverse;
+    }
+
+    .hero-glow-teal {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(13,148,136,0.25) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(30px) scale(1.05); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37,99,235,0.2);
+      border: 1px solid rgba(37,99,235,0.4);
+      color: #93c5fd;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      background: #22d3ee;
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title .gradient-word {
+      background: linear-gradient(90deg, #60a5fa, #34d399, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin-bottom: 36px;
+      line-height: 1.8;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 50px;
+    }
+
+    .btn-hero-primary {
+      background: linear-gradient(135deg, #2563eb, #0d9488);
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 14px 32px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(37,99,235,0.5);
+      color: white;
+    }
+
+    .btn-hero-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 32px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-3px);
+      color: white;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+    }
+
+    .hero-stat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #60a5fa;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-stat-num {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card-main {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      padding: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .hero-card-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .waveform-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 60px;
+      margin-bottom: 16px;
+    }
+
+    .waveform-bar span {
+      width: 8px;
+      background: linear-gradient(to top, #2563eb, #0d9488);
+      border-radius: 4px;
+      animation: wave 1.2s ease-in-out infinite;
+    }
+
+    .waveform-bar span:nth-child(2) { animation-delay: 0.1s; }
+    .waveform-bar span:nth-child(3) { animation-delay: 0.2s; }
+    .waveform-bar span:nth-child(4) { animation-delay: 0.3s; }
+    .waveform-bar span:nth-child(5) { animation-delay: 0.4s; }
+    .waveform-bar span:nth-child(6) { animation-delay: 0.5s; }
+    .waveform-bar span:nth-child(7) { animation-delay: 0.6s; }
+    .waveform-bar span:nth-child(8) { animation-delay: 0.3s; }
+    .waveform-bar span:nth-child(9) { animation-delay: 0.15s; }
+    .waveform-bar span:nth-child(10) { animation-delay: 0.45s; }
+
+    @keyframes wave {
+      0%, 100% { height: 20px; }
+      50% { height: 55px; }
+    }
+
+    .risk-meter {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .risk-bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .risk-bar-fill {
+      height: 100%;
+      border-radius: 20px;
+      animation: fillBar 2.5s ease-in-out forwards;
+    }
+
+    @keyframes fillBar {
+      from { width: 0; }
+    }
+
+    .floating-badge {
+      position: absolute;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: floatBadge 4s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .fb-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       SECTION HELPERS
+    ========================================================= */
+    .section-pad { padding: 90px 0; }
+    .section-pad-sm { padding: 60px 0; }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #2563eb, #0d9488);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    /* =========================================================
+       FEATURES SECTION
+    ========================================================= */
+    .features-section {
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .features-section::before {
+      content: '';
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 60%);
+      top: -200px;
+      right: -200px;
+      border-radius: 50%;
+    }
+
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid rgba(37,99,235,0.08);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+      cursor: default;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--grad-card);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      border-radius: var(--radius);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-card);
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.35s ease;
+    }
+
+    .feature-card:hover .feature-icon-wrap { transform: scale(1.1) rotate(5deg); }
+
+    .fi-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #2563eb; }
+    .fi-teal { background: linear-gradient(135deg, #ccfbf1, #99f6e4); color: #0d9488; }
+    .fi-purple { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #7c3aed; }
+    .fi-rose { background: linear-gradient(135deg, #ffe4e6, #fecdd3); color: #e11d48; }
+    .fi-amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; }
+    .fi-indigo { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 16px;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+      transition: gap 0.25s ease;
+    }
+
+    .feature-link:hover { gap: 10px; }
+
+    /* =========================================================
+       STATS SECTION
+    ========================================================= */
+    .stats-section {
+      background: var(--grad-hero);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #60a5fa;
+      margin: 0 auto 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-number {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* =========================================================
+       HOW IT WORKS
+    ========================================================= */
+    .hiw-step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 36px;
+      padding: 28px;
+      background: white;
+      border: 1px solid rgba(37,99,235,0.08);
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+    }
+
+    .hiw-step:hover {
+      transform: translateX(8px);
+      box-shadow: var(--shadow-card);
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    .hiw-step-num {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--grad-main);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+    }
+
+    .hiw-step-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .hiw-step-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* HIW visual */
+    .hiw-visual {
+      background: linear-gradient(135deg, #eff6ff, #f0fdfa);
+      border-radius: 28px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(37,99,235,0.1);
+    }
+
+    .hiw-circle-outer {
+      width: 220px;
+      height: 220px;
+      border: 2px dashed rgba(37,99,235,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      animation: rotateSlow 20s linear infinite;
+    }
+
+    @keyframes rotateSlow {
+      to { transform: rotate(360deg); }
+    }
+
+    .hiw-circle-inner {
+      width: 140px;
+      height: 140px;
+      background: var(--grad-main);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      animation: rotateSlow 20s linear infinite reverse;
+      box-shadow: 0 20px 50px rgba(37,99,235,0.4);
+    }
+
+    /* =========================================================
+       AWARENESS BANNER
+    ========================================================= */
+    .awareness-section {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .awareness-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 120%, rgba(13,148,136,0.25) 0%, transparent 70%);
+    }
+
+    .ribbon-badge {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 50px;
+      display: inline-block;
+      margin-bottom: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(244,63,94,0.4);
+    }
+
+    .awareness-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .awareness-card:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-4px);
+    }
+
+    .awareness-card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .awareness-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .awareness-card-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* =========================================================
+       TESTIMONIALS
+    ========================================================= */
+    .testimonials-section { background: var(--surface); }
+
+    .testi-card {
+      background: white;
+      border: 1px solid rgba(37,99,235,0.08);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: all 0.35s ease;
+      height: 100%;
+    }
+
+    .testi-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-card);
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    .testi-stars { color: #fbbf24; font-size: 0.95rem; margin-bottom: 16px; }
+
+    .testi-text {
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .testi-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--grad-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .testi-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .testi-role {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .quote-icon {
+      font-size: 3rem;
+      color: rgba(37,99,235,0.1);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .footer {
+      background: #0f172a;
+      color: rgba(255,255,255,0.7);
+      padding: 70px 0 0;
+    }
+
+    .footer-brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .footer-desc {
+      font-size: 0.87rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      max-width: 280px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 10px;
+    }
+
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+    }
+
+    .social-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .footer-heading {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.87rem;
+      margin-bottom: 10px;
+      transition: all 0.25s ease;
+    }
+
+    .footer-link:hover { color: #60a5fa; padding-left: 4px; }
+    .footer-link::before { content: '→'; font-size: 0.75rem; opacity: 0; transition: opacity 0.2s; }
+    .footer-link:hover::before { opacity: 1; }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.87rem;
+      margin-bottom: 14px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .footer-contact-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(37,99,235,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #60a5fa;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 20px 0;
+      margin-top: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-bottom p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      margin: 0;
+    }
+
+    /* =========================================================
+       AUTH PAGES
+    ========================================================= */
+    .auth-page {
+      min-height: 100vh;
+      background: var(--grad-hero);
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-page::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 60%);
+      top: -200px;
+      left: -200px;
+      border-radius: 50%;
+    }
+
+    .auth-page::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 60%);
+      bottom: -150px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .auth-left {
+      width: 45%;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-right {
+      width: 55%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-illustration {
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .auth-illustration-svg {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .auth-left-title {
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .auth-left-desc {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .auth-feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .auth-feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 12px;
+    }
+
+    .auth-feature-list li .check {
+      width: 22px;
+      height: 22px;
+      background: rgba(52,211,153,0.2);
+      border: 1px solid rgba(52,211,153,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .auth-card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 40px 100px rgba(15,23,42,0.3);
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-card-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .auth-card-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .auth-card-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .form-label-custom {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-input-custom {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      background: white;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .form-input-custom:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+    }
+
+    .form-input-custom.error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.1);
+    }
+
+    .form-input-custom.success {
+      border-color: #10b981;
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.1);
+    }
+
+    .form-error {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-error.visible { display: block; }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .input-icon-right {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .input-icon-right:hover { color: var(--primary); }
+
+    .has-icon-left .form-input-custom { padding-left: 42px; }
+    .has-icon-right .form-input-custom { padding-right: 42px; }
+
+    .form-group-custom { margin-bottom: 18px; }
+
+    .btn-auth-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--grad-main);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(37,99,235,0.35);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-auth-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(37,99,235,0.45);
+    }
+
+    .btn-auth-primary:active { transform: translateY(0); }
+
+    .btn-google {
+      width: 100%;
+      padding: 13px;
+      background: white;
+      color: var(--text-dark);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn-google:hover {
+      border-color: #4285f4;
+      box-shadow: 0 4px 15px rgba(66,133,244,0.15);
+      transform: translateY(-2px);
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .auth-divider span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .custom-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .custom-checkbox input { display: none; }
+
+    .custom-checkbox .box {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      background: white;
+      flex-shrink: 0;
+    }
+
+    .custom-checkbox input:checked + .box {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .custom-checkbox input:checked + .box::after {
+      content: '✓';
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .forgot-link {
+      font-size: 0.85rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .forgot-link:hover { text-decoration: underline; }
+
+    .auth-switch-text {
+      text-align: center;
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .auth-switch-link {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .auth-switch-link:hover { text-decoration: underline; }
+
+    /* Password strength */
+    .password-strength {
+      margin-top: 8px;
+    }
+
+    .strength-bar {
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: all 0.4s ease;
+      width: 0;
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Strength colors */
+    .strength-weak .strength-fill { width: 25%; background: #ef4444; }
+    .strength-fair .strength-fill { width: 50%; background: #f97316; }
+    .strength-good .strength-fill { width: 75%; background: #eab308; }
+    .strength-strong .strength-fill { width: 100%; background: #22c55e; }
+
+    .strength-weak .strength-text { color: #ef4444; }
+    .strength-fair .strength-text { color: #f97316; }
+    .strength-good .strength-text { color: #eab308; }
+    .strength-strong .strength-text { color: #22c55e; }
+
+    /* Terms */
+    .terms-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+    }
+
+    .terms-row a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .terms-row a:hover { text-decoration: underline; }
+
+    /* Success overlay */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .success-card {
+      background: white;
+      border-radius: 28px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: bounceIn 0.5s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2rem;
+      color: #16a34a;
+    }
+
+    .success-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .success-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    /* =========================================================
+       BACK BUTTON
+    ========================================================= */
+    .back-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 52px;
+      height: 52px;
+      background: var(--grad-main);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 8px 25px rgba(37,99,235,0.4);
+      transition: all 0.3s ease;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn.visible { display: flex; }
+    .back-btn:hover { transform: translateY(-3px) scale(1.05); }
+
+    /* =========================================================
+       SCROLL TO TOP
+    ========================================================= */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 46px;
+      height: 46px;
+      background: var(--grad-main);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 998;
+      box-shadow: 0 8px 25px rgba(37,99,235,0.4);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scroll-top.visible { opacity: 1; pointer-events: all; }
+    .scroll-top:hover { transform: translateY(-3px); }
+
+    /* =========================================================
+       ANIMATIONS
+    ========================================================= */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-left {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .fade-right {
+      opacity: 0;
+      transform: translateX(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
+    .delay-300 { transition-delay: 0.3s; }
+    .delay-400 { transition-delay: 0.4s; }
+    .delay-500 { transition-delay: 0.5s; }
+
+    /* =========================================================
+       UTILITIES & RESPONSIVE
+    ========================================================= */
+    .gradient-text {
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 991px) {
+      .auth-left { display: none; }
+      .auth-right { width: 100%; padding: 24px 20px; }
+      .auth-card { padding: 36px 28px; }
+    }
+
+    @media (max-width: 767px) {
+      .section-pad { padding: 60px 0; }
+      .hero-cta-group { flex-direction: column; align-items: flex-start; }
+      .hero-stats-row { gap: 18px; }
+      .hiw-step { flex-direction: column; gap: 16px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .waveform-bar span:nth-child(n+9) { display: none; }
+    }
+
+    @media (max-width: 576px) {
+      .auth-card { padding: 28px 20px; border-radius: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+  PAGE: HOME
+================================================================ -->
+<div id="page-home" class="page active">
+
+  <!-- NAVBAR -->
+  <nav class="navbar-custom" id="mainNavbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between w-100">
+
+        <!-- Brand -->
+        <a href="#" class="navbar-brand-custom" onclick="showPage('home')" aria-label="Cancer AI Assistant Home">
+          <div class="brand-icon" aria-hidden="true"><i class="fas fa-dna"></i></div>
+          <div>
+            <span class="brand-text">CancerAI</span>
+            <span class="brand-sub">ASSISTANT</span>
+          </div>
+        </a>
+
+        <!-- Hamburger (mobile) -->
+        <button class="navbar-toggler-custom d-lg-none" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+
+        <!-- Nav Links -->
+        <div class="d-none d-lg-flex align-items-center gap-2" id="navMenu" role="menubar">
+          <a href="#home" class="nav-link-custom" role="menuitem">Home</a>
+          <a href="#features" class="nav-link-custom" role="menuitem">Features</a>
+          <a href="#awareness" class="nav-link-custom" role="menuitem">Awareness</a>
+          <a href="#about" class="nav-link-custom" role="menuitem">About</a>
+          <a href="#contact" class="nav-link-custom" role="menuitem">Contact</a>
+          <div class="ms-2 d-flex gap-2">
+           <button class="btn-nav-login" onclick="showPage('login')">
+    Login
+</button>
+            <button class="btn-nav-signup" onclick="showPage('signup')" aria-label="Create new account">Sign Up</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="d-lg-none mt-3 pb-2" id="mobileMenu" style="display:none!important;" role="menu">
+        <div class="d-flex flex-column gap-1">
+          <a href="#home" class="nav-link-custom" role="menuitem">Home</a>
+          <a href="#features" class="nav-link-custom" role="menuitem">Features</a>
+          <a href="#awareness" class="nav-link-custom" role="menuitem">Awareness</a>
+          <a href="#about" class="nav-link-custom" role="menuitem">About</a>
+          <a href="#contact" class="nav-link-custom" role="menuitem">Contact</a>
+          <div class="d-flex gap-2 mt-2">
+            <button class="btn-nav-login flex-fill" onclick="showPage('login')">Login</button>
+            <button class="btn-nav-signup flex-fill" onclick="showPage('signup')">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-section" id="home" aria-label="Hero section">
+    <div class="hero-glow-teal" aria-hidden="true"></div>
+    <div class="container position-relative" style="z-index:1;">
+      <div class="row align-items-center g-5">
+
+        <!-- Left Content -->
+        <div class="col-lg-6">
+          <div class="hero-badge" role="status" aria-live="polite">
+            <span class="dot" aria-hidden="true"></span>
+            AI-Powered Healthcare Platform
+          </div>
+
+          <h1 class="hero-title">
+            Early Cancer Detection<br/>
+            <span class="gradient-word">Powered by AI</span>
+          </h1>
+
+          <p class="hero-desc">
+            Harness the power of artificial intelligence for cancer risk prediction,
+            intelligent medical report analysis, personalized hospital recommendations,
+            and 24/7 AI health assistance — all in one trusted platform.
+          </p>
+
+          <div class="hero-cta-group">
+            <button class="btn-hero-primary" onclick="showPage('signup')" aria-label="Get started for free">
+              <i class="fas fa-rocket" aria-hidden="true"></i>
+              Get Started Free
+            </button>
+            <a href="#features" class="btn-hero-secondary" aria-label="Watch demo video">
+              <i class="fas fa-play-circle" aria-hidden="true"></i>
+              Explore Features
+            </a>
+          </div>
+
+          <div class="hero-stats-row" role="list" aria-label="Key statistics">
+            <div class="hero-stat" role="listitem">
+              <div class="hero-stat-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="hero-stat-num">50K+</div>
+                <div class="hero-stat-label">Active Users</div>
+              </div>
+            </div>
+            <div class="hero-stat" role="listitem">
+              <div class="hero-stat-icon" aria-hidden="true"><i class="fas fa-bullseye"></i></div>
+              <div>
+                <div class="hero-stat-num">97.4%</div>
+                <div class="hero-stat-label">Accuracy</div>
+              </div>
+            </div>
+            <div class="hero-stat" role="listitem">
+              <div class="hero-stat-icon" aria-hidden="true"><i class="fas fa-hospital"></i></div>
+              <div>
+                <div class="hero-stat-num">2,800+</div>
+                <div class="hero-stat-label">Hospitals Listed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual -->
+        <div class="col-lg-6">
+          <div class="hero-visual" role="img" aria-label="AI cancer detection interface preview">
+
+            <!-- Main Card -->
+            <div class="hero-card-main">
+              <div class="hero-card-header">
+                <div class="hero-card-dot" style="background:#ef4444;" aria-hidden="true"></div>
+                <div class="hero-card-dot" style="background:#f59e0b;" aria-hidden="true"></div>
+                <div class="hero-card-dot" style="background:#22c55e;" aria-hidden="true"></div>
+                <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin-left:auto;">CancerAI Analysis</span>
+              </div>
+
+              <div class="waveform-bar" aria-hidden="true">
+                <span style="height:25px;"></span>
+                <span style="height:40px;"></span>
+                <span style="height:35px;"></span>
+                <span style="height:52px;"></span>
+                <span style="height:28px;"></span>
+                <span style="height:48px;"></span>
+                <span style="height:32px;"></span>
+                <span style="height:44px;"></span>
+                <span style="height:20px;"></span>
+                <span style="height:36px;"></span>
+              </div>
+
+              <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-bottom:16px;">Risk Assessment Analysis</p>
+
+              <div class="risk-meter" role="region" aria-label="Risk meter results">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;">Breast Cancer Risk</span>
+                  <span style="color:#34d399;font-size:0.82rem;font-weight:700;">Low — 8.2%</span>
+                </div>
+                <div class="risk-bar-bg">
+                  <div class="risk-bar-fill" style="width:8%;background:linear-gradient(90deg,#34d399,#10b981);"></div>
+                </div>
+              </div>
+
+              <div class="risk-meter">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span style="color:rgba(255,255,255,0.7);font-size:0.82rem;">Lung Cancer Risk</span>
+                  <span style="color:#fbbf24;font-size:0.82rem;font-weight:700;">Moderate — 34%</span>
+                </div>
+                <div class="risk-bar-bg">
+                  <div class="risk-bar-fill" style="width:34%;background:linear-gradient(90deg,#fbbf24,#f97316);animation-delay:0.3s;"></div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-10 mt-3">
+                <div style="width:32px;height:32px;background:rgba(37,99,235,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#60a5fa;font-size:0.8rem;" aria-hidden="true">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <span style="color:rgba(255,255,255,0.6);font-size:0.78rem;margin-left:10px;">AI model confidence: <strong style="color:#34d399;">High (97.4%)</strong></span>
+              </div>
+            </div>
+
+            <!-- Floating Badge 1 -->
+            <div class="floating-badge" style="top:-20px;right:20px;" aria-label="Hospital nearby notification">
+              <div class="fb-icon" style="background:rgba(13,148,136,0.2);color:#34d399;" aria-hidden="true">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div>
+                <div style="color:white;font-size:0.8rem;font-weight:700;">Nearby Hospital</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:0.72rem;">0.8 km away • 4.9 ★</div>
+              </div>
+            </div>
+
+            <!-- Floating Badge 2 -->
+            <div class="floating-badge" style="bottom:-15px;left:15px;animation-delay:2s;" aria-label="AI scan complete notification">
+              <div class="fb-icon" style="background:rgba(124,58,237,0.2);color:#a78bfa;" aria-hidden="true">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div>
+                <div style="color:white;font-size:0.8rem;font-weight:700;">Scan Complete</div>
+                <div style="color:rgba(255,255,255,0.6);font-size:0.72rem;">Report ready in 2 mins</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section section-pad" id="features" aria-label="Features section">
+    <div class="container">
+      <div class="text-center mb-5 fade-up">
+        <div class="section-label"><i class="fas fa-star" aria-hidden="true"></i> Our Features</div>
+        <h2 class="section-title">Everything You Need for<br/><span class="gradient-text">Smarter Cancer Care</span></h2>
+        <p class="section-desc mx-auto">
+          Advanced AI capabilities designed to empower patients, caregivers, and healthcare professionals with intelligent tools for early detection and ongoing support.
+        </p>
+      </div>
+
+      <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4 fade-up delay-100">
+          <div class="feature-card" role="article" aria-label="Cancer Risk Prediction feature">
+            <div class="feature-icon-wrap fi-blue" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
+            <h3 class="feature-title">Cancer Risk Prediction</h3>
+            <p class="feature-desc">
+              Input your health data, lifestyle factors, and family history. Our AI model delivers a personalized risk score for 15+ types of cancer.
+            </p>
+            <a href="#" class="feature-link" onclick="showPage('signup');return false;">
+              Try Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-200">
+          <div class="feature-card" role="article" aria-label="Medical Report Analyzer feature">
+            <div class="feature-icon-wrap fi-teal" aria-hidden="true"><i class="fas fa-file-medical-alt"></i></div>
+            <h3 class="feature-title">Medical Report Analyzer</h3>
+            <p class="feature-desc">
+              Upload scans, lab reports, or pathology results. Our AI reads, summarizes, and explains findings in plain, understandable language.
+            </p>
+            <a href="#" class="feature-link" onclick="showPage('signup');return false;">
+              Try Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-300">
+          <div class="feature-card" role="article" aria-label="AI Health Assistant feature">
+            <div class="feature-icon-wrap fi-purple" aria-hidden="true"><i class="fas fa-robot"></i></div>
+            <h3 class="feature-title">AI Health Assistant</h3>
+            <p class="feature-desc">
+              Chat 24/7 with our intelligent AI for symptom guidance, post-treatment advice, medication reminders, and emotional support.
+            </p>
+            <a href="#" class="feature-link" onclick="showPage('signup');return false;">
+              Try Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-100">
+          <div class="feature-card" role="article" aria-label="Hospital Finder feature">
+            <div class="feature-icon-wrap fi-rose" aria-hidden="true"><i class="fas fa-hospital-symbol"></i></div>
+            <h3 class="feature-title">Hospital Finder</h3>
+            <p class="feature-desc">
+              Locate top-rated oncology centers and cancer specialists near you. Compare ratings, facilities, insurance coverage, and appointment availability.
+            </p>
+            <a href="#" class="feature-link" onclick="showPage('signup');return false;">
+              Find Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-200">
+          <div class="feature-card" role="article" aria-label="Patient Dashboard feature">
+            <div class="feature-icon-wrap fi-amber" aria-hidden="true"><i class="fas fa-tachometer-alt"></i></div>
+            <h3 class="feature-title">Patient Dashboard</h3>
+            <p class="feature-desc">
+              Track your health journey, monitor risk trends over time, manage appointments, and store all your medical records securely in one place.
+            </p>
+            <a href="#" class="feature-link" onclick="showPage('signup');return false;">
+              Dashboard <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-300">
+          <div class="feature-card" role="article" aria-label="Cancer Awareness feature">
+            <div class="feature-icon-wrap fi-indigo" aria-hidden="true"><i class="fas fa-ribbon"></i></div>
+            <h3 class="feature-title">Cancer Awareness Hub</h3>
+            <p class="feature-desc">
+              Access curated, evidence-based articles, prevention guides, early warning signs, and the latest cancer research — all in one educational hub.
+            </p>
+            <a href="#awareness" class="feature-link">
+              Learn More <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section section-pad-sm" aria-label="Platform statistics">
+    <div class="container">
+      <div class="row g-0">
+
+        <div class="col-6 col-lg-3">
+          <div class="stat-card fade-up" role="figure" aria-label="50,000 plus active users">
+            <div class="stat-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+            <div class="stat-number" data-target="50000">0</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <div class="stat-card fade-up delay-100" role="figure" aria-label="97.4 percent prediction accuracy">
+            <div class="stat-icon" aria-hidden="true"><i class="fas fa-bullseye"></i></div>
+            <div class="stat-number" data-target="97" data-suffix=".4%">0</div>
+            <div class="stat-label">Prediction Accuracy</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <div class="stat-card fade-up delay-200" role="figure" aria-label="2800 plus hospitals listed">
+            <div class="stat-icon" aria-hidden="true"><i class="fas fa-hospital"></i></div>
+            <div class="stat-number" data-target="2800">0</div>
+            <div class="stat-label">Hospitals Listed</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <div class="stat-card fade-up delay-300" role="figure" aria-label="24/7 support availability">
+            <div class="stat-icon" aria-hidden="true"><i class="fas fa-headset"></i></div>
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Support Availability</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section-pad" id="about" aria-label="How it works section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+
+        <!-- Steps -->
+        <div class="col-lg-6">
+          <div class="fade-left mb-4">
+            <div class="section-label"><i class="fas fa-cogs" aria-hidden="true"></i> How It Works</div>
+            <h2 class="section-title">Get Started in<br/><span class="gradient-text">3 Simple Steps</span></h2>
+          </div>
+
+          <div class="hiw-step fade-left delay-100" role="article">
+            <div class="hiw-step-num" aria-hidden="true">01</div>
+            <div>
+              <h3 class="hiw-step-title">Create Your Free Account</h3>
+              <p class="hiw-step-desc">
+                Sign up in under 60 seconds with your email or Google account. Your data is encrypted and HIPAA-compliant from day one.
+              </p>
+            </div>
+          </div>
+
+          <div class="hiw-step fade-left delay-200" role="article">
+            <div class="hiw-step-num" aria-hidden="true">02</div>
+            <div>
+              <h3 class="hiw-step-title">Complete Your Health Profile</h3>
+              <p class="hiw-step-desc">
+                Enter your age, medical history, lifestyle habits, and family history. The more detail, the more accurate your AI risk assessment.
+              </p>
+            </div>
+          </div>
+
+          <div class="hiw-step fade-left delay-300" role="article">
+            <div class="hiw-step-num" aria-hidden="true">03</div>
+            <div>
+              <h3 class="hiw-step-title">Receive AI Analysis &amp; Act</h3>
+              <p class="hiw-step-desc">
+                Get your personalized cancer risk report, tailored recommendations, nearby specialist matches, and ongoing AI health support.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual -->
+        <div class="col-lg-6 fade-right" aria-hidden="true">
+          <div class="hiw-visual">
+            <div class="hiw-circle-outer">
+              <div class="hiw-circle-inner">
+                <i class="fas fa-dna"></i>
+              </div>
+            </div>
+
+            <div class="row g-3 mt-4">
+              <div class="col-4">
+                <div class="text-center p-3" style="background:white;border-radius:16px;border:1px solid rgba(37,99,235,0.1);">
+                  <div style="font-size:1.5rem;margin-bottom:6px;" aria-hidden="true">🧬</div>
+                  <div style="font-size:0.78rem;font-weight:600;color:var(--text-dark);">DNA Analysis</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="text-center p-3" style="background:white;border-radius:16px;border:1px solid rgba(13,148,136,0.1);">
+                  <div style="font-size:1.5rem;margin-bottom:6px;" aria-hidden="true">🔬</div>
+                  <div style="font-size:0.78rem;font-weight:600;color:var(--text-dark);">Lab Reports</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="text-center p-3" style="background:white;border-radius:16px;border:1px solid rgba(124,58,237,0.1);">
+                  <div style="font-size:1.5rem;margin-bottom:6px;" aria-hidden="true">🏥</div>
+                  <div style="font-size:0.78rem;font-weight:600;color:var(--text-dark);">Find Hospital</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background:var(--grad-main);border-radius:16px;padding:20px;margin-top:16px;color:white;text-align:center;">
+              <div style="font-size:0.85rem;font-weight:700;margin-bottom:4px;">AI Confidence Score</div>
+              <div style="font-size:2rem;font-weight:800;">97.4%</div>
+              <div style="font-size:0.75rem;opacity:0.8;">Based on clinical validation studies</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- AWARENESS BANNER -->
+  <section class="awareness-section section-pad" id="awareness" aria-label="Cancer awareness section">
+    <div class="container position-relative" style="z-index:1;">
+
+      <div class="text-center mb-5 fade-up">
+        <span class="ribbon-badge">
+          <i class="fas fa-ribbon" aria-hidden="true"></i> Cancer Awareness
+        </span>
+        <h2 class="section-title" style="color:white;">
+          Early Detection <span style="background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Saves Lives</span>
+        </h2>
+        <p class="section-desc mx-auto" style="color:rgba(255,255,255,0.7);">
+          Knowledge is your most powerful weapon. Understand the signs, risk factors, and preventive measures for the most common types of cancer.
+        </p>
+      </div>
+
+      <div class="row g-4">
+
+        <div class="col-md-6 col-lg-3 fade-up delay-100">
+          <div class="awareness-card" role="article" aria-label="Breast Cancer awareness card">
+            <div class="awareness-card-icon" aria-hidden="true">🎀</div>
+            <h3 class="awareness-card-title">Breast Cancer</h3>
+            <p class="awareness-card-desc">1 in 8 women will be diagnosed with breast cancer. Monthly self-exams and annual mammograms after 40 are essential for early detection.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade-up delay-200">
+          <div class="awareness-card" role="article" aria-label="Lung Cancer awareness card">
+            <div class="awareness-card-icon" aria-hidden="true">🫁</div>
+            <h3 class="awareness-card-title">Lung Cancer</h3>
+            <p class="awareness-card-desc">Lung cancer is the leading cause of cancer death. Quit smoking, avoid secondhand smoke, and test your home for radon to reduce your risk significantly.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade-up delay-300">
+          <div class="awareness-card" role="article" aria-label="Colorectal Cancer awareness card">
+            <div class="awareness-card-icon" aria-hidden="true">🩺</div>
+            <h3 class="awareness-card-title">Colorectal Cancer</h3>
+            <p class="awareness-card-desc">Regular colonoscopies starting at age 45 can catch and remove precancerous polyps early. A healthy diet high in fiber dramatically lowers risk.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade-up delay-400">
+          <div class="awareness-card" role="article" aria-label="Skin Cancer awareness card">
+            <div class="awareness-card-icon" aria-hidden="true">☀️</div>
+            <h3 class="awareness-card-title">Skin Cancer</h3>
+            <p class="awareness-card-desc">The most common cancer globally. Applying SPF 30+ daily, wearing protective clothing, and getting yearly skin checks can reduce your risk by 80%.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-5 fade-up">
+        <button class="btn-hero-primary" onclick="showPage('signup')" aria-label="Check your cancer risk now">
+          <i class="fas fa-shield-alt" aria-hidden="true"></i>
+          Check Your Risk Now — It&#39;s Free
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section section-pad" aria-label="Testimonials section">
+    <div class="container">
+
+      <div class="text-center mb-5 fade-up">
+        <div class="section-label"><i class="fas fa-heart" aria-hidden="true"></i> Testimonials</div>
+        <h2 class="section-title">Real Stories,<br/><span class="gradient-text">Real Impact</span></h2>
+        <p class="section-desc mx-auto">Thousands of patients and healthcare professionals trust Cancer AI Assistant for their early detection journey.</p>
+      </div>
+
+      <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4 fade-up delay-100">
+          <div class="testi-card" role="article" aria-label="Testimonial from Sarah M.">
+            <div class="quote-icon" aria-hidden="true">&#34;</div>
+            <div class="testi-stars" aria-label="5 out of 5 stars">
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="testi-text">
+              &#34;The AI risk prediction flagged an elevated risk for breast cancer. I immediately scheduled a mammogram and caught stage-one DCIS early. This app literally saved my life. I can&#39;t recommend it enough.&#34;
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="testi-avatar" aria-hidden="true">SM</div>
+              <div>
+                <div class="testi-name">Sarah Mitchell</div>
+                <div class="testi-role">Breast Cancer Survivor, Texas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-200">
+          <div class="testi-card" role="article" aria-label="Testimonial from Dr. Arun P.">
+            <div class="quote-icon" aria-hidden="true">&#34;</div>
+            <div class="testi-stars" aria-label="5 out of 5 stars">
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="testi-text">
+              &#34;As an oncologist, I recommend Cancer AI Assistant to patients who want to understand their risk between appointments. The report analyzer correctly summarized complex biopsy findings — impressive clinical accuracy.&#34;
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="testi-avatar" style="background:linear-gradient(135deg,#0d9488,#0891b2);" aria-hidden="true">AP</div>
+              <div>
+                <div class="testi-name">Dr. Arun Patel, MD</div>
+                <div class="testi-role">Oncologist, Mayo Clinic</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade-up delay-300">
+          <div class="testi-card" role="article" aria-label="Testimonial from Maria G.">
+            <div class="quote-icon" aria-hidden="true">&#34;</div>
+            <div class="testi-stars" aria-label="5 out of 5 stars">
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+              <i class="fas fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="testi-text">
+              &#34;My father was diagnosed with colon cancer. The Hospital Finder helped us locate a specialist in our area within minutes, and the AI assistant explained treatment options in a way we could all understand. Incredible support.&#34;
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="testi-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);" aria-hidden="true">MG</div>
+              <div>
+                <div class="testi-name">Maria Gonzalez</div>
+                <div class="testi-role">Caregiver &amp; Patient Advocate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / FOOTER -->
+  <footer class="footer" id="contact" role="contentinfo">
+    <div class="container">
+      <div class="row g-5">
+
+        <!-- Brand Column -->
+        <div class="col-lg-4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="brand-icon" aria-hidden="true"><i class="fas fa-dna"></i></div>
+            <div>
+              <div class="footer-brand-title">CancerAI Assistant</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);letter-spacing:0.08em;">HEALTHCARE AI PLATFORM</div>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Empowering early cancer detection through artificial intelligence. Trusted by 50,000+ patients and healthcare professionals worldwide.
+          </p>
+          <div class="footer-social" role="list" aria-label="Social media links">
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Subscribe on YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-sm-6 col-lg-2">
+          <h3 class="footer-heading">Platform</h3>
+          <nav aria-label="Platform links">
+            <a href="#features" class="footer-link">Features</a>
+            <a href="#about" class="footer-link">How It Works</a>
+            <a href="#awareness" class="footer-link">Awareness Hub</a>
+            <a href="#" class="footer-link" onclick="showPage('signup');return false;">Sign Up Free</a>
+            <a href="#" class="footer-link" onclick="showPage('login');return false;">Login</a>
+          </nav>
+        </div>
+
+        <!-- Resources -->
+        <div class="col-sm-6 col-lg-2">
+          <h3 class="footer-heading">Resources</h3>
+          <nav aria-label="Resource links">
+            <a href="#" class="footer-link">Cancer Types</a>
+            <a href="#" class="footer-link">Prevention Guide</a>
+            <a href="#" class="footer-link">Research Papers</a>
+            <a href="#" class="footer-link">Patient Stories</a>
+            <a href="#" class="footer-link">Blog</a>
+          </nav>
+        </div>
+
+        <!-- Contact -->
+        <div class="col-lg-4">
+          <h3 class="footer-heading">Get in Touch</h3>
+          <address style="font-style:normal;">
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+              <span>123 MedTech Boulevard, Health District,<br/>San Francisco, CA 94102</span>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon" aria-hidden="true"><i class="fas fa-phone"></i></div>
+              <a href="tel:+18005550199" style="color:rgba(255,255,255,0.6);text-decoration:none;">+1 (800) 555-0199</a>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon" aria-hidden="true"><i class="fas fa-envelope"></i></div>
+              <a href="mailto:support@cancerai.health" style="color:rgba(255,255,255,0.6);text-decoration:none;">support@cancerai.health</a>
+            </div>
+          </address>
+
+          <!-- Newsletter -->
+          <div style="margin-top:20px;">
+            <p style="font-size:0.83rem;color:rgba(255,255,255,0.5);margin-bottom:10px;">Subscribe to our health newsletter:</p>
+            <div class="d-flex gap-2" role="search">
+              <input type="email" placeholder="Enter your email" aria-label="Email for newsletter" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-family:'Poppins', sans-serif;font-size:0.85rem;outline:none;">
+              <button style="padding:11px 18px;background:var(--grad-main);color:white;border:none;border-radius:10px;font-weight:600;font-size:0.82rem;cursor:pointer;white-space:nowrap;" onclick="handleNewsletter(this)" aria-label="Subscribe to newsletter">
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p>© 2026 CancerAI Assistant. All rights reserved. Built with <i class="fas fa-heart" style="color:#ef4444;" aria-label="love"></i> for better health outcomes.</p>
+        <div class="d-flex gap-3" role="navigation" aria-label="Legal links">
+          <a href="#" style="color:rgba(255,255,255,0.4);font-size:0.82rem;text-decoration:none;">Privacy Policy</a>
+          <a href="#" style="color:rgba(255,255,255,0.4);font-size:0.82rem;text-decoration:none;">Terms of Service</a>
+          <a href="#" style="color:rgba(255,255,255,0.4);font-size:0.82rem;text-decoration:none;">HIPAA Compliance</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+</div><!-- end #page-home -->
+
+
+<!-- ================================================================
+  PAGE: LOGIN
+================================================================ -->
+<div id="page-login" class="page" role="main">
+  <div class="auth-page">
+
+    <!-- Left Panel -->
+    <div class="auth-left d-none d-lg-flex flex-column justify-content-center" aria-label="Login page hero panel">
+      <div style="position:relative;z-index:1;">
+
+        <!-- Back to home -->
+        <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);border-radius:10px;padding:8px 16px;font-family:'Poppins',sans-serif;font-size:0.82rem;cursor:pointer;margin-bottom:40px;transition:all 0.2s;" aria-label="Go back to homepage">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Home
+        </button>
+
+        <!-- Illustration: SVG Medical AI -->
+        <div class="auth-illustration" aria-hidden="true">
+          <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg" class="auth-illustration-svg" aria-hidden="true">
+            <!-- Background circles -->
+            <circle cx="200" cy="160" r="140" fill="rgba(37,99,235,0.08)"></circle>
+            <circle cx="200" cy="160" r="100" fill="rgba(13,148,136,0.08)"></circle>
+            <!-- Medical cross -->
+            <rect x="175" y="100" width="50" height="120" rx="10" fill="rgba(37,99,235,0.25)"></rect>
+            <rect x="140" y="135" width="120" height="50" rx="10" fill="rgba(37,99,235,0.25)"></rect>
+            <!-- Center heart pulse -->
+            <path d="M200 145 L215 145 L220 135 L228 165 L233 145 L250 145" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"></path>
+            <!-- Orbiting dots -->
+            <circle cx="80" cy="160" r="8" fill="#34d399" opacity="0.7">
+              <animateTransform attributeName="transform" type="rotate" from="0 200 160" to="360 200 160" dur="8s" repeatCount="indefinite"></animateTransform>
+            </circle>
+            <circle cx="200" cy="40" r="6" fill="#a78bfa" opacity="0.7">
+              <animateTransform attributeName="transform" type="rotate" from="0 200 160" to="360 200 160" dur="12s" repeatCount="indefinite"></animateTransform>
+            </circle>
+            <circle cx="320" cy="160" r="10" fill="#60a5fa" opacity="0.7">
+              <animateTransform attributeName="transform" type="rotate" from="180 200 160" to="540 200 160" dur="10s" repeatCount="indefinite"></animateTransform>
+            </circle>
+            <!-- DNA helix dots -->
+            <circle cx="160" cy="240" r="5" fill="rgba(255,255,255,0.3)"></circle>
+            <circle cx="180" cy="255" r="4" fill="rgba(255,255,255,0.2)"></circle>
+            <circle cx="240" cy="245" r="5" fill="rgba(255,255,255,0.3)"></circle>
+            <circle cx="220" cy="260" r="4" fill="rgba(255,255,255,0.2)"></circle>
+          </svg>
+        </div>
+
+        <h2 class="auth-left-title">Welcome Back to<br/><span style="background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CancerAI Assistant</span></h2>
+        <p class="auth-left-desc">Your health journey continues. Access your personalized cancer risk reports, AI health assistant, and medical records securely.</p>
+
+        <ul class="auth-feature-list" role="list">
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            HIPAA-compliant secure login with 256-bit encryption
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            Access your AI cancer risk predictions instantly
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            Continue conversations with your AI Health Assistant
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            View updated medical report analyses and insights
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- Right Panel: Login Card -->
+    <div class="auth-right">
+      <div class="auth-card" role="region" aria-label="Login form">
+
+        <!-- Logo -->
+        <div class="auth-card-logo">
+          <div class="brand-icon" aria-hidden="true"><i class="fas fa-dna"></i></div>
+          <div class="brand-text" style="font-size:1rem;">CancerAI Assistant</div>
+        </div>
+
+        <h1 class="auth-card-title">Sign in to your account</h1>
+        <p class="auth-card-sub">Don't have an account? <a href="#" class="auth-switch-link" onclick="showPage('signup')" aria-label="Go to sign up page">Create one free →</a></p>
+
+        <!-- Google Button -->
+        <button class="btn-google" id="googleLoginBtn" aria-label="Sign in with Google">
+          <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"></path>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path>
+          </svg>
+          Continue with Google
+        </button>
+
+        <div class="auth-divider"><span>or sign in with email</span></div>
+
+        <!-- Login Form -->
+       <form id="loginForm"
+      onsubmit="handleLogin(event)">
+
+          <div class="form-error" id="loginServerError" role="alert" style="display:none;"></div>
+
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="loginEmail">Email Address</label>
+            <div class="input-wrapper has-icon-left">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+              <input type="email" id="loginEmail" name="email" class="form-input-custom" placeholder="you@example.com" autocomplete="email" aria-required="true" aria-describedby="loginEmailError"/>
+            </div>
+            <div class="form-error" id="loginEmailError" role="alert">Please enter a valid email address.</div>
+          </div>
+
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="loginPassword">Password</label>
+            <div class="input-wrapper has-icon-left has-icon-right">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-lock"></i></span>
+              <input type="password" id="loginPassword" name="password" class="form-input-custom" placeholder="Enter your password" autocomplete="current-password" aria-required="true" aria-describedby="loginPasswordError"/>
+              <span class="input-icon-right" onclick="togglePassword('loginPassword', this)" role="button" tabindex="0" aria-label="Toggle password visibility" onkeydown="if(event.key==='Enter')togglePassword('loginPassword',this)">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div class="form-error" id="loginPasswordError" role="alert">Password is required.</div>
+          </div>
+
+          <div class="remember-row">
+            <label class="custom-checkbox" for="rememberMe">
+              <input type="checkbox" id="rememberMe" name="rememberMe"/>
+              <span class="box" aria-hidden="true"></span>
+              Remember me for 30 days
+            </label>
+            <a href="#" class="forgot-link" onclick="handleForgotPassword();return false;" aria-label="Reset your password">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="btn-auth-primary" aria-label="Sign in to your account">
+            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+            Sign In Securely
+          </button>
+
+        </form>
+
+        <div class="auth-switch-text">
+          New to CancerAI? <a href="#" class="auth-switch-link" onclick="showPage('signup')" aria-label="Create a free account">Create a free account</a>
+        </div>
+
+        <div style="margin-top:20px;padding:14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;display:flex;align-items:flex-start;gap:10px;">
+          <i class="fas fa-shield-alt" style="color:#16a34a;margin-top:2px;font-size:0.9rem;" aria-hidden="true"></i>
+          <p style="font-size:0.78rem;color:#15803d;margin:0;line-height:1.6;">
+            <strong>HIPAA Compliant &amp; Secure.</strong> Your health data is encrypted with AES-256. We never share your medical information with third parties.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div><!-- end #page-login -->
+
+
+<!-- ================================================================
+  PAGE: SIGNUP
+================================================================ -->
+<div id="page-signup" class="page" role="main">
+  <div class="auth-page">
+
+    <!-- Left Panel -->
+    <div class="auth-left d-none d-lg-flex flex-column justify-content-center" aria-label="Sign up page hero panel">
+      <div style="position:relative;z-index:1;">
+
+        <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);border-radius:10px;padding:8px 16px;font-family:'Poppins',sans-serif;font-size:0.82rem;cursor:pointer;margin-bottom:40px;transition:all 0.2s;" aria-label="Go back to homepage">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Home
+        </button>
+
+        <!-- Illustration -->
+        <div class="auth-illustration" aria-hidden="true">
+          <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" class="auth-illustration-svg" aria-hidden="true">
+            <!-- Background -->
+            <circle cx="200" cy="150" r="130" fill="rgba(124,58,237,0.08)"></circle>
+            <circle cx="200" cy="150" r="90" fill="rgba(13,148,136,0.06)"></circle>
+            <!-- Shield -->
+            <path d="M200 50 L260 80 L260 160 C260 195 230 220 200 230 C170 220 140 195 140 160 L140 80 Z" fill="rgba(37,99,235,0.2)" stroke="rgba(96,165,250,0.5)" stroke-width="2"></path>
+            <!-- Check in shield -->
+            <path d="M180 155 L195 170 L225 135" stroke="#34d399" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+            <!-- Plus signs floating -->
+            <text x="70" y="90" fill="rgba(255,255,255,0.3)" font-size="24" font-weight="bold">+</text>
+            <text x="320" y="120" fill="rgba(255,255,255,0.3)" font-size="20" font-weight="bold">+</text>
+            <text x="100" y="230" fill="rgba(255,255,255,0.2)" font-size="16" font-weight="bold">+</text>
+            <text x="280" y="260" fill="rgba(255,255,255,0.2)" font-size="18" font-weight="bold">+</text>
+            <!-- Stars -->
+            <circle cx="350" cy="70" r="4" fill="#fbbf24" opacity="0.8"></circle>
+            <circle cx="60" cy="180" r="3" fill="#a78bfa" opacity="0.8"></circle>
+            <circle cx="330" cy="220" r="5" fill="#34d399" opacity="0.6"></circle>
+          </svg>
+        </div>
+
+        <h2 class="auth-left-title">Join <span style="background:linear-gradient(90deg,#a78bfa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">50,000+</span><br/>People Taking Control</h2>
+        <p class="auth-left-desc">Create your free account and get an AI-powered cancer risk assessment in minutes. Early detection starts here.</p>
+
+        <ul class="auth-feature-list" role="list">
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            Free cancer risk assessment for 15+ cancer types
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            AI medical report analysis &amp; plain-language summaries
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            Find top oncologists and hospitals near you instantly
+          </li>
+          <li role="listitem">
+            <span class="check" aria-hidden="true"><i class="fas fa-check"></i></span>
+            Secure, private, HIPAA-compliant data storage
+          </li>
+        </ul>
+
+        <!-- Trust Badges -->
+        <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;" role="list" aria-label="Trust badges">
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;font-size:0.75rem;color:rgba(255,255,255,0.7);" role="listitem">
+            <i class="fas fa-lock" aria-hidden="true" style="margin-right:5px;color:#60a5fa;"></i> SSL Encrypted
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;font-size:0.75rem;color:rgba(255,255,255,0.7);" role="listitem">
+            <i class="fas fa-shield-alt" aria-hidden="true" style="margin-right:5px;color:#34d399;"></i> HIPAA Compliant
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;font-size:0.75rem;color:rgba(255,255,255,0.7);" role="listitem">
+            <i class="fas fa-star" aria-hidden="true" style="margin-right:5px;color:#fbbf24;"></i> 4.9/5 Rating
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Panel: Signup Card -->
+    <div class="auth-right">
+      <div class="auth-card" role="region" aria-label="Sign up form" style="max-width:510px;">
+
+        <!-- Logo -->
+        <div class="auth-card-logo">
+          <div class="brand-icon" aria-hidden="true"><i class="fas fa-dna"></i></div>
+          <div class="brand-text" style="font-size:1rem;">CancerAI Assistant</div>
+        </div>
+
+        <h1 class="auth-card-title">Create your free account</h1>
+        <p class="auth-card-sub">Already have an account? <a href="#" class="auth-switch-link" onclick="showPage('login')" aria-label="Sign in to existing account">Sign in →</a></p>
+
+        <!-- Google Button -->
+        <button class="btn-google" id="googleSignupBtn" aria-label="Sign up with Google">
+          <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"></path>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path>
+          </svg>
+          Sign up with Google
+        </button>
+
+        <div class="auth-divider"><span>or register with email</span></div>
+
+        <!-- Signup Form -->
+      <form id="signupForm"
+      onsubmit="handleSignup(event)">
+          <div class="form-error" id="signupServerError" role="alert" style="display:none;"></div>
+          <!-- Full Name -->
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="signupName">Full Name</label>
+            <div class="input-wrapper has-icon-left">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
+              <input type="text" id="signupName" name="name" class="form-input-custom" placeholder="Dr. John Smith" autocomplete="name" aria-required="true" aria-describedby="signupNameError"/>
+            </div>
+            <div class="form-error" id="signupNameError" role="alert">Please enter your full name (at least 2 characters).</div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="signupEmail">Email Address</label>
+            <div class="input-wrapper has-icon-left">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+              <input type="email" id="signupEmail" name="email" class="form-input-custom" placeholder="you@example.com" autocomplete="email" aria-required="true" aria-describedby="signupEmailError"/>
+            </div>
+            <div class="form-error" id="signupEmailError" role="alert">Please enter a valid email address.</div>
+          </div>
+
+          <!-- Mobile -->
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="signupMobile">Mobile Number</label>
+            <div class="input-wrapper has-icon-left">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>
+              <input type="tel" id="signupMobile" name="mobile" class="form-input-custom" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-required="true" aria-describedby="signupMobileError"/>
+            </div>
+            <div class="form-error" id="signupMobileError" role="alert">Please enter a valid mobile number (min 10 digits).</div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="signupPassword">Password</label>
+            <div class="input-wrapper has-icon-left has-icon-right">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-lock"></i></span>
+              <input type="password" id="signupPassword" name="password" class="form-input-custom" placeholder="Create a strong password" autocomplete="new-password" aria-required="true" aria-describedby="signupPasswordError passwordStrengthText" oninput="updatePasswordStrength(this.value)"/>
+              <span class="input-icon-right" onclick="togglePassword('signupPassword', this)" role="button" tabindex="0" aria-label="Toggle password visibility" onkeydown="if(event.key==='Enter')togglePassword('signupPassword',this)">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div class="password-strength" id="passwordStrength" aria-live="polite">
+              <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+              <div class="strength-text" id="passwordStrengthText"></div>
+            </div>
+            <div class="form-error" id="signupPasswordError" role="alert">Password must be at least 8 characters with a mix of letters and numbers.</div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group-custom">
+            <label class="form-label-custom" for="signupConfirmPassword">Confirm Password</label>
+            <div class="input-wrapper has-icon-left has-icon-right">
+              <span class="input-icon" aria-hidden="true"><i class="fas fa-lock"></i></span>
+              <input type="password" id="signupConfirmPassword" name="confirm_password" class="form-input-custom" placeholder="Repeat your password" autocomplete="new-password" aria-required="true" aria-describedby="signupConfirmPasswordError"/>
+              <span class="input-icon-right" onclick="togglePassword('signupConfirmPassword', this)" role="button" tabindex="0" aria-label="Toggle confirm password visibility" onkeydown="if(event.key==='Enter')togglePassword('signupConfirmPassword',this)">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div class="form-error" id="signupConfirmPasswordError" role="alert">Passwords do not match.</div>
+          </div>
+
+          <!-- Terms -->
+          <div class="terms-row" role="group" aria-label="Terms and conditions agreement">
+            <label class="custom-checkbox" for="termsCheck" style="align-items:flex-start;gap:8px;">
+              <input type="checkbox" id="termsCheck" name="terms" aria-required="true" aria-describedby="termsError"/>
+              <span class="box" style="margin-top:2px;" aria-hidden="true"></span>
+              <span>I agree to the <a href="#" tabindex="0">Terms of Service</a>, <a href="#" tabindex="0">Privacy Policy</a>, and consent to my health data being processed in accordance with HIPAA regulations.</span>
+            </label>
+          </div>
+          <div class="form-error" id="termsError" role="alert">You must agree to the terms to create an account.</div>
+
+          <button type="submit" class="btn-auth-primary" aria-label="Create your free account">
+            <i class="fas fa-user-plus" aria-hidden="true"></i>
+            Create Free Account
+          </button>
+
+        </form>
+
+        <div class="auth-switch-text">
+          Already have an account? <a href="#" class="auth-switch-link" onclick="showPage('login')" aria-label="Sign in to your account">Sign in here</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div><!-- end #page-signup -->
+
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successDesc">
+  <div class="success-card">
+    <div class="success-icon" aria-hidden="true"><i class="fas fa-check"></i></div>
+    <h2 class="success-title" id="successTitle">Account Created!</h2>
+    <p class="success-desc" id="successDesc">
+      Welcome to CancerAI Assistant! Your free account is ready. Let&#39;s start your personalized cancer risk assessment.
+    </p>
+    <button class="btn-auth-primary" style="justify-content:center;" onclick="dismissSuccess()" aria-label="Get started with your account">
+      <i class="fas fa-rocket" aria-hidden="true"></i>
+      Get Started Now
+    </button>
+  </div>
+</div>
+
+<!-- Forgot Password Toast -->
+<div id="forgotToast" role="alert" aria-live="assertive" style="position:fixed;top:24px;right:24px;background:white;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;box-shadow:0 20px 50px rgba(0,0,0,0.15);z-index:9999;display:none;max-width:320px;animation:slideUp 0.3s ease;">
+  <div style="display:flex;align-items:flex-start;gap:12px;">
+    <div style="width:36px;height:36px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#2563eb;font-size:0.9rem;flex-shrink:0;" aria-hidden="true">
+      <i class="fas fa-envelope"></i>
+    </div>
+    <div>
+      <div style="font-size:0.88rem;font-weight:700;color:#0f172a;margin-bottom:4px;">Reset Email Sent</div>
+      <div style="font-size:0.8rem;color:#64748b;line-height:1.6;">Check your inbox for password reset instructions. Valid for 15 minutes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top of page">
+  <i class="fas fa-arrow-up" aria-hidden="true"></i>
+</button>
+
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  /* =========================================================
+     PAGE ROUTING
+  ========================================================= */
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + name);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    // Auth pages: hide scroll-top
+    if (name === 'login' || name === 'signup') {
+      document.getElementById('scrollTop').style.display = 'none';
+    } else {
+      document.getElementById('scrollTop').style.display = '';
+    }
+  }
+
+  /* =========================================================
+     NAVBAR: scroll effect & mobile toggle
+  ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+
+    const navbar = document.getElementById('mainNavbar');
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let mobileOpen = false;
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+        document.getElementById('scrollTop').classList.add('visible');
+      } else {
+        navbar.classList.remove('scrolled');
+        document.getElementById('scrollTop').classList.remove('visible');
+      }
+    }, { passive: true });
+
+    navToggle.addEventListener('click', () => {
+      mobileOpen = !mobileOpen;
+      mobileMenu.style.setProperty('display', mobileOpen ? 'block' : 'none', 'important');
+      navToggle.setAttribute('aria-expanded', mobileOpen);
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('click', () => {
+        mobileOpen = false;
+        mobileMenu.style.setProperty('display', 'none', 'important');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    /* =========================================================
+       INTERSECTION OBSERVER: fade animations
+    ========================================================= */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right').forEach(el => observer.observe(el));
+
+    /* =========================================================
+       STATS COUNTER ANIMATION
+    ========================================================= */
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.counted) {
+          entry.target.dataset.counted = '1';
+          animateCounter(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-number[data-target]').forEach(el => statObserver.observe(el));
+
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || (target >= 1000 ? '+' : '%');
+      const duration = 2000;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        const current = Math.floor(eased * target);
+
+        if (target >= 1000) {
+          el.textContent = (current >= 1000 ? (current / 1000).toFixed(current % 1000 === 0 ? 0 : 1) + 'K' : current) + suffix;
+        } else {
+          el.textContent = current + suffix;
+        }
+
+        if (progress < 1) requestAnimationFrame(update);
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    /* =========================================================
+       GOOGLE BTN DEMO
+    ========================================================= */
+    ['googleLoginBtn', 'googleSignupBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Connecting to Google…';
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> ${id.includes('Login') ? 'Continue' : 'Sign up'} with Google`;
+          }, 2000);
+        });
+      }
+    });
+
+  }); // end DOMContentLoaded
+
+  /* =========================================================
+     TOGGLE PASSWORD VISIBILITY
+  ========================================================= */
+  function togglePassword(fieldId, iconEl) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    const icon = iconEl.querySelector('i') || iconEl;
+    if (field.type === 'password') {
+      field.type = 'text';
+      icon.className = 'fas fa-eye-slash';
+      iconEl.setAttribute('aria-label', 'Hide password');
+    } else {
+      field.type = 'password';
+      icon.className = 'fas fa-eye';
+      iconEl.setAttribute('aria-label', 'Show password');
+    }
+  }
+
+  /* =========================================================
+     PASSWORD STRENGTH
+  ========================================================= */
+  function updatePasswordStrength(value) {
+    const strengthEl = document.getElementById('passwordStrength');
+    const fillEl = document.getElementById('strengthFill');
+    const textEl = document.getElementById('passwordStrengthText');
+
+    if (!value) {
+      fillEl.style.width = '0';
+      textEl.textContent = '';
+      strengthEl.className = 'password-strength';
+      return;
+    }
+
+    let score = 0;
+    if (value.length >= 8) score++;
+    if (value.length >= 12) score++;
+    if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+    if (/\d/.test(value)) score++;
+    if (/[^A-Za-z0-9]/.test(value)) score++;
+
+    const levels = ['', 'strength-weak', 'strength-fair', 'strength-good', 'strength-strong', 'strength-strong'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+
+    strengthEl.className = 'password-strength ' + (levels[score] || 'strength-weak');
+    textEl.textContent = labels[score] || 'Weak';
+  }
+
+  /* =========================================================
+     FORM VALIDATION HELPERS
+  ========================================================= */
+  function setFieldState(inputId, errorId, isValid, show) {
+    const input = document.getElementById(inputId);
+    const error = document.getElementById(errorId);
+    if (!input) return;
+    if (!show) {
+      input.classList.remove('error', 'success');
+      if (error) error.classList.remove('visible');
+      return;
+    }
+    if (isValid) {
+      input.classList.add('success');
+      input.classList.remove('error');
+      if (error) error.classList.remove('visible');
+    } else {
+      input.classList.add('error');
+      input.classList.remove('success');
+      if (error) error.classList.add('visible');
+    }
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  }
+
+  function isValidPhone(phone) {
+    return phone.replace(/\D/g, '').length >= 10;
+  }
+
+  /* =========================================================
+     LOGIN FORM HANDLER
+  ========================================================= */
+  function handleLogin(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('loginServerError');
+    errEl.style.display = 'none';
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    let valid = true;
+
+    const emailOk = isValidEmail(email);
+    setFieldState('loginEmail', 'loginEmailError', emailOk, true);
+    if (!emailOk) valid = false;
+
+    const passOk = password.length >= 6;
+    setFieldState('loginPassword', 'loginPasswordError', passOk, true);
+    if (!passOk) valid = false;
+
+    if (!valid) return;
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Signing in…';
+
+    const formData = new URLSearchParams();
+    formData.append('email', email);
+    formData.append('password', password);
+
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData
+    })
+      .then(res => res.json().then(data => ({ status: res.status, data })))
+      .then(({ status, data }) => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In Securely';
+
+        if (data.success) {
+          showSuccessOverlay('Welcome Back!', 'You have successfully signed in to CancerAI Assistant. Redirecting…');
+          setTimeout(() => { window.location.href = data.redirect || '/'; }, 1500);
+        } else {
+          errEl.textContent = data.message || 'Invalid email or password.';
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In Securely';
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+      });
+  }
+
+  /* =========================================================
+     SIGNUP FORM HANDLER
+  ========================================================= */
+  function handleSignup(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('signupServerError');
+    errEl.style.display = 'none';
+
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const mobile = document.getElementById('signupMobile').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirmPassword').value;
+    const terms = document.getElementById('termsCheck').checked;
+    let valid = true;
+
+    // Name
+    const nameOk = name.trim().length >= 2;
+    setFieldState('signupName', 'signupNameError', nameOk, true);
+    if (!nameOk) valid = false;
+
+    // Email
+    const emailOk = isValidEmail(email);
+    setFieldState('signupEmail', 'signupEmailError', emailOk, true);
+    if (!emailOk) valid = false;
+
+    // Mobile
+    const mobileOk = isValidPhone(mobile);
+    setFieldState('signupMobile', 'signupMobileError', mobileOk, true);
+    if (!mobileOk) valid = false;
+
+    // Password
+    const passwordOk = password.length >= 8 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+    setFieldState('signupPassword', 'signupPasswordError', passwordOk, true);
+    if (!passwordOk) valid = false;
+
+    // Confirm
+    const confirmOk = confirm === password && confirm.length > 0;
+    setFieldState('signupConfirmPassword', 'signupConfirmPasswordError', confirmOk, true);
+    if (!confirmOk) valid = false;
+
+    // Terms
+    const termsError = document.getElementById('termsError');
+    if (!terms) {
+      termsError.classList.add('visible');
+      valid = false;
+    } else {
+      termsError.classList.remove('visible');
+    }
+
+    if (!valid) return;
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Creating account…';
+
+    const formData = new URLSearchParams();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('mobile', mobile);
+    formData.append('password', password);
+
+    fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData
+    })
+      .then(res => res.json().then(data => ({ status: res.status, data })))
+      .then(({ status, data }) => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus" aria-hidden="true"></i> Create Free Account';
+
+        if (data.success) {
+          showSuccessOverlay('Account Created!', `Welcome, ${name.split(' ')[0]}! Please sign in to continue.`);
+          setTimeout(() => {
+            document.getElementById('successOverlay').classList.remove('show');
+            showPage('login');
+            const loginEmailField = document.getElementById('loginEmail');
+            if (loginEmailField) loginEmailField.value = email;
+          }, 1500);
+        } else {
+          errEl.textContent = data.message || 'Could not create account.';
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus" aria-hidden="true"></i> Create Free Account';
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+      });
+  }
+
+
+  function showPage(page) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.display = 'none';
+    });
+
+    // Show selected page
+    const selectedPage = document.getElementById(`page-${page}`);
+
+    if (selectedPage) {
+        selectedPage.style.display = 'block';
+    }
+}
+
+window.onload = function () {
+    showPage('home'); // or 'login'
+};
+
+// Note: form submission is fully handled via onsubmit="" attributes on the
+// <form> tags (handleLogin / handleSignup), which call fetch() to POST
+// JSON-friendly form-encoded data to /login and /signup.
+  /* =========================================================
+     SUCCESS OVERLAY
+  ========================================================= */
+  function showSuccessOverlay(title, desc) {
+    document.getElementById('successTitle').textContent = title;
+    document.getElementById('successDesc').textContent = desc;
+    document.getElementById('successOverlay').classList.add('show');
+    // Trap focus
+    document.getElementById('successOverlay').querySelector('button').focus();
+  }
+
+  function dismissSuccess() {
+    document.getElementById('successOverlay').classList.remove('show');
+    showPage('home');
+  }
+
+  // Close overlay on backdrop click
+  document.getElementById('successOverlay').addEventListener('click', function(e) {
+    if (e.target === this) dismissSuccess();
+  });
+
+  // Close overlay on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('successOverlay').classList.contains('show')) {
+      dismissSuccess();
+    }
+  });
+
+  /* =========================================================
+     FORGOT PASSWORD
+  ========================================================= */
+  function handleForgotPassword() {
+    const email = document.getElementById('loginEmail').value;
+    const emailOk = isValidEmail(email);
+
+    if (!emailOk) {
+      setFieldState('loginEmail', 'loginEmailError', false, true);
+      document.getElementById('loginEmail').focus();
+      return;
+    }
+
+    const toast = document.getElementById('forgotToast');
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 5000);
+  }
+
+  /* =========================================================
+     NEWSLETTER DEMO
+  ========================================================= */
+  function handleNewsletter(btn) {
+    const input = btn.previousElementSibling;
+    if (!input || !isValidEmail(input.value)) {
+      input.style.borderColor = '#ef4444';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = ''; }, 2000);
+      return;
+    }
+    btn.textContent = '✓ Subscribed!';
+    btn.style.background = '#16a34a';
+    btn.disabled = true;
+    input.value = '';
+  }
+
+  /* =========================================================
+     REAL-TIME VALIDATION (on blur)
+  ========================================================= */
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Login
+    const lEmail = document.getElementById('loginEmail');
+    const lPass = document.getElementById('loginPassword');
+    if (lEmail) lEmail.addEventListener('blur', () => setFieldState('loginEmail', 'loginEmailError', isValidEmail(lEmail.value), lEmail.value !== ''));
+    if (lPass) lPass.addEventListener('blur', () => setFieldState('loginPassword', 'loginPasswordError', lPass.value.length >= 6, lPass.value !== ''));
+
+    // Signup
+    const sName = document.getElementById('signupName');
+    const sEmail = document.getElementById('signupEmail');
+    const sMobile = document.getElementById('signupMobile');
+    const sPass = document.getElementById('signupPassword');
+    const sCPass = document.getElementById('signupConfirmPassword');
+
+    if (sName) sName.addEventListener('blur', () => setFieldState('signupName', 'signupNameError', sName.value.trim().length >= 2, sName.value !== ''));
+    if (sEmail) sEmail.addEventListener('blur', () => setFieldState('signupEmail', 'signupEmailError', isValidEmail(sEmail.value), sEmail.value !== ''));
+    if (sMobile) sMobile.addEventListener('blur', () => setFieldState('signupMobile', 'signupMobileError', isValidPhone(sMobile.value), sMobile.value !== ''));
+    if (sPass) sPass.addEventListener('blur', () => {
+      const ok = sPass.value.length >= 8 && /[a-zA-Z]/.test(sPass.value) && /\d/.test(sPass.value);
+      setFieldState('signupPassword', 'signupPasswordError', ok, sPass.value !== '');
+    });
+    if (sCPass) sCPass.addEventListener('blur', () => {
+      const ok = sCPass.value === (sPass ? sPass.value : '') && sCPass.value.length > 0;
+      setFieldState('signupConfirmPassword', 'signupConfirmPasswordError', ok, sCPass.value !== '');
+    });
+
+  });
+
+</script>
+
+
+
+</body></html>

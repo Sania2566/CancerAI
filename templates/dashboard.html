@@ -3,20 +3,59 @@
 <head>
 
 <title>Cancer Analytics Dashboard</title>
-
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --teal: #0d9488;
+  --teal-light: #14b8a6;
+  --purple: #7c3aed;
+  --grad-main: linear-gradient(135deg, #2563eb 0%, #0d9488 50%, #7c3aed 100%);
+  --grad-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+  --shadow-glow-blue: 0 0 40px rgba(37,99,235,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
 body{
-background:#e2f3f3;
+background: var(--grad-hero);
 font-family:'Poppins',sans-serif;
+color: white;
+min-height: 100vh;
+position: relative;
+overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(37,99,235,0.22) 0%, transparent 70%);
+  top: -150px; left: 200px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* SIDEBAR */
@@ -24,80 +63,180 @@ font-family:'Poppins',sans-serif;
 .sidebar{
 width:230px;
 height:100vh;
-background:#2e4a47;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+border-right:1px solid rgba(255,255,255,0.1);
 color:white;
 position:fixed;
 left:0;
 top:0;
-padding:30px 15px;
-border-radius:0 20px 20px 0;
+padding:28px 16px;
+z-index: 10;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  padding: 0 6px;
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: var(--grad-main);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 15px;
+  box-shadow: var(--shadow-glow-blue);
+  flex-shrink: 0;
+}
+
+.brand-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .sidebar a{
-display:block;
-color:white;
-padding:12px 15px;
-margin-bottom:10px;
+display: flex;
+align-items: center;
+gap: 10px;
+color:rgba(255,255,255,0.65);
+padding:11px 14px;
+margin-bottom:6px;
 text-decoration:none;
 border-radius:10px;
-transition:0.3s;
+font-size: 0.88rem;
+font-weight: 500;
+transition:all 0.2s ease;
 }
-.sidebar i{
-margin-right:10px;
+.sidebar a i{
+width: 16px;
+text-align: center;
+color: var(--teal-light);
+font-size: 0.85rem;
 }
 
 .sidebar a:hover{
-background:#3f6a66;
+background:rgba(255,255,255,0.07);
+color: white;
+}
+
+.sidebar a.active {
+  background: rgba(37,99,235,0.18);
+  border: 1px solid rgba(37,99,235,0.3);
+  color: white;
 }
 
 /* MAIN AREA */
 
 .main{
-margin-left:250px;
-padding:30px;
+margin-left:230px;
+padding:40px;
+position: relative;
+z-index: 1;
+}
+
+.page-heading {
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.92rem;
+  margin-bottom: 28px;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #34d399;
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 20px;
+  padding: 4px 12px 4px 9px;
+  vertical-align: middle;
+  margin-left: 10px;
+  transition: opacity 0.2s ease;
+}
+
+.live-badge.refreshing { opacity: 0.55; }
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52,211,153,0.8);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.75); }
 }
 
 /* STAT CARDS */
 
 .stat-card{
 color:white;
-padding:20px;
-border-radius:18px;
+padding:22px;
+border-radius:20px;
 position:relative;
 overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-transition:0.3s;
+border: 1px solid rgba(255,255,255,0.12);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+box-shadow:0 20px 50px rgba(0,0,0,0.25);
+transition:all 0.3s ease;
 }
 
 .stat-card:hover{
 transform:translateY(-5px);
 }
 
-/* CARD COLORS */
+/* CARD ACCENTS — glass tint instead of flat gradients */
 
 .card1{
-background:linear-gradient(135deg,#ffb347,#ffcc33);
+background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(255,255,255,0.05));
 }
 
 .card2{
-background:linear-gradient(135deg,#4facfe,#00f2fe);
+background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(255,255,255,0.05));
 }
 
 .card3{
-background:linear-gradient(135deg,#43e97b,#38f9d7);
+background: linear-gradient(135deg, rgba(13,148,136,0.22), rgba(255,255,255,0.05));
 }
 
 /* CARD TEXT */
 
 .stat-title{
-font-size:14px;
-opacity:0.9;
+font-size:13px;
+font-weight: 600;
+letter-spacing: 0.02em;
+color: rgba(255,255,255,0.75) !important;
 }
 
 .stat-value{
-font-size:28px;
-font-weight:bold;
-margin-top:5px;
+font-size:30px;
+font-weight:800;
+margin-top:6px;
+color: white;
 }
 
 /* ICON */
@@ -105,9 +244,9 @@ margin-top:5px;
 .stat-icon{
 position:absolute;
 right:20px;
-top:20px;
-font-size:60px;
-opacity:1.5;
+top:18px;
+font-size:46px;
+opacity:0.5;
 }
 
 /* DECORATIVE CIRCLE */
@@ -117,7 +256,7 @@ content:"";
 position:absolute;
 width:120px;
 height:120px;
-background:rgba(255,255,255,0.2);
+background:rgba(255,255,255,0.06);
 border-radius:50%;
 bottom:-40px;
 right:-30px;
@@ -126,10 +265,20 @@ right:-30px;
 /* CHART BOX */
 
 .chart-box{
-background:rgb(162, 224, 222);
-padding:25px;
-border-radius:15px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
+background:rgba(255,255,255,0.06);
+border: 1px solid rgba(255,255,255,0.1);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+padding:26px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.chart-box h5 {
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
 }
 
 canvas{
@@ -143,6 +292,290 @@ display:grid;
 grid-template-columns:1fr 1fr;
 gap:25px;
 }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { width: 0; padding: 0; overflow: hidden; border: none; }
+  .main { margin-left: 0; padding: 24px 18px; }
+}
+
+/* TOP BAR: filters + export */
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.chip:hover {
+  background: rgba(255,255,255,0.09);
+  color: white;
+}
+
+.chip.active {
+  background: rgba(37,99,235,0.2);
+  border-color: rgba(37,99,235,0.4);
+  color: white;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: var(--grad-main);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+}
+
+.btn-export:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(37,99,235,0.45);
+}
+
+/* CLICKABLE STAT CARDS */
+
+.stat-card {
+  cursor: pointer;
+}
+
+.stat-card .stat-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 22px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.stat-card:hover .stat-hint {
+  opacity: 1;
+}
+
+.chart-box.highlight {
+  border-color: rgba(37,99,235,0.55);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.2), 0 10px 30px rgba(0,0,0,0.2);
+  animation: pulseGlow 1.4s ease;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4), 0 10px 30px rgba(0,0,0,0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(37,99,235,0.15), 0 10px 30px rgba(0,0,0,0.2); }
+  100% { box-shadow: 0 0 0 3px rgba(37,99,235,0.2), 0 10px 30px rgba(0,0,0,0.2); }
+}
+
+/* CHART TYPE SWITCH */
+
+.chart-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.chart-box-header h5 {
+  margin: 0 !important;
+}
+
+.type-switch {
+  display: flex;
+  gap: 4px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+/* GLOBAL REFERENCE SECTION */
+
+.global-section{
+  margin-top: 30px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.global-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.global-header h3{
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.global-sub{
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+.global-updated{
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  background: rgba(255,255,255,0.06);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.global-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.global-loading, .global-empty{
+  grid-column: 1 / -1;
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.85rem;
+  padding: 20px;
+}
+
+.global-card{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.global-card .gname{
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  min-height: 2.8em;
+}
+
+.global-card .gvalue{
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.global-card .gyear{
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+}
+
+.global-citation{
+  margin: 18px 0 0 0;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.global-citation a{
+  color: rgba(255,255,255,0.5);
+}
+
+@media (max-width: 700px){
+  .global-header{ flex-direction: column; }
+  .global-grid{ grid-template-columns: 1fr 1fr; }
+}
+
+.type-switch button {
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.72rem;
+  padding: 5px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.type-switch button:hover {
+  color: rgba(255,255,255,0.85);
+}
+
+.type-switch button.active {
+  background: var(--grad-main);
+  color: white;
+}
+
+/* TOAST */
+
+.toast-msg {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  background: rgba(15,23,42,0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 200;
+}
+
+.toast-msg.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-msg i {
+  color: var(--teal-light);
+}
+
 </style>
 
 </head>
@@ -153,7 +586,10 @@ gap:25px;
 
 <div class="sidebar">
 
-<h4>Cancer AI</h4>
+<div class="sidebar-brand">
+  <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+  <span class="brand-text">Cancer AI Assistant</span>
+</div>
 
 <a href="/analysis">
 <i class="fa-solid fa-chart-line"></i> Analysis
@@ -177,6 +613,9 @@ gap:25px;
 <a href="/profile">
 <i class="fa-solid fa-user"></i> Profile
 </a>
+<a href="/dashboard" class="active">
+<i class="fa-solid fa-chart-pie"></i> Dashboard
+</a>
 
 </div>
 
@@ -185,7 +624,20 @@ gap:25px;
 
 <div class="main">
 
-<h2 class="mb-4"  style="color: #083d38; font-weight: bold;">Cancer Data Analytics📊</h2>
+<h2 class="page-heading">Cancer Data Analytics 📊 <span class="live-badge" id="liveBadge"><span class="live-dot"></span>Live</span></h2>
+<p class="page-sub">A live overview of cancer types, lifestyle factors, and treatment trends.</p>
+
+<div class="top-bar">
+  <div class="filter-chips" id="rangeChips">
+    <button class="chip{{ ' active' if selected_range == 'all' else '' }}" data-range="all">All Time</button>
+    <button class="chip{{ ' active' if selected_range == '5y' else '' }}" data-range="5y">Last 5 Years</button>
+    <button class="chip{{ ' active' if selected_range == '1y' else '' }}" data-range="1y">Last Year</button>
+    <button class="chip{{ ' active' if selected_range == '30d' else '' }}" data-range="30d">Last 30 Days</button>
+  </div>
+  <button class="btn-export" onclick="exportData()">
+    <i class="fa-solid fa-download"></i> Export CSV
+  </button>
+</div>
 
 <!-- STATISTICS CARDS -->
 
@@ -193,12 +645,13 @@ gap:25px;
 
 <div class="col-md-4">
 
-<div class="stat-card card1">
+<div class="stat-card card1" onclick="focusChart('cancerChart')">
 
-<div class="stat-title" style="color: #083d38; font-weight: bold;">Total Cancer Types</div>
-<div class="stat-value">{{ cancer_labels|length }}</div>
+<div class="stat-title">Total Cancer Types</div>
+<div class="stat-value" id="statCancerCount">{{ cancer_labels|length }}</div>
 
 <div class="stat-icon">🧬</div>
+<div class="stat-hint"><i class="fa-solid fa-arrow-down"></i> View chart</div>
 
 </div>
 
@@ -207,12 +660,13 @@ gap:25px;
 
 <div class="col-md-4">
 
-<div class="stat-card card2">
+<div class="stat-card card2" onclick="focusChart('smokingChart')">
 
-<div class="stat-title" style="color: #083d38; font-weight: bold;">Smoking Categories</div>
-<div class="stat-value">{{ smoking_labels|length }}</div>
+<div class="stat-title">Smoking Categories</div>
+<div class="stat-value" id="statSmokingCount">{{ smoking_labels|length }}</div>
 
 <div class="stat-icon">🚬</div>
+<div class="stat-hint"><i class="fa-solid fa-arrow-down"></i> View chart</div>
 
 </div>
 
@@ -221,12 +675,13 @@ gap:25px;
 
 <div class="col-md-4">
 
-<div class="stat-card card3">
+<div class="stat-card card3" onclick="focusChart('treatmentChart')">
 
-<div class="stat-title" style="color: #083d38; font-weight: bold;">Treatment Methods</div>
-<div class="stat-value">{{ treatment_labels|length }}</div>
+<div class="stat-title">Treatment Methods</div>
+<div class="stat-value" id="statTreatmentCount">{{ treatment_labels|length }}</div>
 
 <div class="stat-icon">💊</div>
+<div class="stat-hint"><i class="fa-solid fa-arrow-down"></i> View chart</div>
 
 </div>
 
@@ -241,9 +696,16 @@ gap:25px;
 
 <!-- Cancer Pie -->
 
-<div class="chart-box">
+<div class="chart-box" id="box-cancerChart">
 
-<h5 style="color: #083d38; font-weight: bold;">Cancer Type Distribution</h5>
+<div class="chart-box-header">
+<h5>Cancer Type Distribution</h5>
+<div class="type-switch" data-chart="cancerChart">
+<button class="active" data-type="pie">Pie</button>
+<button data-type="doughnut">Donut</button>
+<button data-type="bar">Bar</button>
+</div>
+</div>
 
 <canvas id="cancerChart"></canvas>
 
@@ -252,9 +714,15 @@ gap:25px;
 
 <!-- Smoking Chart -->
 
-<div class="chart-box">
+<div class="chart-box" id="box-smokingChart">
 
-<h5 style="color: #083d38; font-weight: bold;">Smoking vs Cancer</h5>
+<div class="chart-box-header">
+<h5>Smoking vs Cancer</h5>
+<div class="type-switch" data-chart="smokingChart">
+<button class="active" data-type="bar">Bar</button>
+<button data-type="line">Line</button>
+</div>
+</div>
 
 <canvas id="smokingChart"></canvas>
 
@@ -263,9 +731,16 @@ gap:25px;
 
 <!-- Treatment -->
 
-<div class="chart-box">
+<div class="chart-box" id="box-treatmentChart">
 
-<h5 style="color: #083d38; font-weight: bold;">Treatment Distribution</h5>
+<div class="chart-box-header">
+<h5>Treatment Distribution</h5>
+<div class="type-switch" data-chart="treatmentChart">
+<button class="active" data-type="doughnut">Donut</button>
+<button data-type="pie">Pie</button>
+<button data-type="bar">Bar</button>
+</div>
+</div>
 
 <canvas id="treatmentChart"></canvas>
 
@@ -274,9 +749,15 @@ gap:25px;
 
 <!-- Year Chart -->
 
-<div class="chart-box">
+<div class="chart-box" id="box-yearChart">
 
-<h5 style="color: #083d38; font-weight: bold;">Year-wise Cases</h5>
+<div class="chart-box-header">
+<h5 id="timeChartTitle">{{ 'Daily Cases (Last 30 Days)' if selected_range == '30d' else 'Year-wise Cases' }}</h5>
+<div class="type-switch" data-chart="yearChart">
+<button class="active" data-type="line">Line</button>
+<button data-type="bar">Bar</button>
+</div>
+</div>
 
 <canvas id="yearChart"></canvas>
 
@@ -284,89 +765,312 @@ gap:25px;
 
 </div>
 
+<!-- WHO GLOBAL REFERENCE SECTION -->
+
+<div class="global-section">
+
+  <div class="global-header">
+    <div>
+      <h3>🌍 Global Reference Data</h3>
+      <p class="global-sub">Published figures from the WHO Global Health Observatory on cancer screening coverage, national policy, and mortality risk — not real-time case counts (no source on earth reports cancer diagnoses live). Refreshed periodically as WHO updates them.</p>
+    </div>
+    <div class="global-updated" id="globalUpdated">Loading…</div>
+  </div>
+
+  <div class="global-grid" id="globalGrid">
+    <div class="global-loading">Fetching WHO data…</div>
+  </div>
+
+  <p class="global-citation" id="globalCitation"></p>
+
 </div>
 
+</div>
+
+<div class="toast-msg" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Done</span></div>
+
+<script id="dashboard-data" type="application/json">
+{
+  "cancerLabels": {{ cancer_labels | tojson | safe }},
+  "cancerValues": {{ cancer_values | tojson | safe }},
+  "smokingLabels": {{ smoking_labels | tojson | safe }},
+  "smokingValues": {{ smoking_values | tojson | safe }},
+  "treatmentLabels": {{ treatment_labels | tojson | safe }},
+  "treatmentValues": {{ treatment_values | tojson | safe }},
+  "yearLabels": {{ year_labels | tojson | safe }},
+  "yearValues": {{ year_values | tojson | safe }}
+}
+</script>
 
 <script>
 
-const cancerLabels = {{ cancer_labels | tojson }};
-const cancerValues = {{ cancer_values | tojson }};
+const dashboardData = JSON.parse(document.getElementById("dashboard-data").textContent);
+const cancerLabels = dashboardData.cancerLabels;
+const cancerValues = dashboardData.cancerValues;
 
-const smokingLabels = {{ smoking_labels | tojson }};
-const smokingValues = {{ smoking_values | tojson }};
+const smokingLabels = dashboardData.smokingLabels;
+const smokingValues = dashboardData.smokingValues;
 
-const treatmentLabels = {{ treatment_labels | tojson }};
-const treatmentValues = {{ treatment_values | tojson }};
+const treatmentLabels = dashboardData.treatmentLabels;
+const treatmentValues = dashboardData.treatmentValues;
 
-const yearLabels = {{ year_labels | tojson }};
-const yearValues = {{ year_values | tojson }};
+const yearLabels = dashboardData.yearLabels;
+const yearValues = dashboardData.yearValues;
 
+// Shared theming for legibility on dark glass backgrounds
+Chart.defaults.color = "rgba(255,255,255,0.75)";
+Chart.defaults.borderColor = "rgba(255,255,255,0.08)";
+
+const palette = ["#2563eb","#0d9488","#7c3aed","#22d3ee","#a855f7","#34d399","#60a5fa","#f59e0b"];
+
+const darkScales = {
+  x:{ ticks:{ color:"rgba(255,255,255,0.6)" }, grid:{ color:"rgba(255,255,255,0.06)" } },
+  y:{ ticks:{ color:"rgba(255,255,255,0.6)" }, grid:{ color:"rgba(255,255,255,0.06)" } }
+};
+
+const charts = {};
+
+function buildChart(id, type, labels, values, colorOpts){
+  const cfg = {
+    type,
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colorOpts.bg,
+        borderColor: colorOpts.border || colorOpts.bg,
+        fill: type === "line" ? true : undefined,
+        tension: type === "line" ? 0.35 : undefined
+      }]
+    },
+    options: {
+      plugins: { legend: { display: (type === "pie" || type === "doughnut"), labels:{ color:"rgba(255,255,255,0.75)" } } },
+      scales: (type === "bar" || type === "line") ? darkScales : {}
+    }
+  };
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), cfg);
+}
 
 // Cancer Pie
-
-new Chart(document.getElementById("cancerChart"),{
-
-type:"pie",
-
-data:{
-labels:cancerLabels,
-datasets:[{
-data:cancerValues
-}]
-}
-
-});
-
+buildChart("cancerChart", "pie", cancerLabels, cancerValues, { bg: palette });
 
 // Smoking Bar
-
-new Chart(document.getElementById("smokingChart"),{
-
-type:"bar",
-
-data:{
-labels:smokingLabels,
-datasets:[{
-data:smokingValues,
-backgroundColor:"#2e7d6f"
-}]
-}
-
-});
-
+buildChart("smokingChart", "bar", smokingLabels, smokingValues, { bg: "#14b8a6" });
 
 // Treatment Doughnut
-
-new Chart(document.getElementById("treatmentChart"),{
-
-type:"doughnut",
-
-data:{
-labels:treatmentLabels,
-datasets:[{
-data:treatmentValues
-}]
-}
-
-});
-
+buildChart("treatmentChart", "doughnut", treatmentLabels, treatmentValues, { bg: palette });
 
 // Year Line
+buildChart("yearChart", "line", yearLabels, yearValues, { bg: "rgba(96,165,250,0.15)", border: "#60a5fa" });
 
-new Chart(document.getElementById("yearChart"),{
+const sourceData = {
+  cancerChart: { labels: cancerLabels, values: cancerValues },
+  smokingChart: { labels: smokingLabels, values: smokingValues },
+  treatmentChart: { labels: treatmentLabels, values: treatmentValues },
+  yearChart: { labels: yearLabels, values: yearValues }
+};
 
-type:"line",
+let currentRange = "{{ selected_range }}" || "all";
 
-data:{
-labels:yearLabels,
-datasets:[{
-data:yearValues,
-borderColor:"#2e7d6f",
-fill:false
-}]
+/* ===== LIVE DATA REFRESH ===== */
+// Polls the server for the latest blended dataset (static reference data +
+// real user-submitted profiles/symptom checks) and updates charts + stat
+// counts in place, without a page reload.
+
+const chartTypeOf = { cancerChart: "pie", smokingChart: "bar", treatmentChart: "doughnut", yearChart: "line" };
+
+function currentChartType(chartId){
+  const activeBtn = document.querySelector(`.type-switch[data-chart="${chartId}"] button.active`);
+  return activeBtn ? activeBtn.dataset.type : chartTypeOf[chartId];
 }
 
+function colorsFor(chartId, type){
+  const isMulti = (type === "pie" || type === "doughnut");
+  return {
+    bg: isMulti ? palette : (chartId === "yearChart" ? "rgba(96,165,250,0.15)" : (chartId === "cancerChart" ? palette : "#14b8a6")),
+    border: chartId === "yearChart" && !isMulti ? "#60a5fa" : undefined
+  };
+}
+
+async function refreshDashboard(range){
+  range = range || currentRange;
+  const badge = document.getElementById("liveBadge");
+  if (badge) badge.classList.add("refreshing");
+
+  try {
+    const res = await fetch(`/dashboard_data?range=${encodeURIComponent(range)}`);
+    if (!res.ok) throw new Error("Request failed");
+    const data = await res.json();
+
+    sourceData.cancerChart = { labels: data.cancer_labels, values: data.cancer_values };
+    sourceData.smokingChart = { labels: data.smoking_labels, values: data.smoking_values };
+    sourceData.treatmentChart = { labels: data.treatment_labels, values: data.treatment_values };
+    sourceData.yearChart = { labels: data.year_labels, values: data.year_values };
+
+    Object.keys(sourceData).forEach(chartId => {
+      const type = currentChartType(chartId);
+      const { labels, values } = sourceData[chartId];
+      buildChart(chartId, type, labels, values, colorsFor(chartId, type));
+    });
+
+    const statCancer = document.getElementById("statCancerCount");
+    const statSmoking = document.getElementById("statSmokingCount");
+    const statTreatment = document.getElementById("statTreatmentCount");
+    if (statCancer) statCancer.textContent = data.cancer_labels.length;
+    if (statSmoking) statSmoking.textContent = data.smoking_labels.length;
+    if (statTreatment) statTreatment.textContent = data.treatment_labels.length;
+
+    const timeTitle = document.getElementById("timeChartTitle");
+    if (timeTitle) timeTitle.textContent = (range === "30d") ? "Daily Cases (Last 30 Days)" : "Year-wise Cases";
+
+  } catch (err) {
+    console.error("Dashboard refresh failed:", err);
+  } finally {
+    if (badge) badge.classList.remove("refreshing");
+  }
+}
+
+// Refresh automatically every 15s (preserving the selected range), and
+// immediately whenever the tab regains focus
+setInterval(() => refreshDashboard(), 15000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshDashboard();
 });
+
+/* ===== CHART TYPE SWITCHING ===== */
+document.querySelectorAll(".type-switch").forEach(switcher => {
+  const chartId = switcher.dataset.chart;
+  switcher.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      switcher.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const type = btn.dataset.type;
+      const { labels, values } = sourceData[chartId];
+      const isMulti = (type === "pie" || type === "doughnut");
+      buildChart(chartId, type, labels, values, {
+        bg: isMulti ? palette : (chartId === "yearChart" ? "rgba(96,165,250,0.15)" : "#14b8a6"),
+        border: chartId === "yearChart" && !isMulti ? "#60a5fa" : undefined
+      });
+    });
+  });
+});
+
+/* ===== STAT CARD -> CHART FOCUS ===== */
+function focusChart(id){
+  const box = document.getElementById("box-" + id);
+  if (!box) return;
+  box.scrollIntoView({ behavior: "smooth", block: "center" });
+  box.classList.remove("highlight");
+  void box.offsetWidth; // restart animation
+  box.classList.add("highlight");
+  setTimeout(() => box.classList.remove("highlight"), 1500);
+}
+
+/* ===== RANGE FILTER CHIPS ===== */
+// Re-fetches the full dashboard dataset (stat cards + all 4 charts) scoped
+// to the selected date range, rather than slicing already-loaded data.
+document.querySelectorAll("#rangeChips .chip").forEach(chip => {
+  chip.addEventListener("click", async () => {
+    document.querySelectorAll("#rangeChips .chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    currentRange = chip.dataset.range;
+    await refreshDashboard(currentRange);
+    showToast(`Showing ${chip.textContent.trim()} data`);
+  });
+});
+
+/* ===== CSV EXPORT ===== */
+function exportData(){
+  let csv = "Chart,Label,Value\n";
+  Object.entries(sourceData).forEach(([chartId, d]) => {
+    d.labels.forEach((label, i) => {
+      csv += `${chartId},${label},${d.values[i]}\n`;
+    });
+  });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cancer_dashboard_data.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Dashboard data exported");
+}
+
+/* ===== TOAST ===== */
+let toastTimer;
+function showToast(text){
+  const toast = document.getElementById("toast");
+  document.getElementById("toastText").textContent = text;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+/* ===== WHO GLOBAL REFERENCE DATA ===== */
+// Pulls published WHO Global Health Observatory figures (server-cached;
+// see /global_stats). This is real published data, not a live feed — WHO's
+// own cancer estimates are produced annually, so polling here every few
+// minutes is just keeping the page in sync with the server-side cache,
+// not implying the underlying numbers change that often.
+
+function formatGlobalValue(value){
+  if (value === null || value === undefined) return "—";
+  if (Math.abs(value) >= 1000) return Math.round(value).toLocaleString();
+  return Number(value.toFixed(2)).toString();
+}
+
+async function loadGlobalStats(){
+  const grid = document.getElementById("globalGrid");
+  const updatedEl = document.getElementById("globalUpdated");
+  const citationEl = document.getElementById("globalCitation");
+
+  try {
+    const res = await fetch("/global_stats");
+    if (!res.ok) throw new Error("Request failed");
+    const data = await res.json();
+
+    if (data.error && (!data.indicators || data.indicators.length === 0)) {
+      grid.innerHTML = `<div class="global-empty">Couldn't reach WHO's data service right now. Showing this app's own live data above in the meantime.</div>`;
+      updatedEl.textContent = "Unavailable";
+      return;
+    }
+
+    if (!data.indicators || data.indicators.length === 0) {
+      grid.innerHTML = `<div class="global-empty">No WHO cancer indicators returned.</div>`;
+      updatedEl.textContent = "—";
+      return;
+    }
+
+    grid.innerHTML = data.indicators.map(ind => `
+      <div class="global-card">
+        <div class="gname">${ind.name}</div>
+        <div class="gvalue">${formatGlobalValue(ind.value)}</div>
+        <div class="gyear">${ind.year ? "as of " + ind.year : ""}${ind.country ? " · " + ind.country : ""}</div>
+      </div>
+    `).join("");
+
+    if (data.last_updated) {
+      const d = new Date(data.last_updated);
+      updatedEl.textContent = "Synced " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } else {
+      updatedEl.textContent = "—";
+    }
+
+    citationEl.innerHTML = `Source: <a href="${data.source_url}" target="_blank" rel="noopener">${data.source}</a>. Figures are WHO's most recently published estimates, not live counts.`;
+
+  } catch (err) {
+    console.error("Global stats fetch failed:", err);
+    grid.innerHTML = `<div class="global-empty">Couldn't load WHO data right now.</div>`;
+    updatedEl.textContent = "Unavailable";
+  }
+}
+
+loadGlobalStats();
+setInterval(loadGlobalStats, 5 * 60 * 1000);
 
 </script>
 

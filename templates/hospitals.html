@@ -2,272 +2,366 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Find Cancer Hospitals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Cancer Hospitals — Cancer AI Assistant</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- <style>
-body, html {
-    margin:0;
-    padding:0;
-    height:100%;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #c6f7e2, #d5f4e6, #eafaf1);
-    overflow-x: hidden;
-}
 
-.container-box {
-    max-width: 650px;
-    margin: auto;
-    background: rgba(255,255,255,0.95);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    backdrop-filter: blur(5px);
-    margin-top: 40px;
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --purple: #7c3aed;
+    --grad-main: linear-gradient(135deg, #2563eb 0%, #0d9488 50%, #7c3aed 100%);
+    --grad-hero: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0c4a6e 100%);
+    --shadow-glow-blue: 0 0 40px rgba(37,99,235,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: var(--grad-hero);
+    color: white;
+  }
+
+  /* APP LAYOUT */
+  .app-layout {
+    display: flex;
+    height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 0 8px;
+  }
+
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: var(--grad-main);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 15px;
+    box-shadow: var(--shadow-glow-blue);
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    font-size: 0.98rem;
+    font-weight: 700;
+    background: var(--grad-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sidebar a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.65);
+    padding: 11px 14px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar a i {
+    width: 16px;
+    text-align: center;
+    color: var(--teal-light);
+    font-size: 0.85rem;
+  }
+
+  .sidebar a:hover {
+    background: rgba(255,255,255,0.07);
+    color: white;
+  }
+
+  .sidebar a.active {
+    background: rgba(37,99,235,0.18);
+    border: 1px solid rgba(37,99,235,0.3);
+    color: white;
+  }
+
+  /* MAIN CONTENT */
+  .main-content {
+    flex: 1;
     position: relative;
-    z-index: 1;
-}
+    overflow: hidden;
+  }
 
-h3 { text-align:center; color:#2c3e50; margin-bottom:25px; font-weight:600; }
-.btn { border-radius:50px; font-weight:500; padding:10px 20px; transition:0.3s; }
-.btn-success:hover { background-color:#1abc9c; transform: translateY(-2px); }
-.btn-primary:hover { background-color:#3498db; transform: translateY(-2px); }
+  /* Background orbs (subtle, behind map) */
+  .main-content::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+    top: -120px; right: -120px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-input#manualCity { border-radius:50px; padding:12px 20px; border:1px solid #ccc; transition:0.3s; }
-input#manualCity:focus { outline:none; border-color:#3498db; box-shadow:0 0 8px rgba(52,152,219,0.3); }
+  /* MAP AREA */
+  .map-area {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    bottom: 45vh;
+  }
 
-hr { margin:30px 0; border:none; border-top:2px dashed #ccc; }
+  #map {
+    height: 100%;
+    width: 100%;
+    filter: saturate(0.85) brightness(0.95);
+  }
 
-.result-card {
-    background:#ffffff; padding:20px; border-radius:15px; margin-top:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;
-}
-.result-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
-.result-card h5 { font-weight:600; color:#2c3e50; }
-.result-card p { margin-bottom:5px; color:#34495e; }
-
-/* Bot SVG */
-svg.bot {
-    width:300px; /* bigger size */
+  /* BOTTOM PANEL */
+  .hospital-panel {
     position: fixed;
-    bottom: 20px;
+    bottom: 0;
+    left: 240px;
+    width: calc(100% - 240px);
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    padding: 26px 30px;
+    box-shadow: 0 -20px 60px rgba(0,0,0,0.35);
+    height: 45vh;
+    overflow-y: auto;
+    z-index: 20;
+  }
+
+  /* HEADER */
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .panel-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: white;
+  }
+
+  .panel-header .small {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.82rem;
+    margin: 2px 0 0;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(13,148,136,0.18);
+    border: 1px solid rgba(13,148,136,0.35);
+    color: #5eead4;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 50px;
+  }
+
+  .live-badge .dot {
+    width: 6px; height: 6px;
+    background: #34d399;
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* QUICK ACTIONS */
+  .quick-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .action-btn {
+    flex: 1;
+    border: 1px solid rgba(255,255,255,0.14);
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+    font-size: 0.86rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .action-btn:hover {
+    background: rgba(37,99,235,0.18);
+    border-color: rgba(37,99,235,0.35);
+    transform: translateY(-2px);
+  }
+
+  /* INPUT */
+  #manualCity {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+    transition: all 0.25s ease;
+  }
+
+  #manualCity::placeholder {
+    color: rgba(255,255,255,0.4);
+  }
+
+  #manualCity:focus {
+    outline: none;
+    border-color: rgba(37,99,235,0.5);
+    background: rgba(37,99,235,0.1);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+  }
+
+  /* RESULTS */
+  .results-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .result-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 18px;
+    border-radius: 14px;
+    transition: all 0.25s ease;
+  }
+
+  .result-card:hover {
+    background: rgba(255,255,255,0.09);
+    transform: translateY(-3px);
+  }
+
+  .result-card h5 {
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .result-card p {
+    margin: 0 0 3px;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .result-card a {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--grad-main);
+    color: white;
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 50px;
+    transition: all 0.25s ease;
+  }
+
+  .result-card a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.4);
+  }
+
+  /* BOT */
+  svg.bot {
+    width: 200px;
+    position: fixed;
+    bottom: calc(45vh + 20px);
     left: 20px;
     z-index: 1000;
-}
+  }
 
-/* Bot message */
-.bot-msg {
-    width: 250px;
-    max-width: 250px;
+  .bot-msg {
+    width: 230px;
+    max-width: 230px;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    background: rgba(255,255,255,0.95);
+    background: rgba(15,23,42,0.92);
+    border: 1px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    color: rgba(255,255,255,0.9);
     padding: 12px 18px;
     border-radius: 15px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    font-size:16px;
-    z-index:1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    font-size: 0.85rem;
+    z-index: 1000;
     position: fixed;
-    bottom: 280px; /* above robot */
+    bottom: calc(45vh + 20px);
     left: 20px;
     transition: 0.5s;
-}
-</style> -->
-<style>
-    body,html{
-margin:0;
-padding:0;
-height:100%;
-font-family:Arial;
-background:#f2f4f8;
-}
+  }
 
-/* MAP AREA */
+  /* SCROLLBAR for panel */
+  .hospital-panel::-webkit-scrollbar { width: 6px; }
+  .hospital-panel::-webkit-scrollbar-track { background: transparent; }
+  .hospital-panel::-webkit-scrollbar-thumb { background: var(--grad-main); border-radius: 6px; }
 
-.map-area{
-position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:45vh;   /* space for bottom hospital panel */
-}
-
-#map{
-height:100%;
-width:100%;
-}
-.map-placeholder{
-text-align:center;
-color:#555;
-}
-
-
-/* BOTTOM PANEL */
-
-.hospital-panel{
-position:fixed;
-bottom:0;
-left:240px;          /* same width as sidebar */
-width:calc(100% - 240px);  /* remaining space */
-background:rgb(8, 87, 80);
-border-top-left-radius:30px;
-border-top-right-radius:30px;
-padding:25px;
-box-shadow:0 -10px 30px rgba(0,0,0,0.15);
-height:45vh;
-overflow-y:auto;
-color: #19b9a4;
-}
-
-/* HEADER */
-
-.panel-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-
-.panel-header h3{
-margin:0;
-font-weight:600;
-}
-
-.distance{
-font-weight:bold;
-color:#555;
-}
-
-
-/* BUTTONS */
-
-.quick-actions{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
-
-.action-btn{
-flex:1;
-border:none;
-padding:12px;
-border-radius:12px;
-background:#f0f0f0;
-font-weight:500;
-cursor:pointer;
-transition:0.3s;
-}
-
-.action-btn:hover{
-background:#dff5ee;
-}
-
-
-/* INPUT */
-
-#manualCity{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:1px solid #ccc;
-margin-bottom:15px;
-}
-
-
-/* RESULTS */
-
-.result-card{
-background:#fafafa;
-padding:15px;
-border-radius:12px;
-margin-bottom:10px;
-box-shadow:0 3px 10px rgba(0,0,0,0.08);
-}
-
-.result-card h5{
-margin-bottom:5px;
-}
-
-.result-card p{
-margin:0;
-font-size:14px;
-color:#555;
-}
-
-.result-card a{
-margin-top:8px;
-display:inline-block;
-}
-body{
-background:#eaf7f1;
-font-family: 'Segoe UI', sans-serif;
-margin:0;
-}
-
-/* Layout */
-.app-layout{
-display:flex;
-height:100vh;
-}
-
-/* Sidebar */
-.sidebar{
-width:240px;
-background:#cdeee1;
-padding:30px 20px;
-box-shadow:2px 0 10px rgba(0,0,0,0.1);
-display:flex;
-flex-direction:column;
-}
-
-.logo{
-color:#2f6f5e;
-margin-bottom:30px;
-}
-
-.sidebar a{
-text-decoration:none;
-color:#2f6f5e;
-padding:12px;
-border-radius:10px;
-margin-bottom:10px;
-font-weight:500;
-transition:0.2s;
-}
-
-.sidebar a:hover{
-background:#a8e3cd;
-}
-
-/* Main content */
-.main-content{
-flex:1;
-position:relative;
-overflow:hidden;
-}
-
-/* Cards */
-.container-box{
-background:#ffffff;
-border-radius:20px;
-padding:30px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-
-/* Buttons */
-.btn{
-border-radius:30px;
-background:#9adbc4;
-border:none;
-color:#134f42;
-font-weight:600;
-}
-
-.btn:hover{
-background:#7bcfb3;
-}
+  @media (max-width: 768px) {
+    .sidebar { width: 0; padding: 0; overflow: hidden; border: none; }
+    .hospital-panel { left: 0; width: 100%; }
+    svg.bot, .bot-msg { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -275,14 +369,18 @@ background:#7bcfb3;
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2 class="logo">🌿 CancerAI</h2>
+        <div class="sidebar-brand">
+          <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+          <span class="brand-text">Cancer AI Assistant</span>
+        </div>
 
-        <a href="/analysis">🫀Analysis</a>
-        <a href="/chatbot">💬Chatbot</a>
-        <a href="/dashboard">📊 Dashboard</a>
-        <a href="/awareness">📘 Awareness</a>
-        <a href="/report-analyzer">📄 Report Analyzer</a>
-        <a href="/profile">👤 Profile</a>
+        <a href="/analysis"><i class="fa-solid fa-heart-pulse"></i>Analysis</a>
+        <a href="/chatbot"><i class="fa-solid fa-comment-medical"></i>Chatbot</a>
+        <a href="/dashboard"><i class="fa-solid fa-chart-line"></i>Dashboard</a>
+        <a href="/awareness"><i class="fa-solid fa-book-open"></i>Awareness</a>
+        <a href="/report-analyzer"><i class="fa-solid fa-file-medical"></i>Report Analyzer</a>
+        <a href="/hospitals" class="active"><i class="fa-solid fa-hospital"></i>Hospitals</a>
+        <a href="/profile"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
     <!-- Main Content -->
@@ -300,7 +398,7 @@ background:#7bcfb3;
             <h3>Nearest Hospital</h3>
             <p class="small">Search nearby cancer hospitals</p>
         </div>
-        <span class="distance">Live</span>
+        <span class="live-badge"><span class="dot"></span>Live</span>
     </div>
 
 
@@ -308,11 +406,11 @@ background:#7bcfb3;
     <div class="quick-actions">
 
         <button onclick="detectLocation()" class="action-btn">
-            📍 Detect Location
+            <i class="fa-solid fa-location-crosshairs"></i> Detect Location
         </button>
 
         <button onclick="manualLocation()" class="action-btn">
-            🔎 Search
+            <i class="fa-solid fa-magnifying-glass"></i> Search
         </button>
 
     </div>
@@ -429,7 +527,7 @@ function fetchHospitals(lat, lon){
                 <p>${h.city}, ${h.country}</p>
                 <p>⭐ Rating: ${h.rating}</p>
                 <p>📍 Distance: ${h.distance} km</p>
-                <a href="${h.maps}" target="_blank" class="btn btn-primary btn-sm mt-2">Open Map</a>
+                <a href="${h.maps}" target="_blank">Open Map</a>
             </div>`;
 
             if(h.lat && h.lon){
@@ -453,5 +551,3 @@ function fetchHospitals(lat, lon){
 
 </body>
 </html>
-
-

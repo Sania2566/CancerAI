@@ -1,71 +1,146 @@
-name,city,country,rating,latitude,longitude
-Tata Memorial Hospital,Mumbai,India,4.8,19.003,72.843
-AIIMS Cancer Center,Delhi,India,4.7,28.567,77.210
-Apollo Cancer Centre,Chennai,India,4.6,13.062,80.249
-Kidwai Cancer Institute,Bangalore,India,4.5,12.971,77.593
-Basavatarakam Cancer Hospital,Hyderabad,India,4.6,17.385,78.486
-Cancer Institute Adyar,Chennai,India,4.7,13.006,80.257
-Rajiv Gandhi Cancer Institute,Delhi,India,4.5,28.704,77.102
-HCG Cancer Centre,Bangalore,India,4.6,12.971,77.593
-Fortis Cancer Institute,Gurgaon,India,4.5,28.459,77.026
-Max Cancer Centre,Delhi,India,4.6,28.567,77.210
-MD Anderson Cancer Center,Houston,USA,4.9,29.707,95.397
-Memorial Sloan Kettering,New York,USA,4.9,40.764,-73.956
-Mayo Clinic Cancer Center,Rochester,USA,4.9,44.022,-92.466
-Cleveland Clinic Cancer Center,Cleveland,USA,4.8,41.499,-81.694
-Dana Farber Cancer Institute,Boston,USA,4.8,42.337,-71.105
-Johns Hopkins Cancer Center,Baltimore,USA,4.8,39.290,-76.612
-UCLA Jonsson Cancer Center,Los Angeles,USA,4.7,34.052,-118.243
-Stanford Cancer Institute,Stanford,USA,4.7,37.427,-122.170
-City of Hope Cancer Center,Duarte,USA,4.8,34.139,-117.977
-Fred Hutch Cancer Center,Seattle,USA,4.7,47.606,-122.332
-Royal Marsden Hospital,London,UK,4.8,51.484,-0.178
-Christie Hospital,Manchester,UK,4.7,53.463,-2.291
-University College Hospital,London,UK,4.6,51.525,-0.134
-Beatson Cancer Centre,Glasgow,UK,4.6,55.864,-4.251
-Western General Hospital,Edinburgh,UK,4.6,55.953,-3.188
-Addenbrookes Hospital,Cambridge,UK,4.7,52.205,0.121
-Queen Elizabeth Hospital,Birmingham,UK,4.6,52.486,-1.890
-Clatterbridge Cancer Centre,Liverpool,UK,4.6,53.408,-2.991
-Velindre Cancer Centre,Cardiff,UK,4.6,51.481,-3.179
-Royal Surrey Hospital,Guildford,UK,4.6,51.236,-0.570
-Princess Margaret Cancer Centre,Toronto,Canada,4.8,43.653,-79.383
-BC Cancer Centre,Vancouver,Canada,4.7,49.282,-123.120
-Tom Baker Cancer Centre,Calgary,Canada,4.6,51.044,-114.071
-Ottawa Cancer Centre,Ottawa,Canada,4.6,45.421,-75.697
-Cross Cancer Institute,Edmonton,Canada,4.6,53.546,-113.493
-London Health Sciences Centre,London,Canada,4.6,42.984,-81.245
-CancerCare Manitoba,Winnipeg,Canada,4.5,49.895,-97.138
-Jewish General Hospital,Montreal,Canada,4.6,45.501,-73.567
-Saskatoon Cancer Centre,Saskatoon,Canada,4.5,52.133,-106.670
-Nova Scotia Cancer Centre,Halifax,Canada,4.5,44.648,-63.575
-Peter MacCallum Cancer Centre,Melbourne,Australia,4.8,-37.813,144.963
-Chris O'Brien Lifehouse,Sydney,Australia,4.7,-33.868,151.209
-Royal Brisbane Hospital,Brisbane,Australia,4.6,-27.469,153.025
-Perth Cancer Centre,Perth,Australia,4.6,-31.950,115.860
-Calvary North Adelaide Hospital,Adelaide,Australia,4.6,-34.928,138.600
-Canberra Hospital,Canberra,Australia,4.5,-35.280,149.130
-Royal Hobart Hospital,Hobart,Australia,4.5,-42.882,147.327
-Darwin Hospital,Darwin,Australia,4.5,-12.463,130.845
-Townsville Cancer Centre,Townsville,Australia,4.5,-19.258,146.816
-Cairns Hospital,Cairns,Australia,4.5,-16.918,145.778
-Charite Cancer Center,Berlin,Germany,4.7,52.520,13.405
-University Hospital Munich,Munich,Germany,4.7,48.135,11.582
-University Hospital Cologne,Cologne,Germany,4.6,50.937,6.960
-University Hospital Hamburg,Hamburg,Germany,4.6,53.551,9.993
-University Hospital Frankfurt,Frankfurt,Germany,4.6,50.110,8.682
-University Hospital Leipzig,Leipzig,Germany,4.6,51.339,12.373
-University Hospital Bonn,Bonn,Germany,4.6,50.737,7.098
-University Hospital Dresden,Dresden,Germany,4.6,51.050,13.737
-University Hospital Stuttgart,Stuttgart,Germany,4.6,48.775,9.182
-University Hospital Essen,Essen,Germany,4.6,51.455,7.011
-Gustave Roussy Cancer Campus,Paris,France,4.8,48.856,2.352
-Institut Curie,Paris,France,4.8,48.856,2.352
-Lyon Cancer Center,Lyon,France,4.6,45.764,4.835
-Marseille Oncology Centre,Marseille,France,4.6,43.296,5.369
-Toulouse Cancer Institute,Toulouse,France,4.6,43.604,1.444
-Nice Cancer Hospital,Nice,France,4.5,43.710,7.262
-Bordeaux Cancer Centre,Bordeaux,France,4.5,44.837,-0.579
-Lille Oncology Centre,Lille,France,4.5,50.629,3.057
-Montpellier Cancer Centre,Montpellier,France,4.5,43.611,3.877
-Nantes Oncology Centre,Nantes,France,4.5,47.218,-1.553
+name,city,state,country,rating,latitude,longitude
+Andaman & Nicobar Islands Institute of Medical Sciences (Oncology),Port Blair,Andaman and Nicobar Islands,India,3.9,11.6234,92.7265
+Basavatarakam Indo American Cancer Hospital,Hyderabad,Andhra Pradesh,India,4.6,17.4239,78.4738
+MNJ Institute of Oncology and Regional Cancer Centre,Hyderabad,Andhra Pradesh,India,4.3,17.4065,78.4772
+Sri Venkateswara Institute of Medical Sciences (Cancer Wing),Tirupati,Andhra Pradesh,India,4.4,13.6288,79.4192
+"State Cancer Institute, Arunachal Pradesh",Naharlagun,Arunachal Pradesh,India,3.9,27.104,93.695
+Tomo Riba Institute of Health and Medical Sciences (Oncology),Naharlagun,Arunachal Pradesh,India,4.0,27.104,93.695
+Assam Medical College Cancer Centre,Dibrugarh,Assam,India,4.2,27.4728,94.912
+Dr. Bhubaneswar Borooah Cancer Institute,Guwahati,Assam,India,4.5,26.1584,91.7898
+IGIMS Cancer Centre,Patna,Bihar,India,4.3,25.619,85.1411
+Mahavir Cancer Sansthan,Patna,Bihar,India,4.5,25.6093,85.1376
+Government Medical College Hospital Cancer Unit,Chandigarh,Chandigarh,India,4.1,30.7194,76.7684
+Post Graduate Institute of Medical Education and Research (Oncology),Chandigarh,Chandigarh,India,4.6,30.765,76.7765
+Balco Medical Centre (Cancer Care),Raipur,Chhattisgarh,India,4.4,21.2787,81.6803
+"Regional Cancer Centre, Pt. JNM Medical College",Raipur,Chhattisgarh,India,4.2,21.2514,81.6296
+Shri Vinoba Bhave Civil Hospital Cancer Unit,Silvassa,Dadra and Nagar Haveli and Daman and Diu,India,3.8,20.2738,73.0169
+AIIMS Cancer Center,Delhi,Delhi,India,4.7,28.567,77.21
+All India Institute of Medical Sciences (AIIMS),Delhi,Delhi,India,4.7,28.567,77.21
+Max Cancer Centre,Delhi,Delhi,India,4.6,28.567,77.21
+Rajiv Gandhi Cancer Institute,Delhi,Delhi,India,4.5,28.704,77.102
+Rajiv Gandhi Cancer Institute and Research Centre,Delhi,Delhi,India,4.5,28.704,77.102
+Goa Medical College Cancer Centre,Panaji,Goa,India,4.2,15.4909,73.8278
+Manipal Hospital Cancer Care,Panaji,Goa,India,4.3,15.4989,73.8278
+Gujarat Cancer & Research Institute (GCRI),Ahmedabad,Gujarat,India,4.6,23.0395,72.566
+HCG Cancer Centre,Ahmedabad,Gujarat,India,4.5,23.0395,72.5524
+Sterling Cancer Hospital,Vadodara,Gujarat,India,4.4,22.3072,73.1812
+Fortis Cancer Institute,Gurgaon,Haryana,India,4.5,28.459,77.026
+Fortis Memorial Research Institute (Cancer),Gurgaon,Haryana,India,4.6,28.4275,77.0428
+Medanta Cancer Institute,Gurgaon,Haryana,India,4.6,28.4408,77.0858
+Civil Hospital Cancer Care Centre,Panchkula,Haryana,India,4.0,30.6942,76.8606
+Himachal State Cancer Institute,Shimla,Himachal Pradesh,India,4.0,31.1048,77.1672
+Indira Gandhi Medical College Cancer Unit,Shimla,Himachal Pradesh,India,4.1,31.1048,77.1734
+Government Medical College Cancer Unit,Jammu,Jammu and Kashmir,India,4.0,32.7266,74.857
+Sher-i-Kashmir Institute of Medical Sciences (Oncology),Srinagar,Jammu and Kashmir,India,4.3,34.0837,74.7973
+Tata Main Hospital Cancer Centre,Jamshedpur,Jharkhand,India,4.4,22.8046,86.2029
+Rajendra Institute of Medical Sciences Cancer Centre,Ranchi,Jharkhand,India,4.1,23.3441,85.3096
+HCG Cancer Centre,Bangalore,Karnataka,India,4.6,12.971,77.593
+Kidwai Cancer Institute,Bangalore,Karnataka,India,4.5,12.971,77.593
+Kidwai Memorial Institute of Oncology,Bangalore,Karnataka,India,4.5,12.9591,77.5933
+"Mazumdar Shaw Cancer Centre, Narayana Health",Bangalore,Karnataka,India,4.6,12.8016,77.6824
+Malabar Cancer Centre,Kannur,Kerala,India,4.4,11.9706,75.4663
+Amrita Institute of Medical Sciences (Oncology),Kochi,Kerala,India,4.5,10.0432,76.2918
+Regional Cancer Centre,Thiruvananthapuram,Kerala,India,4.6,8.5074,76.9477
+Sonam Norboo Memorial Hospital (Oncology Care),Leh,Ladakh,India,3.8,34.1526,77.577
+Indira Gandhi Hospital (Oncology Referral),Kavaratti,Lakshadweep,India,3.7,10.5669,72.642
+Bansal Hospital Cancer Care,Bhopal,Madhya Pradesh,India,4.2,23.2599,77.4126
+Index Medical College Cancer Centre,Indore,Madhya Pradesh,India,4.1,22.7196,75.8577
+Tata Memorial Hospital,Mumbai,Maharashtra,India,4.8,19.003,72.843
+National Cancer Institute,Nagpur,Maharashtra,India,4.4,21.1458,79.0882
+HCG Manavata Cancer Centre,Nashik,Maharashtra,India,4.5,19.9975,73.7898
+Manipur State Cancer Institute,Imphal,Manipur,India,3.9,24.817,93.9368
+Regional Institute of Medical Sciences Cancer Wing,Imphal,Manipur,India,4.0,24.817,93.9368
+Nazareth Hospital Cancer Unit,Shillong,Meghalaya,India,4.0,25.5788,91.8933
+North Eastern Indira Gandhi Regional Institute (Oncology),Shillong,Meghalaya,India,4.1,25.5689,91.8917
+Civil Hospital Cancer Care Unit,Aizawl,Mizoram,India,3.9,23.7307,92.7173
+Mizoram State Cancer Institute,Aizawl,Mizoram,India,4.0,23.7271,92.7176
+Christian Institute of Health Sciences (Oncology),Dimapur,Nagaland,India,3.9,25.9091,93.7267
+Naga Hospital Authority Cancer Care,Kohima,Nagaland,India,3.9,25.6751,94.1086
+AIIMS Bhubaneswar (Oncology),Bhubaneswar,Odisha,India,4.5,20.1849,85.7757
+Acharya Harihar Regional Cancer Centre,Cuttack,Odisha,India,4.4,20.4625,85.883
+Indira Gandhi Government General Hospital Cancer Unit,Puducherry,Puducherry,India,4.0,11.9139,79.8145
+Jawaharlal Institute of Postgraduate Medical Education and Research (Oncology),Puducherry,Puducherry,India,4.4,11.9416,79.8083
+DMC&H Cancer Centre,Ludhiana,Punjab,India,4.3,30.9009,75.8573
+Max Super Speciality Hospital Cancer Centre,Mohali,Punjab,India,4.4,30.7046,76.7179
+Homi Bhabha Cancer Hospital,Sangrur,Punjab,India,4.3,30.2458,75.8421
+Acharya Tulsi Regional Cancer Treatment & Research Institute,Bikaner,Rajasthan,India,4.2,28.0229,73.3119
+Bhagwan Mahaveer Cancer Hospital & Research Centre,Jaipur,Rajasthan,India,4.5,26.9124,75.7873
+Sikkim Manipal Institute of Medical Sciences (Oncology),Gangtok,Sikkim,India,4.0,27.3389,88.6065
+State Referral Hospital Cancer Unit,Gangtok,Sikkim,India,3.9,27.3314,88.6138
+Apollo Cancer Centre,Chennai,Tamil Nadu,India,4.6,13.062,80.249
+"Cancer Institute (WIA), Adyar",Chennai,Tamil Nadu,India,4.7,13.006,80.257
+Cancer Institute Adyar,Chennai,Tamil Nadu,India,4.7,13.006,80.257
+Government Royapettah Hospital Cancer Wing,Chennai,Tamil Nadu,India,4.1,13.0524,80.2643
+Basavatarakam Cancer Hospital,Hyderabad,Telangana,India,4.6,17.385,78.486
+MNJ Institute of Oncology,Hyderabad,Telangana,India,4.4,17.4065,78.4772
+Yashoda Hospitals Cancer Institute,Hyderabad,Telangana,India,4.5,17.4239,78.4738
+Agartala Government Medical College Cancer Unit,Agartala,Tripura,India,3.9,23.8315,91.2868
+Tripura State Cancer Institute,Agartala,Tripura,India,3.9,23.8364,91.2799
+King George's Medical University Cancer Centre,Lucknow,Uttar Pradesh,India,4.3,26.8746,80.9433
+Sanjay Gandhi Post Graduate Institute (Oncology),Lucknow,Uttar Pradesh,India,4.4,26.7568,80.9434
+Mahamana Pandit Madan Mohan Malaviya Cancer Centre,Varanasi,Uttar Pradesh,India,4.3,25.3176,82.9739
+Himalayan Institute of Medical Sciences Cancer Centre,Dehradun,Uttarakhand,India,4.2,30.0668,78.0648
+AIIMS Rishikesh (Oncology),Rishikesh,Uttarakhand,India,4.5,30.1318,78.2676
+Chittaranjan National Cancer Institute,Kolkata,West Bengal,India,4.5,22.539,88.354
+Saroj Gupta Cancer Centre & Research Institute,Kolkata,West Bengal,India,4.4,22.4992,88.3712
+Tata Medical Center,Kolkata,West Bengal,India,4.6,22.5847,88.4156
+Calvary North Adelaide Hospital,Adelaide,,Australia,4.6,-34.928,138.6
+Royal Brisbane Hospital,Brisbane,,Australia,4.6,-27.469,153.025
+Cairns Hospital,Cairns,,Australia,4.5,-16.918,145.778
+Canberra Hospital,Canberra,,Australia,4.5,-35.28,149.13
+Darwin Hospital,Darwin,,Australia,4.5,-12.463,130.845
+Royal Hobart Hospital,Hobart,,Australia,4.5,-42.882,147.327
+Peter MacCallum Cancer Centre,Melbourne,,Australia,4.8,-37.813,144.963
+Perth Cancer Centre,Perth,,Australia,4.6,-31.95,115.86
+Chris O'Brien Lifehouse,Sydney,,Australia,4.7,-33.868,151.209
+Townsville Cancer Centre,Townsville,,Australia,4.5,-19.258,146.816
+Tom Baker Cancer Centre,Calgary,,Canada,4.6,51.044,-114.071
+Cross Cancer Institute,Edmonton,,Canada,4.6,53.546,-113.493
+Nova Scotia Cancer Centre,Halifax,,Canada,4.5,44.648,-63.575
+London Health Sciences Centre,London,,Canada,4.6,42.984,-81.245
+Jewish General Hospital,Montreal,,Canada,4.6,45.501,-73.567
+Ottawa Cancer Centre,Ottawa,,Canada,4.6,45.421,-75.697
+Saskatoon Cancer Centre,Saskatoon,,Canada,4.5,52.133,-106.67
+Princess Margaret Cancer Centre,Toronto,,Canada,4.8,43.653,-79.383
+BC Cancer Centre,Vancouver,,Canada,4.7,49.282,-123.12
+CancerCare Manitoba,Winnipeg,,Canada,4.5,49.895,-97.138
+Bordeaux Cancer Centre,Bordeaux,,France,4.5,44.837,-0.579
+Lille Oncology Centre,Lille,,France,4.5,50.629,3.057
+Lyon Cancer Center,Lyon,,France,4.6,45.764,4.835
+Marseille Oncology Centre,Marseille,,France,4.6,43.296,5.369
+Montpellier Cancer Centre,Montpellier,,France,4.5,43.611,3.877
+Nantes Oncology Centre,Nantes,,France,4.5,47.218,-1.553
+Nice Cancer Hospital,Nice,,France,4.5,43.71,7.262
+Gustave Roussy Cancer Campus,Paris,,France,4.8,48.856,2.352
+Institut Curie,Paris,,France,4.8,48.856,2.352
+Toulouse Cancer Institute,Toulouse,,France,4.6,43.604,1.444
+Charite Cancer Center,Berlin,,Germany,4.7,52.52,13.405
+University Hospital Bonn,Bonn,,Germany,4.6,50.737,7.098
+University Hospital Cologne,Cologne,,Germany,4.6,50.937,6.96
+University Hospital Dresden,Dresden,,Germany,4.6,51.05,13.737
+University Hospital Essen,Essen,,Germany,4.6,51.455,7.011
+University Hospital Frankfurt,Frankfurt,,Germany,4.6,50.11,8.682
+University Hospital Hamburg,Hamburg,,Germany,4.6,53.551,9.993
+University Hospital Leipzig,Leipzig,,Germany,4.6,51.339,12.373
+University Hospital Munich,Munich,,Germany,4.7,48.135,11.582
+University Hospital Stuttgart,Stuttgart,,Germany,4.6,48.775,9.182
+Queen Elizabeth Hospital,Birmingham,,UK,4.6,52.486,-1.89
+Addenbrookes Hospital,Cambridge,,UK,4.7,52.205,0.121
+Velindre Cancer Centre,Cardiff,,UK,4.6,51.481,-3.179
+Western General Hospital,Edinburgh,,UK,4.6,55.953,-3.188
+Beatson Cancer Centre,Glasgow,,UK,4.6,55.864,-4.251
+Royal Surrey Hospital,Guildford,,UK,4.6,51.236,-0.57
+Clatterbridge Cancer Centre,Liverpool,,UK,4.6,53.408,-2.991
+Royal Marsden Hospital,London,,UK,4.8,51.484,-0.178
+University College Hospital,London,,UK,4.6,51.525,-0.134
+Christie Hospital,Manchester,,UK,4.7,53.463,-2.291
+Johns Hopkins Cancer Center,Baltimore,,USA,4.8,39.29,-76.612
+Dana Farber Cancer Institute,Boston,,USA,4.8,42.337,-71.105
+Cleveland Clinic Cancer Center,Cleveland,,USA,4.8,41.499,-81.694
+City of Hope Cancer Center,Duarte,,USA,4.8,34.139,-117.977
+MD Anderson Cancer Center,Houston,,USA,4.9,29.707,95.397
+UCLA Jonsson Cancer Center,Los Angeles,,USA,4.7,34.052,-118.243
+Memorial Sloan Kettering,New York,,USA,4.9,40.764,-73.956
+Mayo Clinic Cancer Center,Rochester,,USA,4.9,44.022,-92.466
+Fred Hutch Cancer Center,Seattle,,USA,4.7,47.606,-122.332
+Stanford Cancer Institute,Stanford,,USA,4.7,37.427,-122.17
