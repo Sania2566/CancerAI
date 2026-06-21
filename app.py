@@ -10,6 +10,21 @@ from datetime import datetime, timedelta
 import shutil
 import requests
 
+# ---------------- GOOGLE SIGN-IN ---------------- #
+# Verifies the ID token Google's JS SDK sends us. Requires:
+#   pip install google-auth
+# Set your real OAuth Client ID (from Google Cloud Console) either via the
+# GOOGLE_CLIENT_ID environment variable, or by editing the fallback string
+# below directly. The same Client ID also needs to go into the
+# data-client_id attribute on the Google button in home.html.
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
+
+GOOGLE_CLIENT_ID = os.environ.get(
+    "GOOGLE_CLIENT_ID",
+    "290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com"
+)
+
 # Auto-detect tesseract instead of hardcoding a Windows-only path.
 # Priority: TESSERACT_CMD env var > PATH lookup > hardcoded fallback below.
 # If you don't want to deal with env vars/PATH, just uncomment and edit the
@@ -38,7 +53,9 @@ CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     email TEXT UNIQUE,
-    password TEXT
+    password TEXT,
+    auth_provider TEXT DEFAULT 'local',
+    google_id TEXT
 )
 """)
 
@@ -110,6 +127,14 @@ def migrate_db():
     databases that already existed before this column was added."""
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
+
+    cursor.execute("PRAGMA table_info(users)")
+    user_columns = [row[1] for row in cursor.fetchall()]
+    if "auth_provider" not in user_columns:
+        cursor.execute("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'local'")
+    if "google_id" not in user_columns:
+        cursor.execute("ALTER TABLE users ADD COLUMN google_id TEXT")
+    conn.commit()
 
     cursor.execute("PRAGMA table_info(profiles)")
     columns = [row[1] for row in cursor.fetchall()]
@@ -185,6 +210,75 @@ def signup():
         "redirect": "/login"
     })
 
+@app.route("/auth/google", methods=["POST"])
+def auth_google():
+    """
+    Verifies the Google ID token sent by the frontend (Google Identity
+    Services button). On success, creates a new local account for
+    first-time Google users (with no usable password) or logs an
+    existing one in, then follows the same "has a profile yet?" redirect
+    logic as the regular /login route.
+    """
+    body = request.get_json(silent=True) or {}
+    credential = body.get("credential")
+
+    if not credential:
+        return jsonify({"success": False, "message": "Missing Google credential"}), 400
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), GOOGLE_CLIENT_ID
+        )
+    except ValueError as e:
+        return jsonify({"success": False, "message": f"Invalid Google token: {e}"}), 401
+
+    # idinfo is now trustworthy — it was cryptographically verified by Google.
+    email = idinfo.get("email")
+    name = idinfo.get("name") or email.split("@")[0]
+    google_id = idinfo.get("sub")
+
+    if not email:
+        return jsonify({"success": False, "message": "Google account has no email"}), 400
+
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, name FROM users WHERE email=?", (email,))
+    existing_user = cursor.fetchone()
+
+    if existing_user:
+        # Link google_id in case this email previously signed up with a
+        # password, so future logins recognize either method.
+        cursor.execute(
+            "UPDATE users SET google_id=?, auth_provider=? WHERE email=?",
+            (google_id, "google", email)
+        )
+        display_name = existing_user[1]
+    else:
+        cursor.execute(
+            "INSERT INTO users(name, email, password, auth_provider, google_id) "
+            "VALUES (?,?,?,?,?)",
+            (name, email, None, "google", google_id)
+        )
+        display_name = name
+
+    conn.commit()
+
+    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
+    existing_profile = cursor.fetchone()
+    conn.close()
+
+    session["email"] = email
+    next_page = "/analysis" if existing_profile else "/profile_setup"
+
+    return jsonify({
+        "success": True,
+        "message": "Signed in with Google",
+        "name": display_name,
+        "redirect": next_page
+    })
+
+
 @app.route("/login", methods=["POST"])
 def login():
 
@@ -195,7 +289,7 @@ def login():
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
+        "SELECT * FROM users WHERE email=? AND password=? AND password IS NOT NULL",
         (email,password)
     )
 

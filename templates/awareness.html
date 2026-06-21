@@ -482,13 +482,59 @@
   ::-webkit-scrollbar-thumb { background: var(--grad-main); border-radius: 6px; }
 
   .fade-section { animation: fadeSlide 0.5s ease both; }
+
+  /* ── MOBILE NAV ─────────────────────────────────── */
+  .nav-toggle-btn {
+    display: none;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  @media (max-width: 860px) {
+    .nav-toggle-btn { display: flex; }
+    .nav-links-row {
+      display: none;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      background: rgba(15,23,42,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 20px 18px;
+      gap: 4px !important;
+    }
+    .nav-links-row.open { display: flex; }
+    .nav-link-custom, .btn-nav-primary {
+      width: 100%;
+      padding: 12px 14px !important;
+      border-radius: 10px;
+    }
+    .btn-nav-primary { margin-left: 0 !important; margin-top: 6px; justify-content: center; }
+  }
+
+  @media (max-width: 600px) {
+    .page-wrapper { padding: 36px 16px 60px; }
+    .header-row { flex-direction: column; align-items: flex-start; }
+    .progress-widget { width: 100%; min-width: 0; }
+    .section-title-main { font-size: 1.25rem; }
+    .quiz-card { padding: 26px 20px; }
+    .search-bar-wrap { flex-direction: column; align-items: stretch; }
+    .filter-chip { text-align: center; }
+  }
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar-custom">
-  <div class="container">
+  <div class="container" style="position:relative;">
     <div class="d-flex align-items-center justify-content-between w-100">
       <a href="/home" class="navbar-brand-custom">
         <div class="brand-icon"><i class="fas fa-dna"></i></div>
@@ -497,7 +543,10 @@
           <span class="brand-sub">ASSISTANT</span>
         </div>
       </a>
-      <div class="d-flex align-items-center gap-1">
+      <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="d-flex align-items-center gap-1 nav-links-row" id="navLinksRow">
         <a href="/analysis" class="nav-link-custom"><i class="fa-solid fa-heart-pulse me-1"></i>Analysis</a>
         <a href="/dashboard" class="nav-link-custom"><i class="fa-solid fa-chart-line me-1"></i>Dashboard</a>
         <a href="/chatbot" class="nav-link-custom"><i class="fa-solid fa-robot me-1"></i>Chatbot</a>
@@ -1174,6 +1223,18 @@ document.querySelectorAll('.therapy-tab-btn').forEach(btn => {
     document.getElementById('panel-' + btn.dataset.therapy).classList.add('active');
   });
 });
+
+/* MOBILE NAV TOGGLE */
+const navToggleBtn = document.getElementById("navToggleBtn");
+const navLinksRow = document.getElementById("navLinksRow");
+if (navToggleBtn && navLinksRow) {
+  navToggleBtn.addEventListener("click", () => {
+    navLinksRow.classList.toggle("open");
+  });
+  navLinksRow.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => navLinksRow.classList.remove("open"));
+  });
+}
 </script>
 </body>
 </html>

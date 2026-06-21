@@ -1666,12 +1666,27 @@
       .hiw-step { flex-direction: column; gap: 16px; }
       .footer-bottom { flex-direction: column; text-align: center; }
       .waveform-bar span:nth-child(n+9) { display: none; }
+      .navbar-custom .container { padding-left: 16px; padding-right: 16px; }
+      .brand-text { font-size: 0.95rem; }
+      .btn-nav-login, .btn-nav-signup { padding: 7px 14px !important; font-size: 0.82rem !important; }
     }
 
     @media (max-width: 576px) {
       .auth-card { padding: 28px 20px; border-radius: 20px; }
+      .auth-illustration-svg { max-width: 260px; }
+      .page-wrapper, .section-pad .container { padding-left: 14px; padding-right: 14px; }
+      h1, .hero-title { font-size: clamp(1.7rem, 7vw, 2.2rem) !important; }
+      .btn-nav-signup span, .btn-nav-login span { display: inline; }
+    }
+
+    @media (max-width: 420px) {
+      .brand-text { display: none; }
+      .navbar-brand-custom .brand-icon { margin-right: 0; }
     }
   </style>
+  <!-- Google Identity Services (Sign in with Google) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 </head>
 <body>
 
@@ -2930,6 +2945,87 @@
   /* =========================================================
      LOGIN FORM HANDLER
   ========================================================= */
+  /* =========================================================
+     GOOGLE SIGN-IN (Google Identity Services)
+     Replace YOUR_GOOGLE_CLIENT_ID below with the real Client ID from
+     Google Cloud Console > APIs & Services > Credentials. It must match
+     GOOGLE_CLIENT_ID in app.py exactly.
+  ========================================================= */
+  const GOOGLE_CLIENT_ID = "290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com";
+
+  function initGoogleSignIn() {
+    if (!window.google || !window.google.accounts) {
+      // Script not loaded yet — retry shortly.
+      setTimeout(initGoogleSignIn, 300);
+      return;
+    }
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential
+    });
+  }
+
+  function handleGoogleCredential(response) {
+    // response.credential is the signed ID token; we never read user info
+    // on the client — the backend verifies it with Google directly.
+    fetch('/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential })
+    })
+      .then(res => res.json().then(data => ({ status: res.status, data })))
+      .then(({ data }) => {
+        if (data.success) {
+          showSuccessOverlay('Welcome!', 'Signed in with Google. Redirecting…');
+          setTimeout(() => { window.location.href = data.redirect || '/'; }, 1200);
+        } else {
+          alert(data.message || 'Google sign-in failed. Please try again.');
+        }
+      })
+      .catch(() => alert('Network error during Google sign-in. Please try again.'));
+  }
+
+  // Wire both the login-page and signup-page Google buttons. Google's
+  // own rendered button is the only fully reliable trigger for the
+  // popup across browsers, so we render two invisible Google buttons
+  // and forward clicks from our styled buttons onto them.
+  document.addEventListener('DOMContentLoaded', () => {
+    initGoogleSignIn();
+    renderHiddenGoogleButtons();
+  });
+
+  function renderHiddenGoogleButtons() {
+    if (!window.google || !window.google.accounts) {
+      setTimeout(renderHiddenGoogleButtons, 300);
+      return;
+    }
+
+    // Create two off-screen containers Google can render its real
+    // button into — one per page, since GIS needs a unique element.
+    ['googleLoginBtn', 'googleSignupBtn'].forEach(id => {
+      const visibleBtn = document.getElementById(id);
+      if (!visibleBtn) return;
+
+      const hiddenContainer = document.createElement('div');
+      hiddenContainer.id = id + 'GisProxy';
+      hiddenContainer.style.position = 'fixed';
+      hiddenContainer.style.top = '-9999px';
+      hiddenContainer.style.left = '-9999px';
+      document.body.appendChild(hiddenContainer);
+
+      google.accounts.id.renderButton(hiddenContainer, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large'
+      });
+
+      visibleBtn.addEventListener('click', () => {
+        const realGoogleBtn = hiddenContainer.querySelector('div[role="button"]');
+        if (realGoogleBtn) realGoogleBtn.click();
+      });
+    });
+  }
+
   function handleLogin(e) {
     e.preventDefault();
     const errEl = document.getElementById('loginServerError');
