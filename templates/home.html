@@ -2966,26 +2966,32 @@
   }
 
   function handleGoogleCredential(response) {
-    // response.credential is the signed ID token; we never read user info
-    // on the client — the backend verifies it with Google directly.
+    console.log("Google callback fired!");
+    console.log(response);
+
     fetch('/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential: response.credential })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential })
     })
-      .then(res => res.json().then(data => ({ status: res.status, data })))
-      .then(({ data }) => {
+    .then(res => {
+        console.log("Response status:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("Backend response:", data);
+
         if (data.success) {
-          // Navigate immediately — no overlay delay that could race with
-          // a dismiss click. For new signups (redirect = /profile_setup)
-          // the profile setup page itself is the clear "next step" signal.
-          window.location.href = data.redirect || '/';
+            window.location.href = data.redirect || '/';
         } else {
-          alert(data.message || 'Google sign-in failed. Please try again.');
+            alert(data.message || 'Google sign-in failed.');
         }
-      })
-      .catch(() => alert('Network error during Google sign-in. Please try again.'));
-  }
+    })
+    .catch(err => {
+        console.error("Google Sign-In Error:", err);
+        alert('Network error during Google sign-in.');
+    });
+}
 
   // Wire both the login-page and signup-page Google buttons. Google's
   // own rendered button is the only fully reliable trigger for the
