@@ -2976,8 +2976,10 @@
       .then(res => res.json().then(data => ({ status: res.status, data })))
       .then(({ data }) => {
         if (data.success) {
-          showSuccessOverlay('Welcome!', 'Signed in with Google. Redirecting…');
-          setTimeout(() => { window.location.href = data.redirect || '/'; }, 1200);
+          // Navigate immediately — no overlay delay that could race with
+          // a dismiss click. For new signups (redirect = /profile_setup)
+          // the profile setup page itself is the clear "next step" signal.
+          window.location.href = data.redirect || '/';
         } else {
           alert(data.message || 'Google sign-in failed. Please try again.');
         }
