@@ -18,7 +18,7 @@ from google.auth.transport import requests as google_requests
 # Set it as the OCR_SPACE_API_KEY environment variable. Falls back to the
 # public "helloworld" demo key, which is shared and rate-limited — fine for a
 # quick test, but get your own key for real use.
-OCR_SPACE_API_KEY = os.environ.get("K83436234888957", "helloworld")
+OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY", "helloworld")
 OCR_SPACE_ENDPOINT = "https://api.ocr.space/parse/image"
 
 
@@ -37,6 +37,15 @@ def ocr_extract_text(file_path):
                 "isTable": "false",
             },
             timeout=30,
+        )
+
+    if response.status_code == 403:
+        raise RuntimeError(
+            "OCR service rejected the request (403). This usually means "
+            "OCR_SPACE_API_KEY is missing, invalid, or still set to the "
+            "shared 'helloworld' demo key. Get a free key at "
+            "https://ocr.space/ocrapi/freekey and set it as an environment "
+            "variable."
         )
 
     response.raise_for_status()
