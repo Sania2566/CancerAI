@@ -2854,7 +2854,43 @@
        GOOGLE SIGN-IN (real) — handles the credential returned by
        Google Identity Services after a user signs in / signs up.
     ========================================================= */
+    function showGoogleAuthOverlay(message) {
+      let overlay = document.getElementById('googleAuthOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'googleAuthOverlay';
+        overlay.style.cssText = `
+          position: fixed; inset: 0; background: rgba(15,23,42,0.75);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 99999; backdrop-filter: blur(4px);
+        `;
+        overlay.innerHTML = `
+          <div style="background:#fff; border-radius:16px; padding:32px 40px; text-align:center; max-width:340px; font-family:'Poppins',sans-serif;">
+            <div style="width:40px;height:40px;margin:0 auto 16px; border:4px solid #e2e8f0; border-top-color:#2563eb; border-radius:50%; animation: googleAuthSpin 0.9s linear infinite;"></div>
+            <p id="googleAuthMessage" style="margin:0; color:#0f172a; font-weight:600; font-size:0.95rem;"></p>
+          </div>
+          <style>@keyframes googleAuthSpin { to { transform: rotate(360deg); } }</style>
+        `;
+        document.body.appendChild(overlay);
+      }
+      document.getElementById('googleAuthMessage').textContent = message;
+      overlay.style.display = 'flex';
+    }
+
+    function hideGoogleAuthOverlay() {
+      const overlay = document.getElementById('googleAuthOverlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+
     window.handleGoogleCredentialResponse = function(response) {
+      showGoogleAuthOverlay('Signing you in with Google…');
+
+      // Free hosting tiers can take 30-60s to wake up from sleep on the
+      // first request — let the user know instead of looking frozen.
+      const slowHostTimer = setTimeout(() => {
+        showGoogleAuthOverlay('Still working — the server may be waking up from sleep. This can take up to a minute…');
+      }, 8000);
+
       fetch('/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2862,14 +2898,19 @@
       })
       .then(res => res.json().then(data => ({ ok: res.ok, data })))
       .then(({ ok, data }) => {
+        clearTimeout(slowHostTimer);
         if (ok && data.success) {
+          showGoogleAuthOverlay('Success! Redirecting…');
           window.location.href = data.redirect || '/analysis';
         } else {
+          hideGoogleAuthOverlay();
           alert(data.message || 'Google sign-in failed. Please try again.');
         }
       })
       .catch(() => {
-        alert('Could not reach the server for Google sign-in. Please try again.');
+        clearTimeout(slowHostTimer);
+        hideGoogleAuthOverlay();
+        alert('Could not reach the server for Google sign-in. Please try again in a moment — the server may still be starting up.');
       });
     };
 
