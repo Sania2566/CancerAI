@@ -3,43 +3,67 @@ import pandas as pd
 from geopy.distance import geodesic
 import pickle
 import sqlite3
-import pytesseract
-from PIL import Image
 import os
 from datetime import datetime, timedelta
 import shutil
 import requests
-
-# ---------------- GOOGLE SIGN-IN ---------------- #
-# Verifies the ID token Google's JS SDK sends us. Requires:
-#   pip install google-auth
-# Set your real OAuth Client ID (from Google Cloud Console) either via the
-# GOOGLE_CLIENT_ID environment variable, or by editing the fallback string
-# below directly. The same Client ID also needs to go into the
-# data-client_id attribute on the Google button in home.html.
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
+# ---------------- OCR (cloud-based, no server install needed) ---------------- #
+# Report analysis uses the OCR.space cloud API instead of a locally-installed
+# Tesseract binary, since most hosts (e.g. Render's native runtime) don't allow
+# installing system packages. Get a free key (no credit card) at:
+#   https://ocr.space/ocrapi/freekey
+# Set it as the OCR_SPACE_API_KEY environment variable. Falls back to the
+# public "helloworld" demo key, which is shared and rate-limited — fine for a
+# quick test, but get your own key for real use.
+OCR_SPACE_API_KEY = os.environ.get("K83436234888957", "helloworld")
+OCR_SPACE_ENDPOINT = "https://api.ocr.space/parse/image"
+
+
+def ocr_extract_text(file_path):
+    """Send an image file to the OCR.space API and return the extracted text.
+    Raises RuntimeError with a human-readable message on failure."""
+    with open(file_path, "rb") as f:
+        response = requests.post(
+            OCR_SPACE_ENDPOINT,
+            files={"file": f},
+            data={
+                "apikey": OCR_SPACE_API_KEY,
+                "language": "eng",
+                "OCREngine": 2,
+                "scale": "true",
+                "isTable": "false",
+            },
+            timeout=30,
+        )
+
+    response.raise_for_status()
+    result = response.json()
+
+    if result.get("IsErroredOnProcessing"):
+        error_message = result.get("ErrorMessage") or ["Unknown OCR error"]
+        if isinstance(error_message, list):
+            error_message = "; ".join(error_message)
+        raise RuntimeError(error_message)
+
+    parsed_results = result.get("ParsedResults") or []
+    if not parsed_results:
+        raise RuntimeError("No text could be extracted from this image")
+
+    return parsed_results[0].get("ParsedText", "")
+
+app = Flask(__name__)
+app.secret_key = "secret123"
+
+# Google OAuth Client ID (from Google Cloud Console -> APIs & Services -> Credentials).
+# Set this as an environment variable in production; the literal string below
+# is only a local-development fallback and must be replaced with your own ID.
 GOOGLE_CLIENT_ID = os.environ.get(
     "GOOGLE_CLIENT_ID",
     "290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com"
 )
-
-# Auto-detect tesseract instead of hardcoding a Windows-only path.
-# Priority: TESSERACT_CMD env var > PATH lookup > hardcoded fallback below.
-# If you don't want to deal with env vars/PATH, just uncomment and edit the
-# line below with your actual install path:
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
-_tesseract_path = os.environ.get("TESSERACT_CMD") or shutil.which("tesseract")
-if _tesseract_path:
-    pytesseract.pytesseract.tesseract_cmd = _tesseract_path
-else:
-    print("WARNING: tesseract executable not found on PATH. "
-          "Install it or set the TESSERACT_CMD environment variable.")
-
-app = Flask(__name__)
-app.secret_key = "secret123"
 
 # ---------------- DATABASE ---------------- #
 
@@ -53,9 +77,7 @@ CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     email TEXT UNIQUE,
-    password TEXT,
-    auth_provider TEXT DEFAULT 'local',
-    google_id TEXT
+    password TEXT
 )
 """)
 
@@ -127,14 +149,6 @@ def migrate_db():
     databases that already existed before this column was added."""
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-
-    cursor.execute("PRAGMA table_info(users)")
-    user_columns = [row[1] for row in cursor.fetchall()]
-    if "auth_provider" not in user_columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'local'")
-    if "google_id" not in user_columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN google_id TEXT")
-    conn.commit()
 
     cursor.execute("PRAGMA table_info(profiles)")
     columns = [row[1] for row in cursor.fetchall()]
@@ -210,75 +224,6 @@ def signup():
         "redirect": "/login"
     })
 
-@app.route("/auth/google", methods=["POST"])
-def auth_google():
-    """
-    Verifies the Google ID token sent by the frontend (Google Identity
-    Services button). On success, creates a new local account for
-    first-time Google users (with no usable password) or logs an
-    existing one in, then follows the same "has a profile yet?" redirect
-    logic as the regular /login route.
-    """
-    body = request.get_json(silent=True) or {}
-    credential = body.get("credential")
-
-    if not credential:
-        return jsonify({"success": False, "message": "Missing Google credential"}), 400
-
-    try:
-        idinfo = google_id_token.verify_oauth2_token(
-            credential, google_requests.Request(), GOOGLE_CLIENT_ID
-        )
-    except ValueError as e:
-        return jsonify({"success": False, "message": f"Invalid Google token: {e}"}), 401
-
-    # idinfo is now trustworthy — it was cryptographically verified by Google.
-    email = idinfo.get("email")
-    name = idinfo.get("name") or email.split("@")[0]
-    google_id = idinfo.get("sub")
-
-    if not email:
-        return jsonify({"success": False, "message": "Google account has no email"}), 400
-
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT id, name FROM users WHERE email=?", (email,))
-    existing_user = cursor.fetchone()
-
-    if existing_user:
-        # Link google_id in case this email previously signed up with a
-        # password, so future logins recognize either method.
-        cursor.execute(
-            "UPDATE users SET google_id=?, auth_provider=? WHERE email=?",
-            (google_id, "google", email)
-        )
-        display_name = existing_user[1]
-    else:
-        cursor.execute(
-            "INSERT INTO users(name, email, password, auth_provider, google_id) "
-            "VALUES (?,?,?,?,?)",
-            (name, email, None, "google", google_id)
-        )
-        display_name = name
-
-    conn.commit()
-
-    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
-    existing_profile = cursor.fetchone()
-    conn.close()
-
-    session["email"] = email
-    next_page = "/analysis" if existing_profile else "/profile_setup"
-
-    return jsonify({
-        "success": True,
-        "message": "Signed in with Google",
-        "name": display_name,
-        "redirect": next_page
-    })
-
-
 @app.route("/login", methods=["POST"])
 def login():
 
@@ -289,7 +234,7 @@ def login():
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=? AND password IS NOT NULL",
+        "SELECT * FROM users WHERE email=? AND password=?",
         (email,password)
     )
 
@@ -316,6 +261,65 @@ def login():
         "success": True,
         "message": "Login successful",
         "name": user[1],
+        "redirect": next_page
+    })
+
+@app.route("/auth/google", methods=["POST"])
+def auth_google():
+    data = request.get_json(silent=True) or {}
+    credential = data.get("credential")
+
+    if not credential:
+        return jsonify({"success": False, "message": "Missing Google credential"}), 400
+
+    if not GOOGLE_CLIENT_ID or GOOGLE_CLIENT_ID.startswith("YOUR_GOOGLE_CLIENT_ID"):
+        return jsonify({
+            "success": False,
+            "message": "Google sign-in isn't configured yet. Set GOOGLE_CLIENT_ID on the server."
+        }), 500
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), GOOGLE_CLIENT_ID
+        )
+    except ValueError as e:
+        print(f"[Google Sign-In] Token verification failed: {e}")
+        return jsonify({"success": False, "message": f"Invalid Google credential: {e}"}), 401
+
+    email = idinfo.get("email")
+    name = idinfo.get("name") or (email.split("@")[0] if email else "Google User")
+
+    if not email:
+        return jsonify({"success": False, "message": "Your Google account has no email address"}), 400
+
+    if not idinfo.get("email_verified", True):
+        return jsonify({"success": False, "message": "Please verify your Google email address first"}), 400
+
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE email=?", (email,))
+    user = cursor.fetchone()
+
+    if not user:
+        # New account via Google — no password since Google handles auth.
+        cursor.execute(
+            "INSERT INTO users(name,email,password) VALUES(?,?,?)",
+            (name, email, None)
+        )
+        conn.commit()
+
+    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
+    existing_profile = cursor.fetchone()
+    conn.close()
+
+    session["email"] = email
+    next_page = "/analysis" if existing_profile else "/profile_setup"
+
+    return jsonify({
+        "success": True,
+        "message": "Signed in with Google",
+        "name": name,
         "redirect": next_page
     })
 
@@ -1254,8 +1258,7 @@ def analyze_report():
     file.save(path)
 
     try:
-        img = Image.open(path).convert("L")
-        text = pytesseract.image_to_string(img)
+        text = ocr_extract_text(path)
 
     except Exception as e:
         print(f"OCR failed for '{path}': {e}")

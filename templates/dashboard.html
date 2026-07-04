@@ -298,47 +298,8 @@ gap:25px;
 }
 
 @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 1100;
-    box-shadow: 10px 0 40px rgba(0,0,0,0.4);
-  }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; padding: 70px 18px 24px; }
-  .mobile-menu-btn { display: flex; }
-  .sidebar-backdrop.show { display: block; }
-}
-
-.mobile-menu-btn {
-  display: none;
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 1101;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: rgba(15,23,42,0.85);
-  border: 1px solid rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  color: white;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.sidebar-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 1099;
-}
-
-@media (max-width: 480px) {
-  .main { padding: 70px 14px 20px; }
+  .sidebar { width: 0; padding: 0; overflow: hidden; border: none; }
+  .main { margin-left: 0; padding: 24px 18px; }
 }
 
 /* TOP BAR: filters + export */
@@ -620,14 +581,10 @@ gap:25px;
 </head>
 
 <body>
-<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-  <i class="fa-solid fa-bars"></i>
-</button>
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
 <!-- SIDEBAR -->
 
-<div class="sidebar" id="sidebar">
+<div class="sidebar">
 
 <div class="sidebar-brand">
   <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -636,6 +593,10 @@ gap:25px;
 
 <a href="/analysis">
 <i class="fa-solid fa-chart-line"></i> Analysis
+</a>
+
+<a href="/dashboard" class="active">
+<i class="fa-solid fa-chart-pie"></i> Dashboard
 </a>
 
 <a href="/chatbot">
@@ -655,9 +616,6 @@ gap:25px;
 </a>
 <a href="/profile">
 <i class="fa-solid fa-user"></i> Profile
-</a>
-<a href="/dashboard" class="active">
-<i class="fa-solid fa-chart-pie"></i> Dashboard
 </a>
 
 </div>
@@ -1114,23 +1072,6 @@ async function loadGlobalStats(){
 
 loadGlobalStats();
 setInterval(loadGlobalStats, 5 * 60 * 1000);
-
-/* MOBILE SIDEBAR TOGGLE */
-const sidebarEl = document.getElementById("sidebar");
-const backdropEl = document.getElementById("sidebarBackdrop");
-const menuBtn = document.getElementById("mobileMenuBtn");
-
-function openSidebar(){
-  sidebarEl.classList.add("open");
-  backdropEl.classList.add("show");
-}
-function closeSidebar(){
-  sidebarEl.classList.remove("open");
-  backdropEl.classList.remove("show");
-}
-
-menuBtn.addEventListener("click", openSidebar);
-backdropEl.addEventListener("click", closeSidebar);
 
 </script>
 

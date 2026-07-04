@@ -27,6 +27,9 @@
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
+  <!-- Google Identity Services (real Google Sign-In) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
@@ -1340,6 +1343,14 @@
       margin-bottom: 20px;
     }
 
+    .google-btn-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .google-btn-wrap > div { width: 100%; max-width: 320px; }
+
     .btn-google:hover {
       border-color: #4285f4;
       box-shadow: 0 4px 15px rgba(66,133,244,0.15);
@@ -1666,27 +1677,12 @@
       .hiw-step { flex-direction: column; gap: 16px; }
       .footer-bottom { flex-direction: column; text-align: center; }
       .waveform-bar span:nth-child(n+9) { display: none; }
-      .navbar-custom .container { padding-left: 16px; padding-right: 16px; }
-      .brand-text { font-size: 0.95rem; }
-      .btn-nav-login, .btn-nav-signup { padding: 7px 14px !important; font-size: 0.82rem !important; }
     }
 
     @media (max-width: 576px) {
       .auth-card { padding: 28px 20px; border-radius: 20px; }
-      .auth-illustration-svg { max-width: 260px; }
-      .page-wrapper, .section-pad .container { padding-left: 14px; padding-right: 14px; }
-      h1, .hero-title { font-size: clamp(1.7rem, 7vw, 2.2rem) !important; }
-      .btn-nav-signup span, .btn-nav-login span { display: inline; }
-    }
-
-    @media (max-width: 420px) {
-      .brand-text { display: none; }
-      .navbar-brand-custom .brand-icon { margin-right: 0; }
     }
   </style>
-  <!-- Google Identity Services (Sign in with Google) -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 </head>
 <body>
 
@@ -2437,16 +2433,23 @@
         <h1 class="auth-card-title">Sign in to your account</h1>
         <p class="auth-card-sub">Don't have an account? <a href="#" class="auth-switch-link" onclick="showPage('signup')" aria-label="Go to sign up page">Create one free →</a></p>
 
-        <!-- Google Button -->
-        <button class="btn-google" id="googleLoginBtn" aria-label="Sign in with Google">
-          <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"></path>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path>
-          </svg>
-          Continue with Google
-        </button>
+        <!-- Google Button (real Google Identity Services sign-in) -->
+        <div id="g_id_onload"
+             data-client_id="290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com"
+             data-callback="handleGoogleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="google-btn-wrap">
+          <div class="g_id_signin"
+               data-type="standard"
+               data-shape="rectangular"
+               data-theme="outline"
+               data-text="continue_with"
+               data-size="large"
+               data-logo_alignment="left"
+               data-width="320">
+          </div>
+        </div>
 
         <div class="auth-divider"><span>or sign in with email</span></div>
 
@@ -2598,16 +2601,18 @@
         <h1 class="auth-card-title">Create your free account</h1>
         <p class="auth-card-sub">Already have an account? <a href="#" class="auth-switch-link" onclick="showPage('login')" aria-label="Sign in to existing account">Sign in →</a></p>
 
-        <!-- Google Button -->
-        <button class="btn-google" id="googleSignupBtn" aria-label="Sign up with Google">
-          <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"></path>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path>
-          </svg>
-          Sign up with Google
-        </button>
+        <!-- Google Button (real Google Identity Services sign-in) -->
+        <div class="google-btn-wrap">
+          <div class="g_id_signin"
+               data-type="standard"
+               data-shape="rectangular"
+               data-theme="outline"
+               data-text="signup_with"
+               data-size="large"
+               data-logo_alignment="left"
+               data-width="320">
+          </div>
+        </div>
 
         <div class="auth-divider"><span>or register with email</span></div>
 
@@ -2846,21 +2851,27 @@
     }
 
     /* =========================================================
-       GOOGLE BTN DEMO
+       GOOGLE SIGN-IN (real) — handles the credential returned by
+       Google Identity Services after a user signs in / signs up.
     ========================================================= */
-    ['googleLoginBtn', 'googleSignupBtn'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          btn.disabled = true;
-          btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Connecting to Google…';
-          setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = `<svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> ${id.includes('Login') ? 'Continue' : 'Sign up'} with Google`;
-          }, 2000);
-        });
-      }
-    });
+    window.handleGoogleCredentialResponse = function(response) {
+      fetch('/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential })
+      })
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        if (ok && data.success) {
+          window.location.href = data.redirect || '/analysis';
+        } else {
+          alert(data.message || 'Google sign-in failed. Please try again.');
+        }
+      })
+      .catch(() => {
+        alert('Could not reach the server for Google sign-in. Please try again.');
+      });
+    };
 
   }); // end DOMContentLoaded
 
@@ -2945,95 +2956,6 @@
   /* =========================================================
      LOGIN FORM HANDLER
   ========================================================= */
-  /* =========================================================
-     GOOGLE SIGN-IN (Google Identity Services)
-     Replace YOUR_GOOGLE_CLIENT_ID below with the real Client ID from
-     Google Cloud Console > APIs & Services > Credentials. It must match
-     GOOGLE_CLIENT_ID in app.py exactly.
-  ========================================================= */
-  const GOOGLE_CLIENT_ID = "290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com";
-
-  function initGoogleSignIn() {
-    if (!window.google || !window.google.accounts) {
-      // Script not loaded yet — retry shortly.
-      setTimeout(initGoogleSignIn, 300);
-      return;
-    }
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential
-    });
-  }
-
-  function handleGoogleCredential(response) {
-    console.log("Google callback fired!");
-    console.log(response);
-
-    fetch('/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: response.credential })
-    })
-    .then(res => {
-        console.log("Response status:", res.status);
-        return res.json();
-    })
-    .then(data => {
-        console.log("Backend response:", data);
-
-        if (data.success) {
-            window.location.href = data.redirect || '/';
-        } else {
-            alert(data.message || 'Google sign-in failed.');
-        }
-    })
-    .catch(err => {
-        console.error("Google Sign-In Error:", err);
-        alert('Network error during Google sign-in.');
-    });
-}
-
-  // Wire both the login-page and signup-page Google buttons. Google's
-  // own rendered button is the only fully reliable trigger for the
-  // popup across browsers, so we render two invisible Google buttons
-  // and forward clicks from our styled buttons onto them.
-  document.addEventListener('DOMContentLoaded', () => {
-    initGoogleSignIn();
-    renderHiddenGoogleButtons();
-  });
-
-  function renderHiddenGoogleButtons() {
-    if (!window.google || !window.google.accounts) {
-      setTimeout(renderHiddenGoogleButtons, 300);
-      return;
-    }
-
-    // Create two off-screen containers Google can render its real
-    // button into — one per page, since GIS needs a unique element.
-    ['googleLoginBtn', 'googleSignupBtn'].forEach(id => {
-      const visibleBtn = document.getElementById(id);
-      if (!visibleBtn) return;
-
-      const hiddenContainer = document.createElement('div');
-      hiddenContainer.id = id + 'GisProxy';
-      hiddenContainer.style.position = 'fixed';
-      hiddenContainer.style.top = '-9999px';
-      hiddenContainer.style.left = '-9999px';
-      document.body.appendChild(hiddenContainer);
-
-      google.accounts.id.renderButton(hiddenContainer, {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large'
-      });
-
-      visibleBtn.addEventListener('click', () => {
-        const realGoogleBtn = hiddenContainer.querySelector('div[role="button"]');
-        if (realGoogleBtn) realGoogleBtn.click();
-      });
-    });
-  }
-
   function handleLogin(e) {
     e.preventDefault();
     const errEl = document.getElementById('loginServerError');
