@@ -25,6 +25,7 @@ CancerAI Health Assistant is a Flask-based intelligent healthcare platform that 
 - 💬 AI chatbot
 - 📊 Dashboard & analytics
 - 📱 Responsive UI
+  
 
 # 🔑 Teck Stack
 
@@ -39,7 +40,7 @@ CancerAI Health Assistant is a Flask-based intelligent healthcare platform that 
 - Bootstrap 5
 
 ### Database
-- SQLite
+- MongoDB
 
 ### Artificial Intelligence
 - Machine Learning
@@ -88,14 +89,8 @@ Create a folder named **screenshots**.
 ### 📄 Upload Medical Report
 ![Upload](screenshots/upload-report.png)
 
-### 🔎 OCR Result
-![OCR](screenshots/ocr-result.png)
-
 ### 🤖 Symptom Checker
 ![Symptoms](screenshots/symptom-checker.png)
-
-### 🩺 Prediction Result
-![Prediction](screenshots/prediction.png)
 
 ### 🏥 Hospital Finder
 ![Hospital](screenshots/hospital-finder.png)
@@ -105,9 +100,6 @@ Create a folder named **screenshots**.
 
 ### 👤 User Profile
 ![Profile](screenshots/profile.png)
-
-### 📈 Dashboard Analytics
-![Analytics](screenshots/analytics.png)
 
 ### 📚 Awareness Page
 ![Awareness](screenshots/awareness.png)
@@ -145,9 +137,9 @@ B.E. Computer Science Engineering (Artificial Intelligence & Machine Learning)
 
 Chitkara University, Punjab
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/Sania256
 
-LinkedIn: https://linkedin.com/in/yourprofile
+LinkedIn: https://www.linkedin.com/in/sania-singla-14b665324
 
 ---
 
