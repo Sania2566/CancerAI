@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, jsonify, redirect, session
 import pandas as pd
 from geopy.distance import geodesic
 import pickle
-import sqlite3
+from pymongo import MongoClient, ASCENDING, DESCENDING
+from pymongo.errors import DuplicateKeyError
 import os
 from datetime import datetime, timedelta
 import shutil
@@ -10,14 +11,6 @@ import requests
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
-# ---------------- OCR (cloud-based, no server install needed) ---------------- #
-# Report analysis uses the OCR.space cloud API instead of a locally-installed
-# Tesseract binary, since most hosts (e.g. Render's native runtime) don't allow
-# installing system packages. Get a free key (no credit card) at:
-#   https://ocr.space/ocrapi/freekey
-# Set it as the OCR_SPACE_API_KEY environment variable. Falls back to the
-# public "helloworld" demo key, which is shared and rate-limited — fine for a
-# quick test, but get your own key for real use.
 OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY", "helloworld")
 OCR_SPACE_ENDPOINT = "https://api.ocr.space/parse/image"
 
@@ -66,127 +59,36 @@ def ocr_extract_text(file_path):
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-# Google OAuth Client ID (from Google Cloud Console -> APIs & Services -> Credentials).
-# Set this as an environment variable in production; the literal string below
-# is only a local-development fallback and must be replaced with your own ID.
+
 GOOGLE_CLIENT_ID = os.environ.get(
     "GOOGLE_CLIENT_ID",
     "290251344819-tbr69ghn9vti71s5j5dt1l63loka3cgh.apps.googleusercontent.com"
 )
 
-# ---------------- DATABASE ---------------- #
+
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME", "cancer_ai")
+
+mongo_client = MongoClient(MONGO_URI)
+mongo_db = mongo_client[MONGO_DB_NAME]
+
+users_col = mongo_db["users"]
+profiles_col = mongo_db["profiles"]
+report_history_col = mongo_db["report_history"]
+symptom_logs_col = mongo_db["symptom_logs"]
+
 
 def init_db():
-
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""
-CREATE TABLE IF NOT EXISTS users(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    email TEXT UNIQUE,
-    password TEXT
-)
-""")
-
-    cursor.execute("""
-CREATE TABLE IF NOT EXISTS profiles(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT,
-    age TEXT,
-    smoking TEXT,
-    weight_loss TEXT,
-    cough TEXT,
-    fatigue TEXT,
-    lump TEXT,
-    bleeding TEXT,
-    swallowing TEXT,
-    exercise TEXT,
-    diet TEXT,
-    cancer TEXT,
-    cancer_type TEXT,
-    cancer_stage TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-    cursor.execute("""
-CREATE TABLE IF NOT EXISTS report_history(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT,
-    filename TEXT,
-    extracted_text TEXT,
-    summary TEXT,
-    keywords TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-    cursor.execute("""
-CREATE TABLE IF NOT EXISTS symptom_logs(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT,
-    age TEXT,
-    smoking TEXT,
-    weight_loss TEXT,
-    cough TEXT,
-    fatigue TEXT,
-    family_history TEXT,
-    alcohol TEXT,
-    fever_sweats TEXT,
-    cough_blood TEXT,
-    lump TEXT,
-    skin_change TEXT,
-    bleeding TEXT,
-    bowel_bladder TEXT,
-    swallowing TEXT,
-    risk INTEGER,
-    severity TEXT,
-    condition TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-    conn.commit()
-    conn.close()
+    """Create indexes used for lookups/sorting. Safe to call on every
+    startup - create_index() is a no-op if the index already exists."""
+    users_col.create_index([("email", ASCENDING)], unique=True)
+    profiles_col.create_index([("email", ASCENDING)])
+    profiles_col.create_index([("created_at", DESCENDING)])
+    report_history_col.create_index([("email", ASCENDING), ("created_at", DESCENDING)])
+    symptom_logs_col.create_index([("email", ASCENDING)])
+    symptom_logs_col.create_index([("created_at", DESCENDING)])
 
 init_db()
-
-def migrate_db():
-    """Adds columns introduced after the initial table creation, for
-    databases that already existed before this column was added."""
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute("PRAGMA table_info(profiles)")
-    columns = [row[1] for row in cursor.fetchall()]
-
-    if "created_at" not in columns:
-        cursor.execute("ALTER TABLE profiles ADD COLUMN created_at TEXT")
-        # Backfill existing rows so they still appear under "All Time"
-        cursor.execute(
-            "UPDATE profiles SET created_at = ? WHERE created_at IS NULL",
-            (datetime.now().isoformat(sep=" ", timespec="seconds"),)
-        )
-        conn.commit()
-
-    cursor.execute("PRAGMA table_info(symptom_logs)")
-    symptom_columns = [row[1] for row in cursor.fetchall()]
-
-    new_symptom_columns = [
-        "family_history", "alcohol", "fever_sweats",
-        "cough_blood", "lump", "skin_change", "bleeding",
-        "bowel_bladder", "swallowing"
-    ]
-    for col in new_symptom_columns:
-        if col not in symptom_columns:
-            cursor.execute(f"ALTER TABLE symptom_logs ADD COLUMN {col} TEXT")
-    conn.commit()
-
-    conn.close()
-
-migrate_db()
 
 # ---------------- LOAD DATA ---------------- #
 
@@ -209,22 +111,10 @@ def signup():
     email = request.form["email"]
     password = request.form["password"]
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
     try:
-        cursor.execute(
-            "INSERT INTO users(name,email,password) VALUES(?,?,?)",
-            (name,email,password)
-        )
-
-        conn.commit()
-
-    except sqlite3.IntegrityError:
-        conn.close()
+        users_col.insert_one({"name": name, "email": email, "password": password})
+    except DuplicateKeyError:
         return jsonify({"success": False, "message": "Email already exists"}), 409
-
-    conn.close()
 
     return jsonify({
         "success": True,
@@ -239,28 +129,13 @@ def login():
     email = request.form["email"]
     password = request.form["password"]
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
-        (email,password)
-    )
-
-    user = cursor.fetchone()
+    user = users_col.find_one({"email": email, "password": password})
 
     if not user:
-        conn.close()
         return jsonify({"success": False, "message": "Invalid email or password"}), 401
 
     # Check if this user has already completed profile setup
-    cursor.execute(
-        "SELECT id FROM profiles WHERE email=?",
-        (email,)
-    )
-    existing_profile = cursor.fetchone()
-
-    conn.close()
+    existing_profile = profiles_col.find_one({"email": email}, {"_id": 1})
 
     session["email"] = email
 
@@ -269,7 +144,7 @@ def login():
     return jsonify({
         "success": True,
         "message": "Login successful",
-        "name": user[1],
+        "name": user["name"],
         "redirect": next_page
     })
 
@@ -304,23 +179,13 @@ def auth_google():
     if not idinfo.get("email_verified", True):
         return jsonify({"success": False, "message": "Please verify your Google email address first"}), 400
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM users WHERE email=?", (email,))
-    user = cursor.fetchone()
+    user = users_col.find_one({"email": email})
 
     if not user:
         # New account via Google — no password since Google handles auth.
-        cursor.execute(
-            "INSERT INTO users(name,email,password) VALUES(?,?,?)",
-            (name, email, None)
-        )
-        conn.commit()
+        users_col.insert_one({"name": name, "email": email, "password": None})
 
-    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
-    existing_profile = cursor.fetchone()
-    conn.close()
+    existing_profile = profiles_col.find_one({"email": email}, {"_id": 1})
 
     session["email"] = email
     next_page = "/analysis" if existing_profile else "/profile_setup"
@@ -340,11 +205,7 @@ def profile_setup():
 
     email = session["email"]
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
-    existing_profile = cursor.fetchone()
-    conn.close()
+    existing_profile = profiles_col.find_one({"email": email}, {"_id": 1})
 
     if existing_profile:
         return redirect("/analysis")
@@ -381,25 +242,26 @@ def save_profile():
     cancer_type = request.form.get("cancer_type")
     cancer_stage = request.form.get("cancer_stage")
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT id FROM profiles WHERE email=?", (email,))
-    if cursor.fetchone():
-        conn.close()
+    if profiles_col.find_one({"email": email}, {"_id": 1}):
         return redirect("/analysis")
 
-    cursor.execute("""
-    INSERT INTO profiles
-    (email, age, smoking, weight_loss, cough, fatigue, lump,
-     bleeding, swallowing, exercise, diet, cancer, cancer_type, cancer_stage)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-    """,
-    (email, age, smoking, weight_loss, cough, fatigue, lump,
-     bleeding, swallowing, exercise, diet, cancer, cancer_type, cancer_stage))
-
-    conn.commit()
-    conn.close()
+    profiles_col.insert_one({
+        "email": email,
+        "age": age,
+        "smoking": smoking,
+        "weight_loss": weight_loss,
+        "cough": cough,
+        "fatigue": fatigue,
+        "lump": lump,
+        "bleeding": bleeding,
+        "swallowing": swallowing,
+        "exercise": exercise,
+        "diet": diet,
+        "cancer": cancer,
+        "cancer_type": cancer_type,
+        "cancer_stage": cancer_stage,
+        "created_at": datetime.now()
+    })
 
     return redirect("/analysis")
 
@@ -408,24 +270,21 @@ def view_profile():
 
     email = session.get("email")
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
+    user = users_col.find_one({"email": email})
+    profile_doc = profiles_col.find_one({"email": email})
 
-    cursor.execute("""
-SELECT users.name, users.email,
-       profiles.age, profiles.smoking, profiles.weight_loss,
-       profiles.cough, profiles.fatigue, profiles.lump,
-       profiles.bleeding, profiles.swallowing,
-       profiles.exercise, profiles.diet,
-       profiles.cancer, profiles.cancer_type, profiles.cancer_stage
-FROM users
-JOIN profiles ON users.email = profiles.email
-WHERE users.email=?
-""", (email,))
-
-    profile = cursor.fetchone()
-
-    conn.close()
+    profile = None
+    if user and profile_doc:
+        # Keep the same positional shape the template expects
+        # (previously the columns of a SQL JOIN result row).
+        profile = (
+            user.get("name"), user.get("email"),
+            profile_doc.get("age"), profile_doc.get("smoking"), profile_doc.get("weight_loss"),
+            profile_doc.get("cough"), profile_doc.get("fatigue"), profile_doc.get("lump"),
+            profile_doc.get("bleeding"), profile_doc.get("swallowing"),
+            profile_doc.get("exercise"), profile_doc.get("diet"),
+            profile_doc.get("cancer"), profile_doc.get("cancer_type"), profile_doc.get("cancer_stage"),
+        )
 
     return render_template("profile.html", profile=profile)
 
@@ -443,17 +302,7 @@ def analyze_symptoms():
 
     data = request.get_json() or {}
 
-    # ------------------------------------------------------------------
-    # Each answer carries a base point value. Points are grouped into
-    # clinical categories so the response can show *where* risk is
-    # coming from, not just a single number. A handful of well-known
-    # symptom *combinations* add extra points on top of the per-answer
-    # base score, since real risk assessment isn't just additive -
-    # e.g. smoking + a persistent cough is materially more concerning
-    # than either alone.
-    # ------------------------------------------------------------------
-
-    # category -> list of (points, max_points) so we can compute a % per category
+   
     categories = {
         "demographics":  {"points": 0, "max": 0, "label": "Demographics & History"},
         "lifestyle":      {"points": 0, "max": 0, "label": "Lifestyle Risk Factors"},
@@ -564,11 +413,7 @@ def analyze_symptoms():
                    fs_pts + cough_pts + cb_pts + lump_pts + skin_pts +
                    bleed_pts + bb_pts + sw_pts)
 
-    # ------------------------------------------------------------------
-    # Combination logic — certain symptom pairings are clinically more
-    # concerning together than the sum of their individual points would
-    # suggest, so we add a modest compounding bonus when they co-occur.
-    # ------------------------------------------------------------------
+
     combo_bonus = 0
     combo_notes = []
 
@@ -599,19 +444,13 @@ def analyze_symptoms():
     max_total = sum(c["max"] for c in categories.values()) + 38  # 38 = sum of combo bonuses above
     risk = round(min(100, (raw_total / max_total) * 100)) if max_total else 0
 
-    # ------------------------------------------------------------------
-    # Build the per-category percentage breakdown for the UI.
-    # ------------------------------------------------------------------
+
     category_breakdown = {}
     for key, c in categories.items():
         pct = round((c["points"] / c["max"]) * 100) if c["max"] else 0
         category_breakdown[key] = {"pct": pct, "label": c["label"]}
 
-    # ------------------------------------------------------------------
-    # Determine the dominant concern area (highest-scoring category) so
-    # "condition" reflects an actual pattern in the answers instead of a
-    # generic phrase.
-    # ------------------------------------------------------------------
+    
     dominant_key = max(category_breakdown, key=lambda k: category_breakdown[k]["pct"])
     dominant_pct = category_breakdown[dominant_key]["pct"]
 
@@ -629,10 +468,7 @@ def analyze_symptoms():
     else:
         condition = condition_map.get(dominant_key, "Some risk factors detected")
 
-    # ------------------------------------------------------------------
-    # Severity bands and tailored advice. Advice references the actual
-    # flagged factors instead of one generic sentence per band.
-    # ------------------------------------------------------------------
+
     has_high_flag = any(f["level"] == "high" for f in flags)
 
     if risk < 25 and not has_high_flag:
@@ -661,10 +497,6 @@ def analyze_symptoms():
                   "as soon as possible for a thorough evaluation. Early assessment significantly "
                   "improves outcomes for most conditions, including cancer.")
 
-    # ------------------------------------------------------------------
-    # Urgent banner — shown only when specific red-flag combinations or
-    # severe single symptoms are present, regardless of overall risk %.
-    # ------------------------------------------------------------------
     urgent = None
     severe_single_flags = [f for f in flags if f["level"] == "high"]
     if cb_val == "Blood in cough / severe breathlessness":
@@ -681,37 +513,27 @@ def analyze_symptoms():
                   "seeing a doctor soon for a full evaluation.")
 
     # Persist this submission so the dashboard can reflect real, live data
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO symptom_logs
-        (email, age, smoking, weight_loss, cough, fatigue,
-         family_history, alcohol, fever_sweats, cough_blood,
-         lump, skin_change, bleeding, bowel_bladder, swallowing,
-         risk, severity, condition)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-    """, (
-        session.get("email"),
-        data.get("age"),
-        data.get("smoking"),
-        data.get("weight_loss"),
-        data.get("cough"),
-        data.get("fatigue"),
-        data.get("family_history"),
-        data.get("alcohol"),
-        data.get("fever_sweats"),
-        data.get("cough_blood"),
-        data.get("lump"),
-        data.get("skin_change"),
-        data.get("bleeding"),
-        data.get("bowel_bladder"),
-        data.get("swallowing"),
-        risk,
-        severity,
-        condition
-    ))
-    conn.commit()
-    conn.close()
+    symptom_logs_col.insert_one({
+        "email": session.get("email"),
+        "age": data.get("age"),
+        "smoking": data.get("smoking"),
+        "weight_loss": data.get("weight_loss"),
+        "cough": data.get("cough"),
+        "fatigue": data.get("fatigue"),
+        "family_history": data.get("family_history"),
+        "alcohol": data.get("alcohol"),
+        "fever_sweats": data.get("fever_sweats"),
+        "cough_blood": data.get("cough_blood"),
+        "lump": data.get("lump"),
+        "skin_change": data.get("skin_change"),
+        "bleeding": data.get("bleeding"),
+        "bowel_bladder": data.get("bowel_bladder"),
+        "swallowing": data.get("swallowing"),
+        "risk": risk,
+        "severity": severity,
+        "condition": condition,
+        "created_at": datetime.now()
+    })
 
     return jsonify({
         "risk": risk,
@@ -723,16 +545,6 @@ def analyze_symptoms():
         "urgent": urgent
     })
 
-# ---------------- WHO GLOBAL CANCER STATS ---------------- #
-#
-# Pulls real, published figures from WHO's Global Health Observatory (GHO)
-# OData API — a free, public, no-auth API at https://ghoapi.azureedge.net/api.
-# This is genuine published WHO data, not a live feed: GLOBOCAN/WHO cancer
-# estimates are produced annually, and the GHO platform itself is refreshed
-# roughly every 1-2 weeks per WHO's own documentation. There is no public
-# source anywhere that reports cancer diagnoses in real time, so this cache
-# is refreshed periodically (not every 30s) and is clearly distinct from
-# the live, real-time data drawn from THIS app's own users.
 
 GHO_API_BASE = "https://ghoapi.azureedge.net/api"
 WHO_CACHE_TTL = timedelta(hours=6)
@@ -743,13 +555,7 @@ _who_cache = {
     "error": None,
 }
 
-# Verified indicator codes that genuinely exist on the WHO GHO API and
-# relate to cancer. The GHO API does not carry raw "new cancer cases"
-# incidence counts (those live only on IARC's separate GLOBOCAN/Cancer
-# Today platform, gco.iarc.who.int, which has no public API) — so these
-# are the real cancer-related figures GHO actually publishes: screening
-# program coverage, national policy existence, and mortality risk.
-# Verified directly against https://ghoapi.azureedge.net/api/Indicator.
+
 CANCER_INDICATORS = [
     ("NCDMORT3070", "Probability of dying age 30-70 from cancer, CVD, diabetes or chronic respiratory disease (%)"),
     ("NCD_CCS_cervicalcancerpgmcvg", "Countries with a national cervical cancer screening program (coverage, %)"),
@@ -779,9 +585,6 @@ def _fetch_who_cancer_indicators():
         if not rows:
             continue
 
-        # Prefer a world-level row if present, else average/aggregate
-        # the most recent year's country-level rows so we show one
-        # meaningful global figure rather than a single country's value.
         world_rows = [r for r in rows if r.get("SpatialDim") == "WORLD"]
 
         if world_rows:
@@ -873,93 +676,116 @@ def _range_cutoff(range_key):
 
 
 def get_dashboard_data(range_key="all"):
-    """Builds chart datasets by blending the static reference dataset with
-    real, live data collected from user profiles and symptom-analysis
-    submissions, filtered to the requested date range. Each user
-    contribution adds +1 to its matching category."""
+    """
+    Builds chart datasets by blending the static reference dataset with
+    real, live data collected from MongoDB profiles and symptom-analysis
+    submissions, filtered to the requested date range.
+    """
 
     cutoff = _range_cutoff(range_key)
 
-    # --- Filter the static reference dataset by Diagnosis_Date ---
+    # ---------------- Static Dataset ---------------- #
+
     filtered_df = df if cutoff is None else df[df["Diagnosis_Date"] >= cutoff]
 
     cancer_counts = filtered_df["Cancer_Type"].value_counts().to_dict()
     smoking_counts = filtered_df["Smoking_Status"].value_counts().to_dict()
     treatment_counts = filtered_df["Treatment_Type"].value_counts().to_dict()
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
+    # ---------------- MongoDB Profiles ---------------- #
 
-    # --- Blend in completed health profiles (cancer type + smoking habit) ---
-    cursor.execute("SELECT smoking, cancer, cancer_type, created_at FROM profiles")
-    for smoking, cancer, cancer_type, created_at in cursor.fetchall():
+    for profile in profiles_col.find():
 
-        if cutoff is not None:
-            try:
-                if datetime.fromisoformat(str(created_at)[:19]) < cutoff:
-                    continue
-            except ValueError:
-                continue
+        created_at = profile.get("created_at")
 
-        if cancer == "Yes" and cancer_type:
-            cancer_counts[cancer_type] = cancer_counts.get(cancer_type, 0) + 1
-
-        if smoking:
-            smoking_counts[smoking] = smoking_counts.get(smoking, 0) + 1
-
-    # --- Blend in symptom-analysis submissions (smoking habit) ---
-    cursor.execute("SELECT smoking, created_at FROM symptom_logs")
-    symptom_rows = []
-    for smoking, created_at in cursor.fetchall():
-
-        row_dt = None
-        if created_at:
-            try:
-                row_dt = datetime.fromisoformat(str(created_at)[:19])
-            except ValueError:
-                row_dt = None
-
-        if cutoff is not None and (row_dt is None or row_dt < cutoff):
+        if cutoff is not None and created_at and created_at < cutoff:
             continue
 
+        if profile.get("cancer") == "Yes":
+            cancer_type = profile.get("cancer_type")
+
+            if cancer_type:
+                cancer_counts[cancer_type] = cancer_counts.get(cancer_type, 0) + 1
+
+        smoking = profile.get("smoking")
+
         if smoking:
             smoking_counts[smoking] = smoking_counts.get(smoking, 0) + 1
 
-        symptom_rows.append(row_dt)
+    # ---------------- MongoDB Symptom Logs ---------------- #
 
-    conn.close()
+    symptom_rows = []
 
-    # --- Build the time-series chart. "Last 30 Days" buckets by day since a
-    # single year-bucket would be meaningless at that range; everything else
-    # buckets by year. ---
+    for log in symptom_logs_col.find():
+
+        created_at = log.get("created_at")
+
+        if cutoff is not None and created_at and created_at < cutoff:
+            continue
+
+        smoking = log.get("smoking")
+
+        if smoking:
+            smoking_counts[smoking] = smoking_counts.get(smoking, 0) + 1
+
+        if created_at:
+            symptom_rows.append(created_at)
+
+    # ---------------- Time Series ---------------- #
+
     if range_key == "30d":
-        today = datetime.now().date()
-        day_buckets = {(today - timedelta(days=i)): 0 for i in range(29, -1, -1)}
 
+        today = datetime.now().date()
+
+        day_buckets = {
+            (today - timedelta(days=i)): 0
+            for i in range(29, -1, -1)
+        }
+
+        # Static dataset
         for d in filtered_df["Diagnosis_Date"].dropna():
+
             d = d.date()
+
             if d in day_buckets:
                 day_buckets[d] += 1
 
+        # MongoDB symptom logs
         for row_dt in symptom_rows:
+
             if row_dt and row_dt.date() in day_buckets:
                 day_buckets[row_dt.date()] += 1
 
-        time_labels = [d.strftime("%b %d") for d in day_buckets.keys()]
-        time_values = [int(v) for v in day_buckets.values()]
+        time_labels = [
+            d.strftime("%b %d")
+            for d in day_buckets.keys()
+        ]
+
+        time_values = [
+            int(v)
+            for v in day_buckets.values()
+        ]
 
     else:
+
         yearly_counts = filtered_df.groupby("Year").size().to_dict()
 
         for row_dt in symptom_rows:
+
             if row_dt:
                 yearly_counts[row_dt.year] = yearly_counts.get(row_dt.year, 0) + 1
 
         sorted_years = sorted(int(y) for y in yearly_counts.keys())
+
         time_labels = [str(y) for y in sorted_years]
-        time_values = [int(yearly_counts[y]) for y in sorted_years]
+
+        time_values = [
+            int(yearly_counts[y])
+            for y in sorted_years
+        ]
 
     return {
+
         "cancer_labels": list(cancer_counts.keys()),
         "cancer_values": [int(v) for v in cancer_counts.values()],
 
@@ -972,7 +798,6 @@ def get_dashboard_data(range_key="all"):
         "year_labels": time_labels,
         "year_values": time_values,
     }
-
 
 VALID_RANGES = {"all", "5y", "1y", "30d"}
 
@@ -1280,58 +1105,59 @@ def analyze_report():
     result, severity = classify_report(text_lower)
     keywords = extract_keywords(text_lower)
 
-    # ── Save to history ──
     email = session.get("email")
     comparison = None
     history_list = []
 
     if email:
-        conn = sqlite3.connect("users.db")
-        cursor = conn.cursor()
 
-        # Fetch previous reports for comparison (newest first)
-        cursor.execute("""
-            SELECT id, email, filename, summary, keywords, created_at
-            FROM report_history
-            WHERE email=?
-            ORDER BY created_at DESC
-        """, (email,))
-        history_rows = cursor.fetchall()
+        # Fetch previous reports
+        previous_reports = list(
+            report_history_col.find(
+                {"email": email}
+            ).sort("created_at", -1)
+        )
+
+        # Convert MongoDB documents to the format build_comparison() expects
+        history_rows = []
+
+        for report in previous_reports:
+
+            history_rows.append((
+                str(report["_id"]),
+                report["email"],
+                report["filename"],
+                report["summary"],
+                ", ".join(report["keywords"]),
+                report["created_at"].strftime("%Y-%m-%d %H:%M:%S")
+            ))
 
         comparison = build_comparison(keywords, history_rows)
 
         # Save current report
-        cursor.execute("""
-            INSERT INTO report_history (email, filename, extracted_text, summary, keywords, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (
-            email,
-            file.filename,
-            text[:2000],
-            result,
-            ", ".join(keywords),
-            datetime.now().isoformat(sep=" ", timespec="seconds")
-        ))
-        conn.commit()
+        report_history_col.insert_one({
+            "email": email,
+            "filename": file.filename,
+            "extracted_text": text[:2000],
+            "summary": result,
+            "keywords": keywords,
+            "created_at": datetime.now()
+        })
 
-        # Re-fetch to include the just-saved one
-        cursor.execute("""
-            SELECT id, filename, summary, keywords, created_at
-            FROM report_history
-            WHERE email=?
-            ORDER BY created_at DESC
-            LIMIT 10
-        """, (email,))
-        for row in cursor.fetchall():
+        # Latest 10 reports
+        reports = report_history_col.find(
+            {"email": email}
+        ).sort("created_at", -1).limit(10)
+
+        for report in reports:
+
             history_list.append({
-                "id": row[0],
-                "filename": row[1],
-                "summary": row[2],
-                "keywords": row[3],
-                "date": row[4][:16]
+                "id": str(report["_id"]),
+                "filename": report["filename"],
+                "summary": report["summary"],
+                "keywords": ", ".join(report["keywords"]),
+                "date": report["created_at"].strftime("%Y-%m-%d %H:%M")
             })
-
-        conn.close()
 
     return jsonify({
         "text": text[:800],
@@ -1342,33 +1168,31 @@ def analyze_report():
         "history": history_list
     })
 
-
 @app.route("/report-history")
 def report_history_api():
-    """Return the logged-in user's full report history as JSON."""
+
     email = session.get("email")
+
     if not email:
         return jsonify([])
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT id, filename, summary, keywords, created_at
-        FROM report_history
-        WHERE email=?
-        ORDER BY created_at DESC
-        LIMIT 10
-    """, (email,))
-    rows = cursor.fetchall()
-    conn.close()
+    reports = report_history_col.find(
+        {"email": email}
+    ).sort("created_at", -1).limit(10)
 
-    return jsonify([{
-        "id": r[0],
-        "filename": r[1],
-        "summary": r[2],
-        "keywords": r[3],
-        "date": r[4][:16]
-    } for r in rows])
+    history = []
+
+    for report in reports:
+
+        history.append({
+            "id": str(report["_id"]),
+            "filename": report["filename"],
+            "summary": report["summary"],
+            "keywords": ", ".join(report["keywords"]),
+            "date": report["created_at"].strftime("%Y-%m-%d %H:%M")
+        })
+
+    return jsonify(history)
 
 
 # ---------------- RUN APP ---------------- #
