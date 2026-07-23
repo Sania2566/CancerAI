@@ -344,7 +344,7 @@
   ::-webkit-scrollbar-track { background: #0f172a; }
   ::-webkit-scrollbar-thumb { background: var(--grad-main); border-radius: 6px; }
 
-  /* ── MOBILE NAV ─────────────────────────────────── */
+  /* ── MOBILE SIDEBAR NAV ─────────────────────────── */
   .nav-toggle-btn {
     display: none;
     background: rgba(255,255,255,0.08);
@@ -357,21 +357,55 @@
     cursor: pointer;
   }
 
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(2,6,23,0.6);
+    backdrop-filter: blur(2px);
+    z-index: 1998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .sidebar-overlay.open { display: block; opacity: 1; }
+
+  .nav-close-btn {
+    display: none;
+    position: absolute;
+    top: 16px; left: 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
   @media (max-width: 860px) {
     .nav-toggle-btn { display: flex; }
     .nav-links-row {
-      display: none;
-      position: absolute;
-      top: 100%; left: 0; right: 0;
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      width: min(78vw, 300px);
+      margin: 0;
       flex-direction: column !important;
       align-items: stretch !important;
-      background: rgba(15,23,42,0.97);
+      background: rgba(15,23,42,0.98);
       backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 20px 18px;
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 74px 18px 24px;
       gap: 4px !important;
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+      z-index: 1999;
+      overflow-y: auto;
     }
-    .nav-links-row.open { display: flex; }
+    .nav-links-row.open { transform: translateX(0); }
+    .nav-close-btn { display: flex; }
     .nav-link-custom, .btn-nav-primary {
       width: 100%;
       padding: 12px 14px !important;
@@ -398,6 +432,7 @@
         <i class="fa-solid fa-bars"></i>
       </button>
       <div class="d-flex align-items-center gap-1 nav-links-row" id="navLinksRow">
+        <button class="nav-close-btn" id="navCloseBtn" aria-label="Close navigation"><i class="fa-solid fa-xmark"></i></button>
         <a href="/dashboard" class="nav-link-custom"><i class="fa-solid fa-chart-line me-1"></i>Dashboard</a>
         <a href="/chatbot" class="nav-link-custom"><i class="fa-solid fa-robot me-1"></i>Chatbot</a>
         <a href="/hospitals" class="nav-link-custom"><i class="fa-solid fa-hospital me-1"></i>Hospitals</a>
@@ -408,6 +443,7 @@
     </div>
   </div>
 </nav>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- PAGE CONTENT -->
 <div class="page-wrapper">
@@ -630,15 +666,32 @@ function submitAnswers() {
 
 showQuestion();
 
-/* MOBILE NAV TOGGLE */
+/* MOBILE SIDEBAR NAV TOGGLE */
 const navToggleBtn = document.getElementById("navToggleBtn");
 const navLinksRow = document.getElementById("navLinksRow");
+const navCloseBtn = document.getElementById("navCloseBtn");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+function openSidebar() {
+  navLinksRow.classList.add("open");
+  sidebarOverlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeSidebar() {
+  navLinksRow.classList.remove("open");
+  sidebarOverlay.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
 if (navToggleBtn && navLinksRow) {
   navToggleBtn.addEventListener("click", () => {
-    navLinksRow.classList.toggle("open");
+    navLinksRow.classList.contains("open") ? closeSidebar() : openSidebar();
   });
+  navCloseBtn && navCloseBtn.addEventListener("click", closeSidebar);
+  sidebarOverlay && sidebarOverlay.addEventListener("click", closeSidebar);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSidebar(); });
   navLinksRow.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => navLinksRow.classList.remove("open"));
+    link.addEventListener("click", closeSidebar);
   });
 }
 </script>
