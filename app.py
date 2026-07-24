@@ -57,7 +57,16 @@ def ocr_extract_text(file_path):
     return parsed_results[0].get("ParsedText", "")
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "secret123")
+
+# Session cookie settings needed for the cookie to reliably persist when
+# running behind Render's HTTPS proxy (defaults are tuned for local http://
+# development and can silently fail to survive a redirect once deployed).
+app.config.update(
+    SESSION_COOKIE_SECURE=True,      # only send cookie over HTTPS
+    SESSION_COOKIE_SAMESITE="Lax",   # sent on top-level navigations like our redirect
+    SESSION_COOKIE_HTTPONLY=True,
+)
 
 
 GOOGLE_CLIENT_ID = os.environ.get(
