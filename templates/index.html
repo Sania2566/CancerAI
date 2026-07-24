@@ -363,7 +363,12 @@
     inset: 0;
     background: rgba(2,6,23,0.6);
     backdrop-filter: blur(2px);
-    z-index: 1998;
+    /* Must be BELOW .navbar-custom's z-index (1000): .nav-links-row lives
+       inside .navbar-custom's stacking context, so its own z-index:1999
+       only wins locally. Against outside elements, .navbar-custom's own
+       z-index (1000) is what counts — an overlay above 1000 would render
+       on top of the sidebar and swallow all its clicks. */
+    z-index: 999;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
